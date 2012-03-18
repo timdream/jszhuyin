@@ -52,6 +52,10 @@ var IMEFrontend = {
     );
     engine.empty();
 
+    window.onunload = function () {
+      engine.uninit();
+    };
+
     $t.on(
       'keypress',
       function (ev) {
