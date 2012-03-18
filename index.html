@@ -49,11 +49,72 @@
       padding-left: 0.5em;
     }
 
+    #about {
+      display: none;
+    }
+
+    #about:target {
+      display: block;
+    }
+
   </style>
 </head>
 <body>
   <textarea id="textarea"></textarea>
   <ol id="candidates"></ol>
+  <p><a href="#about">關於 JS 注音</a></p>
+  <div id="about">
+    <h1>JS 注音</h1>
+
+    <p>JSZhuyin 是完全由 JavaScript 寫成的自動選字注音輸入法。由 <a href="http://mozilla.org/">Mozilla</a> 贊助開發，內建於 <a href="https://github.com/andreasgal/gaia">Gaia</a> (<a href="http://www.mozilla.org/en-US/b2g/">Boot to Gecko</a> 手機作業系統的 front-end)。</p>
+
+    <h2>作者</h2>
+
+    <p><a href="http://timc.idv.tw/">timdream</a></p>
+
+    <h2>系統需求</h2>
+
+    <p>Gaia 需要使用 <a href="http://nightly.mozilla.org/">Firefox Nightly</a> 或是 B2G runtime 執行。JSZhuyin 與此示範用介面則目標支援所有現代瀏覽器。</p>
+
+    <p>在提供新實作的 IndexedDB 的平台會將詞庫存進 IndexedDB，加快載入速度（截至 2012 年 3 月只有 Firefox 有此功能）。</p>
+
+    <h2>程式碼</h2>
+
+    <ul>
+    <li>Gaia 內的 <a href="https://github.com/andreasgal/gaia/blob/master/apps/homescreen/imes/jszhuyin/">JSZhuyin</a></li>
+    <li>此桌面瀏覽器使用的<a href="https://github.com/timdream/gaia-keyboard-demo">介面</a></li>
+    </ul>
+
+
+    <p>使用授權皆為 <a href="https://github.com/andreasgal/gaia/blob/master/LICENCE">MIT</a>。</p>
+
+    <h2>詞庫</h2>
+
+    <p>使用同為 MIT 授權的<a href="http://mcbopomofo.openvanilla.org/">小麥注音</a>詞庫，由 mjhsieh 維護，基於 <a href="http://sourceforge.net/projects/libtabe/">libtabe</a>。</p>
+
+    <h2>使用問題</h2>
+
+    <h3>基本使用方法</h3>
+
+    <p>打字，方向鍵的下可以開始選字，選字模式下可以用數字選字與左右方向鍵換頁。選到的項目不是整個緩衝區的話，可以繼續選下去選到完為止（或是按方向鍵上鍵離開選字模式）。</p>
+
+    <h3>為何互動不像正常的桌機智慧注音？</h3>
+
+    <p>因為 JS 注音是手機輸入法 …… 想知道他在手機上互動起來的樣子，請用 Firefox 去 <a href="../">Gaia Keyboard Demo</a> 看看。</p>
+
+    <h3>有沒有其他相似的工具？</h3>
+
+    <p>線上輸入法很多，但實作方式都是把輸入送到伺服器去處理。這是用 Javascript 在瀏覽器實作自動選字輸入法，這是第一個（有錯的話還請告知）。</p>
+
+    <h3>斷詞的方法是？</h3>
+
+    <p>窮舉法與積分比較（笑）。窮舉是用很簡單的 <a href="http://stackoverflow.com/questions/8375439">Composition of a natural number</a>，積分是小麥注音詞庫提供的。不過因為是窮舉，如果有正確的詞庫應該可以做其他的 phonetic IME。</p>
+
+    <h3>問題？</h3>
+
+    <p>寄信給作者吧。</p>
+
+  </div>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
   <script type="text/javascript" src="script.js"></script>
   <script type="text/javascript" src="../gaia/apps/homescreen/imes/jszhuyin/jszhuyin.js"></script>
