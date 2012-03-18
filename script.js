@@ -6,15 +6,15 @@ window.define = function (moduleName, requiredModule, getter) {
     console.error('define() is only for jszhuyin in this project.');
     return;
   }
-  // start up IMEDemo after dom ready
+  // start up IMEFrontend after dom ready
   $(function () {
-    IMEDemo.init(getter());
+    IMEFrontend.init(getter());
   });
 };
 
 window.define.amd = true;
 
-var IMEDemo = {
+var IMEFrontend = {
   init: function (engine) {
     var self = this;
     var $t = this.$t = $('#textarea');
