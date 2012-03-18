@@ -6,15 +6,16 @@
   <title>JS 注音</title>
   <style type="text/css">
 
+    textarea {
+      width: 100%;
+      height: 10em;
+      font-size: 140%;
+    }
+
     #progress {
       background-color: #c00;
       color: #fff;
-      font-size: 1.5em;
-      position: absolute;
-      top: 3em;
-      width: 10%;
-      left: 45%;
-      text-align: center;
+      font-size: 140%;
       display: none;
     }
 
@@ -22,11 +23,6 @@
       display: block;
     }
 
-    textarea {
-      width: 100%;
-      height: 10em;
-      font-size: 140%;
-    }
     ol {
       padding: 0;
       background-color: #e0e0e0;
@@ -77,9 +73,9 @@
   </style>
 </head>
 <body>
-  <p id="progress"></p>
   <textarea id="textarea"></textarea>
   <ol id="candidates"></ol>
+  <p id="progress" class="loading">下載詞庫中，共有兩個檔案：<span>0%</span></p>
   <p><a href="#about">關於 JS 注音</a></p>
   <div id="about">
     <h1>JS 注音</h1>

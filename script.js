@@ -22,7 +22,7 @@ window.XMLHttpRequest = function XMLHttpRequest() {
     function (ev) {
       $('#progress')
         .toggleClass('loading', ev.loaded !== ev.total)
-        .text(Math.floor(ev.loaded/ev.total*100) + '%');
+        .find('span').text(Math.floor(ev.loaded/ev.total*1000)/10 + '%');
     }
   );
   return xhr;
