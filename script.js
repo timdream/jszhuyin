@@ -14,6 +14,20 @@ window.define = function (moduleName, requiredModule, getter) {
 
 window.define.amd = true;
 
+// Replace native XMLHttpRequest with one that comes with a progress event listener
+window._XMLHttpRequest = window.XMLHttpRequest;
+window.XMLHttpRequest = function XMLHttpRequest() {
+  var xhr = new window._XMLHttpRequest();
+  xhr.addEventListener('progress',
+    function (ev) {
+      $('#progress')
+        .toggleClass('loading', ev.loaded !== ev.total)
+        .text(Math.floor(ev.loaded/ev.total*100) + '%');
+    }
+  );
+  return xhr;
+};
+
 var IMEFrontend = {
   init: function (engine) {
     var self = this;
