@@ -5,11 +5,50 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <title>JS 注音</title>
   <style type="text/css">
-    ol li {
+    textarea {
+      width: 100%;
+      height: 10em;
+      font-size: 140%;
+    }
+    ol {
+      padding: 0;
+      background-color: #e0e0e0;
+      font-size: 140%;
+      height: 1.2em;
+      line-height: 1.2em;
+    }
+    ol:not(.expanded) li:first-child {
+      display: block;
+      list-style: none;
+    }
+
+    ol:not(.expanded) li:first-child:before {
+      content: '↓ ';
+      color: #666;
+    }
+
+    ol:not(.expanded) li:first-child:after {
+      content: ' ↵';
+      color: #666;
+    }
+
+    ol:not(.expanded) li:not(:first-child) {
+      display: none;
+    }
+
+    ol.expanded:before {
+      content: '↔ ';
+      color: #666;
+      display: block;
+      float: left;
+    }
+
+    ol.expanded li {
       float: left;
       list-style-position: inside;
       padding-left: 0.5em;
     }
+
   </style>
 </head>
 <body>

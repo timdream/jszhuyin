@@ -20,6 +20,8 @@ var IMEDemo = {
     var $t = this.$t = $('#textarea');
     var $c = this.$c = $('#candidates');
 
+    this.sendCandidates([]);
+
     engine.init(
       {
         path: '../gaia/apps/homescreen/imes/jszhuyin/',
@@ -44,10 +46,55 @@ var IMEDemo = {
 
         var code = ev.keyCode || ev.charCode;
 
-        if (ev.keyCode >= 33 && ev.keyCode <= 40) {
-          // Arrow keys and home/end/pgup/pgdn
+        // Entering candidate selection mode with down arrow
+        if (!self.candidateSelectionMode
+          && self.candidates.length
+          && ev.keyCode == 40) {
+          ev.preventDefault();
+          self.$c.addClass('expanded');
+          self.candidateSelectionMode = true;
           return;
         }
+
+        if (self.candidateSelectionMode) {
+          ev.preventDefault();
+
+          // number keys: select selection
+          if (code >= 49 && code <= 57) {
+            var n = code - 49;
+            self.$c.find(':eq(' + n + ')').click();
+          }
+
+          // right arrow
+          if (ev.keyCode == 39) {
+            if ((self.candidatePage + 1) * 9 < self.candidates.length) {
+              self.candidatePage += 1;
+              self.showCandidates();
+            }
+          }
+
+          // left arrow
+          if (ev.keyCode == 37) {
+            if (self.candidatePage !== 0) {
+              self.candidatePage -= 1;
+              self.showCandidates();
+            }
+          }
+
+          // up arrow
+          if (ev.keyCode == 38) {
+            self.candidatePage = 0;
+            self.showCandidates();
+            self.candidateSelectionMode = false;
+            self.$c.removeClass('expanded');
+          }
+
+          return;
+        }
+
+        // Arrow keys and home/end/pgup/pgdn
+        if (ev.keyCode >= 33 && ev.keyCode <= 40)
+          return;
 
         var symbolCode = self.getSymbolCodeFromCode(code, ev.shiftKey);
 
@@ -67,9 +114,21 @@ var IMEDemo = {
   },
 
   sendCandidates: function (candidates) {
+    this.candidates = candidates;
+    this.candidatePage = 0;
+    this.showCandidates();
+    if (!candidates.length) {
+      this.candidateSelectionMode = false;
+      this.$c.removeClass('expanded');
+    }
+  },
+
+  showCandidates: function () {
     var $c = this.$c;
     $c.empty();
-    candidates.forEach(
+    this.candidates.slice(
+      this.candidatePage * 9, this.candidatePage * 9 + 9
+    ).forEach(
       function (candidate) {
         var $li = $('<li />').text(candidate[0]).data('type', candidate[1]);
         $c.append($li);
