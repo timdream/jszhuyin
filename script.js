@@ -33,15 +33,15 @@ var IMEFrontend = {
     var self = this;
     var $t = this.$t = $('#textarea');
     var $c = this.$c = $('#candidates');
-    this.$s = $('#panding-symbols');
+    this.$s = $('#pending-symbols');
 
     this.sendCandidates([]);
 
     engine.init(
       {
         path: '../gaia/apps/homescreen/imes/jszhuyin/',
-        sendPandingSymbols: function (symbols) {
-          self.sendPandingSymbols(symbols);
+        sendPendingSymbols: function (symbols) {
+          self.sendPendingSymbols(symbols);
         },
         sendCandidates: function (candidates) {
           self.sendCandidates(candidates);
@@ -135,7 +135,7 @@ var IMEFrontend = {
     );
   },
 
-  sendPandingSymbols: function (symbols) {
+  sendPendingSymbols: function (symbols) {
     this.$s.text(symbols);
   },
 
