@@ -8,7 +8,10 @@ window.define = function (moduleName, requiredModule, getter) {
   }
   // start up IMEFrontend after dom ready
   $(function () {
-    IMEFrontend.init(getter());
+
+    window.IMEngine = getter();
+
+    IMEFrontend.init(window.IMEngine);
   });
 };
 
@@ -275,3 +278,76 @@ var IMEFrontend = {
     }
   },
 };
+
+var tests = [
+  ['ㄊㄞˊㄅㄟˇㄊㄞˊㄅㄟˇ', '台北台北', 'sentence'],
+  ['ㄊㄅㄟˇ', '台北', 'incomplete syllable'],
+  ['ㄊㄞˊㄅ', '台北', 'autocomplete syllable'],
+  ['ㄊㄅ', '台北', 'autocomplete syllable + incomplete syllable'],
+  ['ㄙㄧ', '所以', 'intelligent symbol spliting'],
+  ['ㄊㄨ␈ㄅ', '台北', 'backspace then a new syllable'],
+  ['ㄊㄨ␈ㄞˊㄅ', '台北', 'backspace then complete the syllable'],
+  ['ㄓ␈ㄊㄅ', '台北', 'backspace to beginning'],
+  ['ㄓㄨㄥ ␈␈␈␈ㄊㄅ', '台北','4 backspace to beginning'],
+  ['ㄓㄨˋㄧㄣ ㄕㄨ ㄖㄨˋㄈㄚˇㄔㄠ ㄍㄨㄛˋㄔㄤˊㄉㄨˋ',
+    '輸入法超過長度', 'force output on buffer limit'],
+  ['ㄊㄞˊㄅㄟˇ␍', '市', 'suggestions'],
+  ['ㄊㄞˊㄅㄟˇ␍␈', '', 'remove suggestion list']
+];
+
+jQuery(function ($) {
+  $('button').on(
+    'click',
+    function () {
+      var currentTest = 0;
+      var textarea = $('#textarea')[0];
+      textarea.value = '';
+      var $c = $('#candidates');
+
+      var test = function () {
+        IMEngine.empty();
+        if (tests.length <= currentTest)
+          return;
+
+        IMEngine.empty();
+
+        tests[currentTest][0].split('').forEach(
+          function (key) {
+            switch (key) {
+              case '␈':
+                IMEngine.click(8);
+                break;
+              case '␍':
+                IMEngine.click(13);
+                break;
+              default:
+                IMEngine.click(key.charCodeAt(0));
+                break;
+            }
+          }
+        );
+
+        var d = Date.now();
+        var timer = setInterval(function () {
+          if ($('ol').find(':first').text() === tests[currentTest][1]) {
+            textarea.value += 'Test ' + currentTest + ' succeed (' + tests[currentTest][2] + ')\n';
+            clearTimeout(timer);
+            currentTest++;
+            setTimeout(test, 0);
+          }
+          if (Date.now() - d > 5000) {
+            textarea.value += 'Test ' + currentTest + ' TIMEOUT ('
+              + tests[currentTest][2] +
+              ', input: ' + tests[currentTest][0] +
+              ', expect: ' + tests[currentTest][1] +
+              ', actual: ' + $('ol').find(':first').text() + ')\n';
+            clearTimeout(timer);
+            currentTest++;
+            setTimeout(test, 0);
+          }
+        }, 50);
+      };
+      test();
+    }
+  );
+});
