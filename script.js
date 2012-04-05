@@ -292,62 +292,58 @@ var tests = [
   ['ㄓㄨˋㄧㄣ ㄕㄨ ㄖㄨˋㄈㄚˇㄔㄠ ㄍㄨㄛˋㄔㄤˊㄉㄨˋ',
     '輸入法超過長度', 'force output on buffer limit'],
   ['ㄊㄞˊㄅㄟˇ␍', '市', 'suggestions'],
-  ['ㄊㄞˊㄅㄟˇ␍␈', '', 'remove suggestion list']
+  ['ㄊㄞˊㄅㄟˇ␍␈', '', 'remove suggestion list'],
+  ['ㄊㄞˊㄅㄟˇ！', '', 'remove suggestion list']
 ];
 
-jQuery(function ($) {
-  $('button').on(
-    'click',
-    function () {
-      var currentTest = 0;
-      var textarea = $('#textarea')[0];
-      textarea.value = '';
-      var $c = $('#candidates');
+function runtests() {
+  var currentTest = 0;
+  var textarea = $('#textarea')[0];
+  textarea.value = '';
+  var $c = $('#candidates');
 
-      var test = function () {
-        IMEngine.empty();
-        if (tests.length <= currentTest)
-          return;
+  var test = function () {
+    IMEngine.empty();
+    if (tests.length <= currentTest)
+      return;
 
-        IMEngine.empty();
+    IMEngine.empty();
 
-        tests[currentTest][0].split('').forEach(
-          function (key) {
-            switch (key) {
-              case '␈':
-                IMEngine.click(8);
-                break;
-              case '␍':
-                IMEngine.click(13);
-                break;
-              default:
-                IMEngine.click(key.charCodeAt(0));
-                break;
-            }
-          }
-        );
+    tests[currentTest][0].split('').forEach(
+      function (key) {
+        switch (key) {
+          case '␈':
+            IMEngine.click(8);
+            break;
+          case '␍':
+            IMEngine.click(13);
+            break;
+          default:
+            IMEngine.click(key.charCodeAt(0));
+            break;
+        }
+      }
+    );
 
-        var d = Date.now();
-        var timer = setInterval(function () {
-          if ($('ol').find(':first').text() === tests[currentTest][1]) {
-            textarea.value += 'Test ' + currentTest + ' succeed (' + tests[currentTest][2] + ')\n';
-            clearTimeout(timer);
-            currentTest++;
-            setTimeout(test, 0);
-          }
-          if (Date.now() - d > 5000) {
-            textarea.value += 'Test ' + currentTest + ' TIMEOUT ('
-              + tests[currentTest][2] +
-              ', input: ' + tests[currentTest][0] +
-              ', expect: ' + tests[currentTest][1] +
-              ', actual: ' + $('ol').find(':first').text() + ')\n';
-            clearTimeout(timer);
-            currentTest++;
-            setTimeout(test, 0);
-          }
-        }, 50);
-      };
-      test();
-    }
-  );
-});
+    var d = Date.now();
+    var timer = setInterval(function () {
+      if ($('ol').find(':first').text() === tests[currentTest][1]) {
+        textarea.value += 'Test ' + currentTest + ' succeed (' + tests[currentTest][2] + ')\n';
+        clearTimeout(timer);
+        currentTest++;
+        setTimeout(test, 0);
+      }
+      if (Date.now() - d > 5000) {
+        textarea.value += 'Test ' + currentTest + ' TIMEOUT ('
+          + tests[currentTest][2] +
+          ', input: ' + tests[currentTest][0] +
+          ', expect: ' + tests[currentTest][1] +
+          ', actual: ' + $('ol').find(':first').text() + ')\n';
+        clearTimeout(timer);
+        currentTest++;
+        setTimeout(test, 0);
+      }
+    }, 50);
+  };
+  test();
+}
