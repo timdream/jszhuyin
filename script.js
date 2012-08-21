@@ -42,7 +42,7 @@ var IMEFrontend = {
 
     engine.init(
       {
-        path: '../gaia/apps/system/js/keyboard/imes/jszhuyin/',
+        path: '../gaia/apps/keyboard/js/imes/jszhuyin/',
         sendPendingSymbols: function (symbols) {
           self.sendPendingSymbols(symbols);
         },
