@@ -1,5 +1,7 @@
 'use strict';
 
+var LAYOUT_PAGE_DEFAULT = '';
+
 // minimal AMD define callback
 window.define = function (moduleName, requiredModule, getter) {
   if (moduleName !== 'jszhuyin') {
@@ -42,7 +44,7 @@ var IMEFrontend = {
 
     engine.init(
       {
-        path: '../gaia/apps/keyboard/js/imes/jszhuyin/',
+        path: 'lib/',
         sendPendingSymbols: function (symbols) {
           self.sendPendingSymbols(symbols);
         },
