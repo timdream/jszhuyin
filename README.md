@@ -1,6 +1,6 @@
 # JSZhuyin - JS 注音
 
-"Smart" Chinese Zhuyin Input Method in Javascript. Javascript 自動選字注音輸入法。
+"Smart" Chinese Zhuyin Input Method in Javascript. Javascript 自動選字注音輸入法。[示範網頁](http://timdream.org/jszhuyin/)。
 
 已知的線上自動選字注音輸入法都是將輸入送至伺服器，這是已知的第一個完全使用前端技術完成的實作，故可支援離線使用。
 
