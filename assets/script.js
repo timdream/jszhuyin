@@ -25,11 +25,22 @@ window.XMLHttpRequest = function XMLHttpRequest() {
   var xhr = new window._XMLHttpRequest();
   xhr.addEventListener('progress',
     function (ev) {
-      $('#progress')
-        .toggleClass('loading', ev.loaded !== ev.total)
-        .find('span').text(Math.floor(ev.loaded/ev.total*1000)/10 + '%');
+      var progressText
+      if (ev.total) {
+        progressText = Math.floor(ev.loaded/ev.total*1000)/10 + '%';
+      } else {
+        progressText = Math.floor((ev.loaded  >> 10) * 10)/10 + 'KBytes';
+      }
+
+      $('#progress').addClass('loading').find('span').text(progressText);
     }
   );
+  xhr.addEventListener('load',
+    function (ev) {
+      $('#progress').removeClass('loading');
+    }
+  );
+
   return xhr;
 };
 
