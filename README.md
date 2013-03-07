@@ -14,6 +14,8 @@ MIT License
 
 使用 MIT License 授權的[小麥注音](http://mcbopomofo.openvanilla.org)詞庫，由 [mjhsieh](https://github.com/mjhsieh) 維護，基於 [libtabe](http://sourceforge.net/projects/libtabe/)。
 
+使用前請先執行 `make` 從 McBopomofo 產生適用於 JSZhuyin 的詞庫檔案。
+
 ## 斷詞演算法
 
 窮舉法與積分比較（笑）。窮舉是用很簡單的 <a href="http://stackoverflow.com/questions/8375439">Composition of a natural number</a>，積分是小麥注音詞庫提供的。不過因為是窮舉，如果有正確的詞庫應該可以做其他的 phonetic IME。
