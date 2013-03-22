@@ -23,6 +23,8 @@ data:
 		$(JSSHELL) -U ./build/convert-data.js words > ./lib/words.json
 	@cat $(TMPDIR)/McBopomofo/Source/Data/data.txt | \
 		$(JSSHELL) -U ./build/convert-data.js phrases > ./lib/phrases.json
+	@$(GIT) --git-dir=$(TMPDIR)/McBopomofo/.git log -n 1 --format=%H > \
+		./lib/data-commit-hash
 	@echo
 	@echo Cleaning up...
 	@rm -rf $(TMPDIR)/McBopomofo
