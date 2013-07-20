@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>JSZhuyin tests</title>
+  <link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.12.0.css">
+</head>
+<body>
+  <div id="qunit"></div>
+  <script src="http://code.jquery.com/qunit/qunit-1.12.0.js"></script>
+  <script>
+    QUnit.config.testTimeout = 10*1E3;
+  </script>
+
+  <!-- util -->
+  <script src="util.js"></script>
+
+  <!-- script to test -->
+  <script src="../lib/bopomofo_encoder.js"></script>
+
+  <!-- test scripts -->
+  <script src="unit/bopomofo_encoder.js"></script>
+</body>
+</html>
