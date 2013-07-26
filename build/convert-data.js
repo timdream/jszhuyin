@@ -1,5 +1,7 @@
 var result = {};
 
+load('./lib/bopomofo_encoder.js');
+
 if (!stringsAreUTF8()) {
   throw 'You need UTF-8 enabled SpiderMonkey to do cook the data.';
   quit();
@@ -12,19 +14,23 @@ while (line = readline()) {
 
   if (line[1].indexOf('_punctuation_') !== -1) continue;
 
+  var str = BopomofoEncoder.encode(line[1].replace(/\-/g, ''));
+
   switch (arguments[0]) {
     case 'words':
     default:
-      if (line[0].length !== 1) continue;
+      if (str.length > 1) continue;
     break;
     case 'phrases':
-      if (line[0].length === 1) continue;
+      if (str.length === 1) continue;
     break;
   }
 
-  if (!result[line[1]]) result[line[1]] = [];
+  if (!result[str]) {
+    result[str] = [];
+  }
 
-  result[line[1]].push([line[0], parseFloat(line[2])]);
+  result[str].push([line[0], parseFloat(line[2])]);
 }
 
 for (syllables in result) {
