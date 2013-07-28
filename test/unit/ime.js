@@ -175,6 +175,46 @@ test('query() a word', function() {
   ime.load();
 });
 
+test('query() the same word twice', function() {
+  var ime = new JSZhuyinIME();
+  ime.IDB_NAME = 'TestDatabase';
+  ime.IDB_VERSION = 1;
+  ime.JSON_URL = './resources/';
+  ime.JSON_FILES = ['testdata.json'];
+  ime.onloadend = function() {
+    ime.syllables = 'ㄊㄞˊ';
+    expect(4);
+    ime.updateSelections = function(results) {
+      deepEqual(results,
+        [["台",1],["臺",1],["抬",1],["颱",1],["檯",1],["苔",1],["跆",1],
+         ["邰",1],["鮐",1],["薹",1],["嬯",1],["秮",1],["旲",1],["炱",1],
+         ["儓",1],["駘",1],["籉",1]],
+        'Passed!');
+    };
+    ime.cache.cleanup = function mockCleanup(supersetKey) {
+      equal(supersetKey,
+        BopomofoEncoder.encode('ㄊㄞˊ'), 'Passed!');
+    };
+    ime.queue.done = function() {
+      var originalGet = ime.storage.get;
+      ime.storage.get = function mockGet() {
+        ok(false, 'storage.get() was called twice.');
+
+        originalGet.apply(this, arguments);
+      };
+      ime.queue.done = function() {
+        ime.unload();
+        start();
+      };
+      ime.query();
+    };
+    ime.query();
+  };
+
+  stop();
+  ime.load();
+});
+
 test('query() a two-word phrase', function() {
   var ime = new JSZhuyinIME();
   ime.IDB_NAME = 'TestDatabase';
