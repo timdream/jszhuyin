@@ -322,7 +322,7 @@ test('updateComposition()', function() {
   ime.JSON_URL = './resources/';
   ime.JSON_FILES = ['testdata.json'];
   expect(1);
-  ime.oncandidateupdate = function(composition) {
+  ime.oncompositionupdate = function(composition) {
     equal(composition, 'ㄊㄞˊㄅㄟˇ', 'Passed!');
     ime.unload();
     start();
@@ -374,7 +374,7 @@ test('confirmSelection()', function() {
   ime.oncompositionend = function(string) {
     equal(string, '台', 'Passed!');
   };
-  ime.oncandidateupdate = function(composition) {
+  ime.oncompositionupdate = function(composition) {
     equal(composition, 'ㄅㄟˇ', 'Passed!');
   };
   ime.query = function() {
