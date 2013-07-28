@@ -186,6 +186,38 @@ test('unload()', function() {
   storage.load();
 });
 
+test('deleteDatabase()', function() {
+  var storage = new IndexedDBStorage();
+  storage.IDB_NAME = 'TestDatabase';
+  storage.IDB_VERSION = 1;
+  expect(4);
+  var nativeDelDb = storage.IDB.deleteDatabase;
+  var fakeIDBOpenDBRequest = {};
+  storage.IDB.deleteDatabase = function mockDelDb(name) {
+    equal(name, 'TestDatabase', 'Passed!');
+
+    setTimeout(function() {
+      fakeIDBOpenDBRequest.onsuccess({
+        'type': 'success'
+      });
+    });
+    return fakeIDBOpenDBRequest;
+  };
+  storage.onloadend = function() {
+    ok(storage.loaded, 'Passed!');
+    storage.deleteDatabase(function(result) {
+      ok(result, 'Passed!');
+      ok(!storage.loaded, 'Passed!');
+
+      storage.IDB.deleteDatabase = nativeDelDb;
+      start();
+    });
+  };
+
+  stop();
+  storage.load();
+});
+
 test('checkPopulated()', function() {
   var storage = new IndexedDBStorage();
   storage.IDB_NAME = 'TestDatabase';
@@ -365,6 +397,40 @@ test('unload()', function() {
   storage.load();
 });
 
+test('deleteDatabase()', function() {
+  var storage = new HybirdStorage();
+  storage.IDB_NAME = 'TestDatabase';
+  storage.IDB_VERSION = 1;
+  storage.JSON_URL = './resources/';
+  storage.JSON_FILES = ['test1.json', 'test2.json'];
+  expect(4);
+  var nativeDelDb = IndexedDBStorage.prototype.IDB.deleteDatabase;
+  var fakeIDBOpenDBRequest = {};
+  IndexedDBStorage.prototype.IDB.deleteDatabase = function mockDelDb(name) {
+    equal(name, 'TestDatabase', 'Passed!');
+
+    setTimeout(function() {
+      fakeIDBOpenDBRequest.onsuccess({
+        'type': 'success'
+      });
+    });
+    return fakeIDBOpenDBRequest;
+  };
+  storage.onloadend = function() {
+    ok(storage.loaded, 'Passed!');
+    storage.deleteDatabase(function(result) {
+      ok(result, 'Passed!');
+      ok(!storage.loaded, 'Passed!');
+
+      IndexedDBStorage.prototype.IDB.deleteDatabase = nativeDelDb;
+      start();
+    });
+  };
+
+  stop();
+  storage.load();
+});
+
 test('get()', function() {
   var storage = new HybirdStorage();
   storage.IDB_NAME = 'TestDatabase';
@@ -495,6 +561,41 @@ test('unload()', function() {
     ok(!storage.jsonStorage, 'Passed!');
     ok(!storage.idbStorage, 'Passed!');
     start();
+  };
+
+  stop();
+  storage.load();
+});
+
+test('deleteDatabase()', function() {
+  var storage = new HybirdStorage();
+  storage.USE_IDB = false;
+  storage.IDB_NAME = 'TestDatabase';
+  storage.IDB_VERSION = 1;
+  storage.JSON_URL = './resources/';
+  storage.JSON_FILES = ['test1.json', 'test2.json'];
+  expect(3);
+  var nativeDelDb = IndexedDBStorage.prototype.IDB.deleteDatabase;
+  var fakeIDBOpenDBRequest = {};
+  IndexedDBStorage.prototype.IDB.deleteDatabase = function mockDelDb(name) {
+    ok(false, 'Passed!');
+
+    setTimeout(function() {
+      fakeIDBOpenDBRequest.onsuccess({
+        'type': 'success'
+      });
+    });
+    return fakeIDBOpenDBRequest;
+  };
+  storage.onloadend = function() {
+    ok(storage.loaded, 'Passed!');
+    storage.deleteDatabase(function(result) {
+      equal(result, undefined, 'Passed!');
+      ok(!storage.loaded, 'Passed!');
+
+      IndexedDBStorage.prototype.IDB.deleteDatabase = nativeDelDb;
+      start();
+    });
   };
 
   stop();
