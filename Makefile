@@ -19,12 +19,13 @@ data:
 	@$(MAKE) -C $(TMPDIR)/McBopomofo/Source/Data data.txt
 	@echo
 	@echo Convert data.txt to JSON...
+	@mkdir -p ./data/
 	@cat $(TMPDIR)/McBopomofo/Source/Data/data.txt | \
-		$(JSSHELL) -U ./build/convert-data.js words > ./lib/words.json
+		$(JSSHELL) -U ./build/convert-data.js words > ./data/words.json
 	@cat $(TMPDIR)/McBopomofo/Source/Data/data.txt | \
-		$(JSSHELL) -U ./build/convert-data.js phrases > ./lib/phrases.json
+		$(JSSHELL) -U ./build/convert-data.js phrases > ./data/phrases.json
 	@$(GIT) --git-dir=$(TMPDIR)/McBopomofo/.git log -n 1 --format=%H > \
-		./lib/data-commit-hash
+		./data/data-commit-hash
 	@echo
 	@echo Cleaning up...
 	@rm -rf $(TMPDIR)/McBopomofo

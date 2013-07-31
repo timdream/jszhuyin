@@ -1,4 +1,4 @@
 /local.mk
-/lib/words.json
-/lib/phrases.json
-/lib/data-commit-hash
+/data/words.json
+/data/phrases.json
+/data/data-commit-hash
