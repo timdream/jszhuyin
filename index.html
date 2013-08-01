@@ -75,17 +75,32 @@
       list-style-position: inside;
       padding-left: 0.5em;
     }
+
+    iframe {
+      display: none;
+    }
   </style>
 </head>
 <body>
   <textarea id="textarea"></textarea>
-  <p id="pending-symbols"></p>
+  <p id="composition"></p>
   <ol id="candidates"></ol>
-  <p id="progress">下載詞庫中，共有兩個檔案：<span>0%</span></p>
   <p><a href="https://github.com/timdream/jszhuyin">關於 JS 注音</a></p>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
-  <script type="text/javascript" src="assets/script.js"></script>
   <script type="text/javascript" src="lib/jszhuyin.js"></script>
+  <script type="text/javascript" src="lib/web_ime.js"></script>
+  <script type="text/javascript">
+    'use strict';
+
+    window.onload = function() {
+      var jszhuyin = new JSZhuyin({}, new JSZhuyinIframeLoader());
+      new WebJSZhuyinIME(jszhuyin, {
+        input: document.getElementById('textarea'),
+        composition: document.getElementById('composition'),
+        candidatesList: document.getElementById('candidates')
+      });
+    };
+
+  </script>
 </body>
 </html>
 
