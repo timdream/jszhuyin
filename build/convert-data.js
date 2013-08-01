@@ -14,7 +14,10 @@ while (line = readline()) {
 
   if (line[1].indexOf('_punctuation_') !== -1) continue;
 
-  var str = BopomofoEncoder.encode(line[1].replace(/\-/g, ''));
+  var str = line[1]
+    .replace(/([^\u02ca\u02c7\u02cb\u02d9])(\-|$)/g, '$1 $2')
+    .replace(/\-/g, '');
+  str = BopomofoEncoder.encode(str);
 
   switch (arguments[0]) {
     case 'words':
