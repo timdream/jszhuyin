@@ -52,3 +52,27 @@ test('decode() should decode multiple partial symbols.', function() {
 
   equal(str, 'ㄓㄨˋㄧㄣㄕㄖㄈ', 'Passed!');
 });
+
+test('isBopomofoSymbol() should work with Bopomofo symbol string.', function() {
+  var flag = BopomofoEncoder.isBopomofoSymbol('ㄉ');
+
+  equal(flag, true, 'Passed!');
+});
+
+test('isBopomofoSymbol() should work with Bopomofo symbol code.', function() {
+  var flag = BopomofoEncoder.isBopomofoSymbol(('ㄉ').charCodeAt(0));
+
+  equal(flag, true, 'Passed!');
+});
+
+test('isBopomofoSymbol() should work with Bopomofo symbol string.', function() {
+  var flag = BopomofoEncoder.isBopomofoSymbol('x');
+
+  equal(flag, false, 'Passed!');
+});
+
+test('isBopomofoSymbol() should work with non-Bopomofo symbol code.', function() {
+  var flag = BopomofoEncoder.isBopomofoSymbol(('x').charCodeAt(0));
+
+  equal(flag, false, 'Passed!');
+});
