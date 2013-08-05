@@ -7,6 +7,16 @@ if (!stringsAreUTF8()) {
   quit();
 }
 
+// This regexp adds the first tone to data given by McBopomofo.
+var regexp = new RegExp('([^' +
+  String.fromCharCode(BopomofoEncoder.BOPOMOFO_TONE_2,
+                      BopomofoEncoder.BOPOMOFO_TONE_3,
+                      BopomofoEncoder.BOPOMOFO_TONE_4,
+                      BopomofoEncoder.BOPOMOFO_TONE_5) +
+  '])(\-|$)', 'g');
+var replaceStr = '$1' +
+  String.fromCharCode(BopomofoEncoder.BOPOMOFO_TONE_1) + '$2';
+
 var line;
 while (line = readline()) {
 
@@ -14,9 +24,7 @@ while (line = readline()) {
 
   if (line[1].indexOf('_punctuation_') !== -1) continue;
 
-  var str = line[1]
-    .replace(/([^\u02ca\u02c7\u02cb\u02d9])(\-|$)/g, '$1 $2')
-    .replace(/\-/g, '');
+  var str = line[1].replace(regexp, replaceStr).replace(/\-/g, '');
   str = BopomofoEncoder.encode(str);
 
   switch (arguments[0]) {

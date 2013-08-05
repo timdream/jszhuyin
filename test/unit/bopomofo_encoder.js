@@ -9,7 +9,7 @@ test('encode() should follow the original spec.', function() {
 });
 
 test('encode() should encode multiple symbols.', function() {
-  var syllablesStr = 'ㄓㄨˋㄧㄣ ㄕㄨ ㄖㄨˋㄈㄚˇ';
+  var syllablesStr = 'ㄓㄨˋㄧㄣˉㄕㄨˉㄖㄨˋㄈㄚˇ';
   var str = BopomofoEncoder.encode(syllablesStr);
 
   equal(str, 'ἄÑ⌁┄ࠋ', 'Passed!');
@@ -43,7 +43,7 @@ test('decode() should decode multiple symbols.', function() {
   var encodedStr = 'ἄÑ⌁┄ࠋ';
   var str = BopomofoEncoder.decode(encodedStr);
 
-  equal(str, 'ㄓㄨˋㄧㄣ ㄕㄨ ㄖㄨˋㄈㄚˇ', 'Passed!');
+  equal(str, 'ㄓㄨˋㄧㄣˉㄕㄨˉㄖㄨˋㄈㄚˇ', 'Passed!');
 });
 
 test('decode() should decode multiple partial symbols.', function() {
