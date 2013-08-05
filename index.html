@@ -86,14 +86,15 @@
   <p id="composition"></p>
   <ol id="candidates"></ol>
   <p><a href="https://github.com/timdream/jszhuyin">關於 JS 注音</a></p>
-  <script type="text/javascript" src="lib/jszhuyin.js"></script>
-  <script type="text/javascript" src="lib/web_ime.js"></script>
+  <script type="text/javascript" src="lib/client.js"></script>
+  <script type="text/javascript" src="lib/web.js"></script>
   <script type="text/javascript">
     'use strict';
 
     window.onload = function() {
-      var jszhuyin = new JSZhuyin({}, new JSZhuyinIframeLoader());
-      new WebJSZhuyinIME(jszhuyin, {
+      var client = new JSZhuyinClient();
+      client.load(new JSZhuyinServerWorkerLoader());
+      new JSZhuyinWebIME(client, {
         input: document.getElementById('textarea'),
         composition: document.getElementById('composition'),
         candidatesList: document.getElementById('candidates')
