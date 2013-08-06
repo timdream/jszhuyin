@@ -274,6 +274,55 @@ test('query() a three-word phrase', function() {
   ime.load();
 });
 
+test('query() with syllables exceeds MAX_SYLLABLES_LENGTH.', function() {
+  var ime = new JSZhuyin();
+  ime.IDB_NAME = 'TestDatabase';
+  ime.IDB_VERSION = 1;
+  ime.JSON_URL = './resources/';
+  ime.JSON_FILES = ['testdata.json'];
+  ime.MAX_SYLLABLES_LENGTH = 3;
+  ime.onloadend = function() {
+    ime.syllables = 'ㄊㄞˊㄅㄟˇ';
+    expect(4);
+    ime.updateComposition = function() {
+      equal(ime.syllables, 'ㄊㄞˊㄕˋ', 'Passed!');
+    };
+    ime.oncompositionend = function(composition) {
+      equal(composition, '台北', 'Passed!');
+    };
+    ime.updateCandidates = function(results) {
+      deepEqual(results,
+        [["台北",2],
+         ["台",1],["臺",1],["抬",1],["颱",1],["檯",1],["苔",1],["跆",1],
+         ["邰",1],["鮐",1],["薹",1],["嬯",1],["秮",1],["旲",1],["炱",1],
+         ["儓",1],["駘",1],["籉",1]],
+        'Passed!');
+    };
+    ime.queue.done = function() {
+      ime.syllables = 'ㄊㄞˊㄅㄟˇㄊㄞˊㄕˋ';
+      ime.updateCandidates = function(results) {
+        deepEqual(results,
+          [["台是",2],
+           ["台",1],["臺",1],["抬",1],["颱",1],["檯",1],["苔",1],["跆",1],
+           ["邰",1],["鮐",1],["薹",1],["嬯",1],["秮",1],["旲",1],["炱",1],
+           ["儓",1],["駘",1],["籉",1]],
+          'Passed!');
+      };
+      ime.queue.done = function() {
+        ime.unload();
+
+        start();
+      };
+      ime.query();
+    };
+    ime.query();
+  };
+
+  stop();
+  ime.load();
+});
+
+
 test('query() two words which don\'t made up a phrase', function() {
   var ime = new JSZhuyin();
   ime.IDB_NAME = 'TestDatabase';
