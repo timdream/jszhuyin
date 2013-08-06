@@ -41,7 +41,7 @@ while (line = readline()) {
     result[str] = [];
   }
 
-  result[str].push([line[0], parseFloat(line[2])]);
+  result[str].push([line[0], parseFloat(line[2].substr(0, 6))]);
 }
 
 for (syllables in result) {
