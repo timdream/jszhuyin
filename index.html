@@ -93,7 +93,7 @@
 
     window.onload = function() {
       var client = new JSZhuyinClient();
-      client.load(new JSZhuyinServerWorkerLoader());
+      client.load(new JSZhuyinServerIframeLoader());
       new JSZhuyinWebIME(client, {
         input: document.getElementById('textarea'),
         composition: document.getElementById('composition'),

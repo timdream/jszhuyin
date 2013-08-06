@@ -1,6 +1,7 @@
 var result = {};
 
 load('./lib/bopomofo_encoder.js');
+load('./lib/jszhuyin_data_pack.js');
 
 if (!stringsAreUTF8()) {
   throw 'You need UTF-8 enabled SpiderMonkey to do cook the data.';
@@ -41,18 +42,20 @@ while (line = readline()) {
     result[str] = [];
   }
 
-  result[str].push([line[0], parseFloat(line[2])]);
+  result[str].push({ 'str': line[0], 'score': parseFloat(line[2]) });
 }
 
 for (syllables in result) {
   result[syllables] = result[syllables].sort(
     function(a, b) {
-      return (b[1] - a[1]);
+      return (b.score - a.score);
     }
   );
+  result[syllables] =
+    new JSZhuyinDataPack(result[syllables]).getPackedString();
 }
 
-var jsonStr = JSON.stringify(result).replace(/\],/g, '],\n');
+var jsonStr = JSON.stringify(result).replace(/,/g, ',\n');
 
 print(jsonStr);
 
