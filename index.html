@@ -1,79 +1,151 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-TW">
-<head>
+  <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>JS 注音</title>
+  <title>JS 注音：線上注音輸入</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/css/bootstrap.min.css">
   <script type="text/javascript">
     if (window.location.hostname === 'timdream.org') {
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-4623408-2']);
       _gaq.push(['_trackPageview']);
-    }
 
-    (function() {
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    }
 
   </script>
   <style type="text/css">
+    @media screen and (min-width: 768px) {
+      body {
+        padding: 70px 0;
+      }
 
-    textarea {
-      width: 100%;
-      height: 10em;
-      font-size: 140%;
+      #inputarea {
+        min-height: 8em;
+      }
+
+      .navbar select {
+        display: none;
+      }
     }
 
-    #progress {
-      background-color: #c00;
+    @media (max-width: 767px) {
+      body > .container {
+        margin: 10px 5px 70px;
+      }
+
+      #inputarea {
+        min-height: 3em;
+      }
+
+      .navbar .nav, .navbar .navbar-brand {
+        display: none;
+      }
+
+      .navbar select {
+        margin: 10px 0;
+        display: block;
+      }
+    }
+
+    body.distraction-free > .container > *:not(#inputarea):not(#panel),
+    body.distraction-free > *:not(.container) {
+      opacity: 0;
+      -webkit-transition: opacity 3s ease;
+      -ms-transition: opacity 3s ease;
+      transition: opacity 3s ease;
+    }
+
+    body > .container > *:not(#inputarea):not(#panel),
+    body > *:not(.container) {
+      -webkit-transition: opacity 1s ease;
+      -ms-transition: opacity 1s ease;
+      transition: opacity 1s ease;
+    }
+
+    #inputarea {
+      font-size: 140%;
+      outline: none;
+    }
+
+    #panel .panel-heading {
+      margin-bottom: 0;
+    }
+
+    #panel .pagination {
+      margin: 1px -14px -18px -14px;
+    }
+
+    #composition {
+      font-family: '標楷體', 'UKai', 'Kai', serif;
+    }
+
+    #candidates {
+      counter-reset: candidates;
+    }
+
+    #candidates li {
+      font-size: 120%;
+      cursor: pointer;
+    }
+
+    #candidates::before {
+      display: block;
+      float: left;
       color: #fff;
-      font-size: 140%;
-      display: none;
+      border-radius: 0.5em;
+      background-color: #999;
+      margin: 8px 7px;
+      font-size: 82%;
+      padding: 0 0.5em;
+      height: 20px;
+      width: 2em;
+      line-height: 2em;
+      text-align: center;
     }
 
-    #progress.loading {
-      display: block;
+
+    #candidates:not(.expanded)::before {
+      content: '↓';
     }
 
-    ol {
-      padding: 0;
-      background-color: #e0e0e0;
-      font-size: 140%;
-      height: 1.2em;
-      line-height: 1.2em;
-    }
-    ol:not(.expanded) li:first-child {
-      display: block;
-      list-style: none;
+    #candidates:not(.expanded) li:first-child span {
+/*      border-top-right-radius: 4px;
+      border-bottom-right-radius: 4px; */
     }
 
-    ol:not(.expanded) li:first-child:before {
-      content: '↓ ';
-      color: #666;
+    #candidates:not(.expanded) li:not(:first-child) span {
+      opacity: 0.3;
     }
 
-    ol:not(.expanded) li:first-child:after {
-      content: ' ↵';
-      color: #666;
+    #candidates.expanded::before {
+      content: '↔';
     }
 
-    ol:not(.expanded) li:not(:first-child) {
-      display: none;
+    #candidates:not(.expanded) li:first-child span::before {
+      content: '↵';
     }
 
-    ol.expanded:before {
-      content: '↔ ';
-      color: #666;
+    #candidates li span::before {
+      content: counter(candidates);
+      counter-increment: candidates 1;
       display: block;
       float: left;
-    }
-
-    ol.expanded li {
-      float: left;
-      list-style-position: inside;
-      padding-left: 0.5em;
+      color: #fff;
+      margin-right: 0.5em;
+      margin-top: 3px;
+      border-radius: 0.5em;
+      background-color: #999;
+      width: 2em;
+      height: 20px;
+      font-size: 82%;
+      text-align: center;
     }
 
     iframe {
@@ -82,25 +154,140 @@
   </style>
 </head>
 <body>
-  <textarea id="textarea" autofocus></textarea>
-  <p id="composition"></p>
-  <ol id="candidates"></ol>
-  <p><a href="https://github.com/timdream/jszhuyin">關於 JS 注音</a></p>
+  <div class="navbar navbar-fixed-bottom">
+    <div class="container">
+      <a class="navbar-brand" href="./">JS 注音</a>
+      <select class="form-control" id="mobile-nav">
+        <option value="./" selected>線上注音輸入</option>
+        <option value="https://github.com/timdream/jszhuyin">程式碼</option>
+        <option value="https://github.com/timdream/jszhuyin/blob/master/README.md">README</option>
+        <option value="https://github.com/timdream/jszhuyin/blob/master/API.md">API</option>
+        <option value="http://timdream.org/">timdream</option>
+      </select>
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="./">線上注音輸入</a></li>
+        <li><a href="https://github.com/timdream/jszhuyin">程式碼</a></li>
+        <li><a href="https://github.com/timdream/jszhuyin/blob/master/README.md">README</a></li>
+        <li><a href="https://github.com/timdream/jszhuyin/blob/master/API.md">API</a></li>
+        <li><a href="http://timdream.org/">timdream</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="container">
+    <p class="lead"><strong>JS 注音</strong>為使用 Web 技術開發的自動選字注音輸入法。</p>
+    <p>您可以在此處線上輸入中文，不需安裝任何程式。</p>
+    <div id="inputarea" class="well well-sm"></div>
+    <div class="panel panel-primary" id="panel" hidden>
+      <div class="panel-heading"><span id="composition"></span></div>
+      <ul class="pagination" id="candidates"></ul>
+    </div>
+    <p><span id="status">...</span>
+      <span id="delete_database" hidden><a id="delete_db_link" href="#">移除下載資料</a>。</span></p>
+  </div>
   <script type="text/javascript" src="lib/client.js"></script>
   <script type="text/javascript" src="lib/web.js"></script>
   <script type="text/javascript">
     'use strict';
 
     window.onload = function() {
-      var client = new JSZhuyinClient();
-      client.load(new JSZhuyinServerWorkerLoader());
-      new JSZhuyinWebIME(client, {
-        input: document.getElementById('textarea'),
-        composition: document.getElementById('composition'),
-        candidatesList: document.getElementById('candidates')
-      });
-    };
+      window.onload = null;
 
+      var mobileNav = document.getElementById('mobile-nav');
+      mobileNav.selectedIndex = 0;
+      mobileNav.addEventListener('change', function(evt) {
+        window.location.href = mobileNav.value;
+      });
+
+      var status = document.getElementById('status');
+      var deleteDatabase = document.getElementById('delete_database');
+      status.textContent = '載入中...';
+
+      var panel = document.getElementById('panel');
+      var inputarea = document.getElementById('inputarea');
+
+      var composition = document.getElementById('composition');
+      var candidatesList = document.getElementById('candidates');
+
+      var client = new JSZhuyinClient();
+      client.load(new JSZhuyinServerIframeLoader());
+      client.onpartlyloaded = function() {
+        inputarea.setAttribute('contenteditable', true);
+        inputarea.focus();
+
+        status.textContent = '已準備就緒，載入完整詞庫資料中...';
+      };
+      client.onload = function() {
+        inputarea.setAttribute('contenteditable', true);
+        inputarea.focus();
+
+        status.textContent = '載入完成。';
+        deleteDatabase.hidden = false;
+      };
+      client.onerror = function() {
+        status.textContent = '載入失敗，無法使用。';
+      };
+
+      var webIME = new JSZhuyinWebIME(client, {
+        input: inputarea,
+        composition: composition,
+        candidatesList: candidatesList
+      });
+
+      var leaveDistractionFree = function leaveDistractionFree() {
+        window.removeEventListener('mousemove', leaveDistractionFree);
+        inputarea.removeEventListener('blur', leaveDistractionFree);
+        document.body.className = '';
+      }
+
+      webIME.oncompositionend =
+      webIME.oncompositionupdate =
+      webIME.oncandidateschange = function updatePanelStyle() {
+
+        document.body.className = 'distraction-free';
+        window.addEventListener('mousemove', leaveDistractionFree);
+        inputarea.addEventListener('blur', leaveDistractionFree);
+
+        if (!candidatesList.children.length &&
+            !composition.textContent.length) {
+          panel.hidden = true;
+
+          return;
+        }
+
+        panel.hidden = false;
+      };
+
+
+      document.getElementById('delete_db_link')
+        .addEventListener('click', function(evt) {
+          evt.preventDefault();
+
+          if (!window.confirm('您確定要移除已下載的詞庫資料？您需要重新下載才能再次輸入中文。'))
+            return;
+
+          inputarea.setAttribute('contenteditable', false);
+          status.textContent = '刪除詞庫中...';
+          deleteDatabase.hidden = true;
+
+          client.onunload = function() {
+            status.textContent = '詞庫刪除完成，要再次使用請重新載入網頁。';
+          };
+          client.uninstall();
+        });
+
+      // Overwrite the addCandidateItem() method because
+      // we need an extra wrapped <span> for every item.
+      JSZhuyinWebIME.CandidatesList.prototype.addCandidateItem =
+        function(candidate, index) {
+          var element = this.element;
+          var li = document.createElement('li');
+          var span = document.createElement('span');
+          span.textContent = candidate[0];
+          span.setAttribute('data-index', index);
+          li.appendChild(span);
+          element.appendChild(li);
+        };
+    };
   </script>
 </body>
 </html>
