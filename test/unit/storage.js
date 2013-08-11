@@ -73,7 +73,7 @@ test('get()', function() {
   expect(1);
   storage.onloadend = function() {
     storage.get('Key1', function(values) {
-      deepEqual(values, ['value1', 'value2'], 'Passed!');
+      equal(values, 'value1value2', 'Passed!');
       start();
     });
   };
@@ -89,9 +89,9 @@ test('get() from multiple files', function() {
   expect(2);
   storage.onloadend = function() {
     storage.get('Key1', function(values) {
-      deepEqual(values, ['value1', 'value2'], 'Passed!');
+      deepEqual(values, 'value1value2', 'Passed!');
       storage.get('Key2', function(values) {
-        deepEqual(values, ['value3', 'value4'], 'Passed!');
+        deepEqual(values, 'value3value4', 'Passed!');
         start();
       });
     });
@@ -109,7 +109,7 @@ test('create instance', function() {
     partlyLoaded: false,
     loaded: false
   };
-  var chunk = new JSONDataChunk({ 'key': ['value1', 'value2'] }, jdbMock);
+  var chunk = new JSONDataChunk({ 'key': 'value1value2' }, jdbMock);
   ok(jdbMock.partlyLoaded, 'Passed!');
   equal(jdbMock._jsonData[0], chunk, 'Passed!');
 });
@@ -120,7 +120,7 @@ test('unload()', function() {
     partlyLoaded: false,
     loaded: false
   };
-  var chunk = new JSONDataChunk({ 'key': ['value1', 'value2'] }, jdbMock);
+  var chunk = new JSONDataChunk({ 'key': 'value1value2' }, jdbMock);
   jdbMock.loaded = true;
   chunk.unload();
   ok(!jdbMock.loaded, 'Passed!');
@@ -128,10 +128,10 @@ test('unload()', function() {
 });
 
 test('get()', function() {
-  var chunk = new JSONDataChunk({ 'key': ['value1', 'value2'] }, {
+  var chunk = new JSONDataChunk({ 'key': 'value1value2' }, {
     _jsonData: []
   });
-  deepEqual(chunk.get('key'), ['value1', 'value2'], 'Passed!');
+  deepEqual(chunk.get('key'), 'value1value2', 'Passed!');
 });
 
 module('IndexedDBStorage', {
@@ -277,11 +277,11 @@ test('putChunk() and get() single key', function() {
   expect(2);
   storage.onloadend = function() {
     ok(storage.loaded, 'Passed!');
-    var chunk = new JSONDataChunk({ 'key': ['value1', 'value2'] });
+    var chunk = new JSONDataChunk({ 'key': 'value1value2' });
 
     storage.putChunk(chunk, function() {
       storage.get('key', function(values) {
-        deepEqual(values, ['value1', 'value2'], 'Passed');
+        deepEqual(values, 'value1value2', 'Passed');
         storage.unload();
 
         start();
@@ -300,16 +300,16 @@ test('putChunk() and get() multiple keys in one transation', function() {
   expect(2);
   storage.onloadend = function() {
     var chunk = new JSONDataChunk({
-      'key': ['value1', 'value2'],
-      'key2': ['value3', 'value4'] });
+      'key': 'value1value2',
+      'key2': 'value3value4' });
 
     storage.putChunk(chunk, function() {
       var txn = storage.getTxn();
       storage.get('key', function(values) {
-        deepEqual(values, ['value1', 'value2'], 'Passed');
+        deepEqual(values, 'value1value2', 'Passed');
       }, txn);
       storage.get('key2', function(values) {
-        deepEqual(values, ['value3', 'value4'], 'Passed');
+        deepEqual(values, 'value3value4', 'Passed');
 
         storage.unload();
         start();
@@ -441,7 +441,7 @@ test('get()', function() {
   storage.onloadend = function() {
     storage.get('Key1', function(values) {
 
-      deepEqual(values, ['value1', 'value2'], 'Passed!');
+      deepEqual(values, 'value1value2', 'Passed!');
       storage.unload();
       start();
     });
@@ -460,9 +460,9 @@ test('get() from multiple files', function() {
   expect(2);
   storage.onloadend = function() {
     storage.get('Key1', function(values) {
-      deepEqual(values, ['value1', 'value2'], 'Passed!');
+      deepEqual(values, 'value1value2', 'Passed!');
       storage.get('Key2', function(values) {
-        deepEqual(values, ['value3', 'value4'], 'Passed!');
+        deepEqual(values, 'value3value4', 'Passed!');
         storage.unload();
         start();
       });
@@ -483,7 +483,7 @@ test('get() while only partly loaded', function() {
 
   storage.onpartlyloaded = function() {
     storage.get('Key1', function(values) {
-      deepEqual(values, ['value1', 'value2'], 'Passed!');
+      deepEqual(values, 'value1value2', 'Passed!');
     });
   };
   storage.onloadend = function() {
@@ -613,7 +613,7 @@ test('get()', function() {
   storage.onloadend = function() {
     storage.get('Key1', function(values) {
 
-      deepEqual(values, ['value1', 'value2'], 'Passed!');
+      deepEqual(values, 'value1value2', 'Passed!');
       storage.unload();
       start();
     });
@@ -633,9 +633,9 @@ test('get() from multiple files', function() {
   expect(2);
   storage.onloadend = function() {
     storage.get('Key1', function(values) {
-      deepEqual(values, ['value1', 'value2'], 'Passed!');
+      deepEqual(values, 'value1value2', 'Passed!');
       storage.get('Key2', function(values) {
-        deepEqual(values, ['value3', 'value4'], 'Passed!');
+        deepEqual(values, 'value3value4', 'Passed!');
         storage.unload();
         start();
       });
@@ -657,7 +657,7 @@ test('get() while only partly loaded', function() {
 
   storage.onpartlyloaded = function() {
     storage.get('Key1', function(values) {
-      deepEqual(values, ['value1', 'value2'], 'Passed!');
+      deepEqual(values, 'value1value2', 'Passed!');
     });
   };
   storage.onloadend = function() {

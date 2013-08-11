@@ -1,59 +1,112 @@
-var result = {};
+'use strict';
 
-load('./lib/bopomofo_encoder.js');
+var fs = require('fs');
+var BopomofoEncoder = require('../lib/bopomofo_encoder.js');
+var JSZhuyinDataPack = require('../lib/jszhuyin_data_pack.js');
 
-if (!stringsAreUTF8()) {
-  throw 'You need UTF-8 enabled SpiderMonkey to do cook the data.';
-  quit();
-}
+module['exports'] = function convertData(filename, outputDir, callback) {
+  fs.readFile(filename, { encoding: 'utf8' }, function read(err, data) {
+    if (err)
+      throw err;
 
-// This regexp adds the first tone to data given by McBopomofo.
-var regexp = new RegExp('([^' +
-  String.fromCharCode(BopomofoEncoder.BOPOMOFO_TONE_2,
-                      BopomofoEncoder.BOPOMOFO_TONE_3,
-                      BopomofoEncoder.BOPOMOFO_TONE_4,
-                      BopomofoEncoder.BOPOMOFO_TONE_5) +
-  '])(\-|$)', 'g');
-var replaceStr = '$1' +
-  String.fromCharCode(BopomofoEncoder.BOPOMOFO_TONE_1) + '$2';
+    // This regexp adds the first tone to data given by McBopomofo.
+    var regexp = new RegExp('([^' +
+      String.fromCharCode(BopomofoEncoder.BOPOMOFO_TONE_2,
+                          BopomofoEncoder.BOPOMOFO_TONE_3,
+                          BopomofoEncoder.BOPOMOFO_TONE_4,
+                          BopomofoEncoder.BOPOMOFO_TONE_5) +
+      '])(\-|$)', 'g');
 
-var line;
-while (line = readline()) {
+    var replaceStr = '$1' +
+      String.fromCharCode(BopomofoEncoder.BOPOMOFO_TONE_1) + '$2';
 
-  line = line.split(' ');
+    var results = [undefined, {}, {}, {}];
 
-  if (line[1].indexOf('_punctuation_') !== -1) continue;
+    var lines = data.split('\n');
+    data = undefined;
 
-  var str = line[1].replace(regexp, replaceStr).replace(/\-/g, '');
-  str = BopomofoEncoder.encode(str);
+    console.log('Processing ' + lines.length + ' entries in the directory...');
 
-  switch (arguments[0]) {
-    case 'words':
-    default:
-      if (str.length > 1) continue;
-    break;
-    case 'phrases':
-      if (str.length === 1) continue;
-    break;
-  }
+    var length = lines.length;
+    for(var i = 0; i < length; i++) {
+      if (!lines[i])
+        continue;
 
-  if (!result[str]) {
-    result[str] = [];
-  }
+      var row = lines[i].split(' ');
 
-  result[str].push([line[0], parseFloat(line[2].substr(0, 6))]);
-}
+      if (!(i % 1000)) {
+        process.stdout.write(i + '... ');
+      }
 
-for (syllables in result) {
-  result[syllables] = result[syllables].sort(
-    function(a, b) {
-      return (b[1] - a[1]);
+      if (row[1].indexOf('_punctuation_') !== -1)
+        continue;
+
+      var encodedStr = BopomofoEncoder.encode(
+        row[1].replace(regexp, replaceStr).replace(/\-/g, ''));
+
+      var resultObj;
+      switch (encodedStr.length) {
+        case 1:
+          resultObj = results[1];
+          break;
+
+        case 2:
+          resultObj = results[2];
+          break;
+
+        default:
+          resultObj = results[3];
+          break;
+      }
+
+      if (!resultObj[encodedStr]) {
+        resultObj[encodedStr] = [];
+      }
+
+      resultObj[encodedStr].push(
+        { 'str': row[0], 'score': parseFloat(row[2]) });
     }
-  );
-}
 
-var jsonStr = JSON.stringify(result).replace(/\],/g, '],\n');
+    console.log('Done.');
+    lines = undefined;
 
-print(jsonStr);
+    var i = 0;
+    results.shift();
 
-quit(0);
+    var names = [undefined, 'words', 'phrases', 'more'];
+
+    var putResult = function putResult() {
+      i++;
+      var result = results.shift();
+
+      if (!result && !results.length) {
+        callback();
+
+        return;
+      }
+
+      console.log('Sorting and saving entries (' + names[i] + ')...');
+
+      for (encodedStr in result) {
+        result[encodedStr] = result[encodedStr].sort(
+          function(a, b) {
+            return (b.score - a.score);
+          }
+        );
+        result[encodedStr] = new JSZhuyinDataPack(result[encodedStr]);
+      }
+
+      fs.writeFile(
+        outputDir + '/' + names[i] + '.json',
+        JSON.stringify(result).replace(/,/g, ',\n'),
+        function written(err) {
+          if (err)
+            throw err;
+
+          putResult();
+        });
+    };
+
+    putResult();
+  });
+};
