@@ -28,7 +28,7 @@ module['exports'] = function convertData(filename, outputDir, callback) {
     console.log('Processing ' + lines.length + ' entries in the directory...');
 
     var length = lines.length;
-    for(var i = 0; i < length; i++) {
+    for (var i = 0; i < length; i++) {
       if (!lines[i])
         continue;
 
@@ -98,7 +98,7 @@ module['exports'] = function convertData(filename, outputDir, callback) {
 
       fs.writeFile(
         outputDir + '/' + names[i] + '.json',
-        JSON.stringify(result).replace(/,/g, ',\n'),
+        JSON.stringify(result, null, ' '),
         function written(err) {
           if (err)
             throw err;
