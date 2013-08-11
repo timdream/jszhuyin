@@ -1,4 +1,6 @@
 /local.mk
+/node_modules
 /data/words.json
 /data/phrases.json
+/data/more.json
 /data/data-commit-hash
