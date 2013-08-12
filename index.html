@@ -208,7 +208,11 @@
       var candidatesList = document.getElementById('candidates');
 
       var client = new JSZhuyinClient();
-      client.load(new JSZhuyinServerIframeLoader());
+      client.load(
+        new JSZhuyinServerIframeLoader(),
+        {
+          'REORDER_SYMBOLS': true
+        });
       client.onpartlyloaded = function() {
         inputarea.setAttribute('contenteditable', true);
         inputarea.focus();

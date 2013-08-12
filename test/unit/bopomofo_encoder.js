@@ -12,6 +12,7 @@ test('encode() should encode multiple symbols.', function() {
   var syllablesStr = 'ㄓㄨˋㄧㄣˉㄕㄨˉㄖㄨˋㄈㄚˇ';
   var str = BopomofoEncoder.encode(syllablesStr);
 
+  // ㄓㄨˋㄧㄣˉㄕㄨˉㄖㄨˋㄈㄚˇ
   equal(str, 'ἄÑ⌁┄ࠋ', 'Passed!');
 });
 
@@ -19,6 +20,7 @@ test('encode() should encode multiple partial symbols.', function() {
   var syllablesStr = 'ㄓㄨˋㄧㄣㄕㄖㄈ';
   var str = BopomofoEncoder.encode(syllablesStr);
 
+  // ㄓㄨˋㄧㄣㄕㄖㄈ
   equal(str, 'ἄÐ∀␀ࠀ', 'Passed!');
 });
 
@@ -26,6 +28,7 @@ test('encode() should encode multiple partial symbols with \'tone\' set to \'all
   var syllablesStr = 'ㄓㄨˋㄧㄣㄕㄖㄈ';
   var str = BopomofoEncoder.encode(syllablesStr, { tone: 'all' });
 
+  // ㄓㄨˋㄧㄣˉㄕˉㄖˉㄈˉ
   equal(str, 'ἄÑ∁␁ࠁ', 'Passed!');
 });
 
@@ -33,7 +36,17 @@ test('encode() should encode multiple partial symbols with \'tone\' set to \'mor
   var syllablesStr = 'ㄓㄨˋㄧㄣㄕㄖㄈ';
   var str = BopomofoEncoder.encode(syllablesStr, { tone: 'more-than-one-symbol' });
 
+  // ㄓㄨˋㄧㄣˉㄕㄖㄈ
   equal(str, 'ἄÑ∀␀ࠀ', 'Passed!');
+});
+
+
+test('encode() should encode multiple partial symbols with correct order if \'reorder\' is set to \'true\'.', function() {
+  var syllablesStr = 'ㄨㄓˋㄧㄣㄕㄖㄈ';
+  var str = BopomofoEncoder.encode(syllablesStr, { reorder: true });
+
+  // ㄓㄨˋㄕㄧㄣㄖㄈ
+  equal(str, 'ἄ⋐␀ࠀ', 'Passed!');
 });
 
 test('encode() should throw if syllablesStr contains illegal symbol.', function() {
