@@ -22,6 +22,20 @@ test('encode() should encode multiple partial symbols.', function() {
   equal(str, 'ἄÐ∀␀ࠀ', 'Passed!');
 });
 
+test('encode() should encode multiple partial symbols with \'tone\' set to \'all\'.', function() {
+  var syllablesStr = 'ㄓㄨˋㄧㄣㄕㄖㄈ';
+  var str = BopomofoEncoder.encode(syllablesStr, { tone: 'all' });
+
+  equal(str, 'ἄÑ∁␁ࠁ', 'Passed!');
+});
+
+test('encode() should encode multiple partial symbols with \'tone\' set to \'more-than-one-symbol\'.', function() {
+  var syllablesStr = 'ㄓㄨˋㄧㄣㄕㄖㄈ';
+  var str = BopomofoEncoder.encode(syllablesStr, { tone: 'more-than-one-symbol' });
+
+  equal(str, 'ἄÑ∀␀ࠀ', 'Passed!');
+});
+
 test('encode() should throw if syllablesStr contains illegal symbol.', function() {
   var syllablesStr = 'Hello world!';
   try {
