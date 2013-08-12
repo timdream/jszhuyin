@@ -180,13 +180,22 @@
       <div class="panel-heading"><span id="composition"></span></div>
       <ul class="pagination" id="candidates"></ul>
     </div>
-    <p><span id="status">...</span>
-      <span id="delete_database" hidden><a id="delete_db_link" href="#">移除下載資料</a>。</span></p>
+    <p><span id="status">...</span><span id="delete_database" hidden><a id="delete_db_link" href="#">移除詞庫資料</a>。</span></p>
   </div>
   <script type="text/javascript" src="lib/client.js"></script>
   <script type="text/javascript" src="lib/web.js"></script>
   <script type="text/javascript">
     'use strict';
+
+    var T = {
+      LOADING: '載入中...',
+      PARTLYLOADED: '載入完整詞庫中...',
+      LOADED: '載入完成。',
+      ERROR: '載入失敗，無法使用。',
+      CONFIRMDELETE: '您確定要移除已下載的詞庫資料？您需要重新下載與載入詞庫才能再次使用。',
+      DELETING: '刪除詞庫中...',
+      UNLOADED: '詞庫刪除完成，要再次使用請重新載入網頁。'
+    };
 
     window.onload = function() {
       window.onload = null;
@@ -199,7 +208,7 @@
 
       var status = document.getElementById('status');
       var deleteDatabase = document.getElementById('delete_database');
-      status.textContent = '載入中...';
+      status.textContent = T.LOADING;
 
       var panel = document.getElementById('panel');
       var inputarea = document.getElementById('inputarea');
@@ -217,17 +226,17 @@
         inputarea.setAttribute('contenteditable', true);
         inputarea.focus();
 
-        status.textContent = '已準備就緒，載入完整詞庫資料中...';
+        status.textContent = T.PARTLYLOADED;
       };
       client.onload = function() {
         inputarea.setAttribute('contenteditable', true);
         inputarea.focus();
 
-        status.textContent = '載入完成。';
+        status.textContent = T.LOADED;
         deleteDatabase.hidden = false;
       };
       client.onerror = function() {
-        status.textContent = '載入失敗，無法使用。';
+        status.textContent = T.ERROR;
       };
 
       var webIME = new JSZhuyinWebIME(client, {
@@ -264,15 +273,15 @@
         .addEventListener('click', function(evt) {
           evt.preventDefault();
 
-          if (!window.confirm('您確定要移除已下載的詞庫資料？您需要重新下載才能再次輸入中文。'))
+          if (!window.confirm(T.CONFIRMDELETE))
             return;
 
           inputarea.setAttribute('contenteditable', false);
-          status.textContent = '刪除詞庫中...';
+          status.textContent = T.DELETING;
           deleteDatabase.hidden = true;
 
           client.onunload = function() {
-            status.textContent = '詞庫刪除完成，要再次使用請重新載入網頁。';
+            status.textContent = T.UNLOADED;
           };
           client.uninstall();
         });
