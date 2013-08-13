@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>JSZhuyin tests</title>
+  <link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.12.0.css">
+</head>
+<body>
+  <div id="qunit"></div>
+  <script src="http://code.jquery.com/qunit/qunit-1.12.0.js"></script>
+  <script>
+    QUnit.config.testTimeout = 10*1E3;
+  </script>
+
+  <!-- script to test -->
+  <script src="../lib/bopomofo_encoder.js"></script>
+  <script src="../lib/jszhuyin_data_pack.js"></script>
+  <script src="../lib/storage.js"></script>
+  <script src="../lib/jszhuyin.js"></script>
+  <script src="../lib/client.js"></script>
+  <script src="../lib/web.js"></script>
+
+  <!-- test scripts -->
+  <script src="unit/bopomofo_encoder.js"></script>
+  <script src="unit/jszhuyin_data_pack.js"></script>
+  <script src="unit/storage.js"></script>
+  <script src="unit/jszhuyin.js"></script>
+  <script src="unit/client.js"></script>
+  <script src="unit/web.js"></script>
+</body>
+</html>
