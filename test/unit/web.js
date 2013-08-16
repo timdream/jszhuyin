@@ -30,7 +30,7 @@ test('endComposition(input)', function() {
     composition: document.createElement('p'),
     candidatesList: document.createElement('ul')
   };
-  var webIME = new JSZhuyinWebIME(mockJSZhuyin, elements);
+  var webIME = new JSZhuyinWebIME(elements, mockJSZhuyin);
   webIME.endComposition('ing');
   equal(input.value, 'testing123', 'Passed!');
   equal(input.selectionStart, 7, 'Passed!');
@@ -62,7 +62,8 @@ test('endComposition(contenteditable)', function() {
     composition: document.createElement('p'),
     candidatesList: document.createElement('ul')
   };
-  var webIME = new JSZhuyinWebIME(mockJSZhuyin, elements);
+  var webIME = new JSZhuyinWebIME(elements, mockJSZhuyin);
+  webIME.isContentEditable = true;
   webIME.endComposition('ing');
   equal(input.textContent, 'testing123', 'Passed!');
 
@@ -91,7 +92,8 @@ test('endComposition(empty contenteditable)', function() {
     composition: document.createElement('p'),
     candidatesList: document.createElement('ul')
   };
-  var webIME = new JSZhuyinWebIME(mockJSZhuyin, elements);
+  var webIME = new JSZhuyinWebIME(elements, mockJSZhuyin);
+  webIME.isContentEditable = true;
   webIME.endComposition('testing123');
   equal(input.textContent, 'testing123', 'Passed!');
 
@@ -105,37 +107,39 @@ test('endComposition(empty contenteditable)', function() {
   webIME.unload();
 });
 
-var getMockKeyEvent = function(type, keyCode, charCode, expectCancel, obj) {
-  obj = obj || {};
-  obj.type = type;
-  obj.keyCode = keyCode;
-  obj.charCode = charCode;
-  obj.preventDefault = function() {
-    ok(expectCancel, 'Passed!');
+var getMockKeyEvent =
+  function(type, keyCode, charCode, expectCancel, input, obj) {
+    obj = obj || {};
+    obj.type = type;
+    obj.keyCode = keyCode;
+    obj.charCode = charCode;
+    obj.target = input;
+    obj.preventDefault = function() {
+      ok(expectCancel, '2Passed!');
+    };
+    return obj;
   };
-  return obj;
-};
 
 test('handleEvent(Backspace)', function() {
   expect(4);
   var mockJSZhuyin = {
     unload: function() {},
     handleKeyEvent: function(code) {
-      equal(code, 0x08, 'Passed!');
+      equal(code, 0x08, '1Passed!');
       return true;
     }
   };
+  var input =  document.createElement('input');
   var elements = {
-    input: document.createElement('input'),
     composition: document.createElement('p'),
     candidatesList: document.createElement('ul')
   };
-  var webIME = new JSZhuyinWebIME(mockJSZhuyin, elements);
+  var webIME = new JSZhuyinWebIME(elements, mockJSZhuyin);
   [ // WebKit/Blink (keydown event only)
-    getMockKeyEvent('keydown', 0x08, 0, true),
+    getMockKeyEvent('keydown', 0x08, 0, true, input),
     // Firefox
-    getMockKeyEvent('keydown', 0x08, 0, true),
-    getMockKeyEvent('keypress', 0x08, 0, false)
+    getMockKeyEvent('keydown', 0x08, 0, true, input),
+    getMockKeyEvent('keypress', 0x08, 0, false, input)
   ].forEach(function(mockKeyEvent) {
     webIME.handleEvent(mockKeyEvent);
   });
@@ -151,17 +155,17 @@ test('handleEvent(Backspace) (unhandled)', function() {
       return false;
     }
   };
+  var input =  document.createElement('input');
   var elements = {
-    input: document.createElement('input'),
     composition: document.createElement('p'),
     candidatesList: document.createElement('ul')
   };
-  var webIME = new JSZhuyinWebIME(mockJSZhuyin, elements);
+  var webIME = new JSZhuyinWebIME(elements, mockJSZhuyin);
   [ // WebKit/Blink (keydown event only)
-    getMockKeyEvent('keydown', 0x08, 0, false),
+    getMockKeyEvent('keydown', 0x08, 0, false, input),
     // Firefox
-    getMockKeyEvent('keydown', 0x08, 0, false),
-    getMockKeyEvent('keypress', 0x08, 0, false)
+    getMockKeyEvent('keydown', 0x08, 0, false, input),
+    getMockKeyEvent('keypress', 0x08, 0, false, input)
   ].forEach(function(mockKeyEvent) {
     webIME.handleEvent(mockKeyEvent);
   });
@@ -177,18 +181,18 @@ test('handleEvent(Enter)', function() {
       return true;
     }
   };
+  var input =  document.createElement('input');
   var elements = {
-    input: document.createElement('input'),
     composition: document.createElement('p'),
     candidatesList: document.createElement('ul')
   };
-  var webIME = new JSZhuyinWebIME(mockJSZhuyin, elements);
+  var webIME = new JSZhuyinWebIME(elements, mockJSZhuyin);
   [ // WebKit/Blink
-    getMockKeyEvent('keydown', 0x0d, 0, true),
-    getMockKeyEvent('keypress', 0x0d, 0x0d, false),
+    getMockKeyEvent('keydown', 0x0d, 0, true, input),
+    getMockKeyEvent('keypress', 0x0d, 0x0d, false, input),
     // Firefox
-    getMockKeyEvent('keydown', 0x0d, 0, true),
-    getMockKeyEvent('keypress', 0x0d, 0, false)
+    getMockKeyEvent('keydown', 0x0d, 0, true, input),
+    getMockKeyEvent('keypress', 0x0d, 0, false, input)
   ].forEach(function(mockKeyEvent) {
     webIME.handleEvent(mockKeyEvent);
   });
@@ -204,18 +208,18 @@ test('handleEvent(Enter) (unhandled)', function() {
       return false;
     }
   };
+  var input =  document.createElement('input');
   var elements = {
-    input: document.createElement('input'),
     composition: document.createElement('p'),
     candidatesList: document.createElement('ul')
   };
-  var webIME = new JSZhuyinWebIME(mockJSZhuyin, elements);
+  var webIME = new JSZhuyinWebIME(elements, mockJSZhuyin);
   [ // WebKit/Blink
-    getMockKeyEvent('keydown', 0x0d, 0, false),
-    getMockKeyEvent('keypress', 0x0d, 0x0d, false),
+    getMockKeyEvent('keydown', 0x0d, 0, false, input),
+    getMockKeyEvent('keypress', 0x0d, 0x0d, false, input),
     // Firefox
-    getMockKeyEvent('keydown', 0x0d, 0, false),
-    getMockKeyEvent('keypress', 0x0d, 0, false)
+    getMockKeyEvent('keydown', 0x0d, 0, false, input),
+    getMockKeyEvent('keypress', 0x0d, 0, false, input)
   ].forEach(function(mockKeyEvent) {
     webIME.handleEvent(mockKeyEvent);
   });
@@ -231,17 +235,17 @@ test('handleEvent(Escape)', function() {
       return true;
     }
   };
+  var input =  document.createElement('input');
   var elements = {
-    input: document.createElement('input'),
     composition: document.createElement('p'),
     candidatesList: document.createElement('ul')
   };
-  var webIME = new JSZhuyinWebIME(mockJSZhuyin, elements);
+  var webIME = new JSZhuyinWebIME(elements, mockJSZhuyin);
   [ // WebKit/Blink
-    getMockKeyEvent('keydown', 0x1b, 0, true),
+    getMockKeyEvent('keydown', 0x1b, 0, true, input),
     // Firefox
-    getMockKeyEvent('keydown', 0x1b, 0, true),
-    getMockKeyEvent('keypress', 0x1b, 0, true)
+    getMockKeyEvent('keydown', 0x1b, 0, true, input),
+    getMockKeyEvent('keypress', 0x1b, 0, true, input)
   ].forEach(function(mockKeyEvent) {
     webIME.handleEvent(mockKeyEvent);
   });
@@ -257,20 +261,20 @@ test('handleEvent(Shift + left arrow)', function() {
       return true;
     }
   };
+  var input =  document.createElement('input');
   var elements = {
-    input: document.createElement('input'),
     composition: document.createElement('p'),
     candidatesList: document.createElement('ul')
   };
-  var webIME = new JSZhuyinWebIME(mockJSZhuyin, elements);
+  var webIME = new JSZhuyinWebIME(elements, mockJSZhuyin);
   webIME.candidatesList.goBackPage = function() {
     ok(true, 'Passed!');
   };
   [ // WebKit/Blink
-    getMockKeyEvent('keydown', 0x25, 0, true, { shiftKey: true }),
+    getMockKeyEvent('keydown', 0x25, 0, true, input, { shiftKey: true }),
     // Firefox
-    getMockKeyEvent('keydown', 0x25, 0, true, { shiftKey: true }),
-    getMockKeyEvent('keypress', 0x25, 0, false, { shiftKey: true })
+    getMockKeyEvent('keydown', 0x25, 0, true, input, { shiftKey: true }),
+    getMockKeyEvent('keypress', 0x25, 0, false, input, { shiftKey: true })
   ].forEach(function(mockKeyEvent) {
     webIME.handleEvent(mockKeyEvent);
   });
@@ -286,20 +290,20 @@ test('handleEvent(Shift + right arrow)', function() {
       return true;
     }
   };
+  var input =  document.createElement('input');
   var elements = {
-    input: document.createElement('input'),
     composition: document.createElement('p'),
     candidatesList: document.createElement('ul')
   };
-  var webIME = new JSZhuyinWebIME(mockJSZhuyin, elements);
+  var webIME = new JSZhuyinWebIME(elements, mockJSZhuyin);
   webIME.candidatesList.goForwardPage = function() {
     ok(true, 'Passed!');
   };
   [ // WebKit/Blink
-    getMockKeyEvent('keydown', 0x27, 0, true, { shiftKey: true }),
+    getMockKeyEvent('keydown', 0x27, 0, true, input, { shiftKey: true }),
     // Firefox
-    getMockKeyEvent('keydown', 0x27, 0, true, { shiftKey: true }),
-    getMockKeyEvent('keypress', 0x27, 0, false, { shiftKey: true })
+    getMockKeyEvent('keydown', 0x27, 0, true, input, { shiftKey: true }),
+    getMockKeyEvent('keypress', 0x27, 0, false, input, { shiftKey: true })
   ].forEach(function(mockKeyEvent) {
     webIME.handleEvent(mockKeyEvent);
   });
@@ -315,20 +319,20 @@ test('handleEvent(left arrow)', function() {
       return true;
     }
   };
+  var input =  document.createElement('input');
   var elements = {
-    input: document.createElement('input'),
     composition: document.createElement('p'),
     candidatesList: document.createElement('ul')
   };
-  var webIME = new JSZhuyinWebIME(mockJSZhuyin, elements);
+  var webIME = new JSZhuyinWebIME(elements, mockJSZhuyin);
   webIME.candidatesList.goBackPage = function() {
     ok(false, 'Passed!');
   };
   [ // WebKit/Blink
-    getMockKeyEvent('keydown', 0x25, 0, false),
+    getMockKeyEvent('keydown', 0x25, 0, false, input),
     // Firefox
-    getMockKeyEvent('keydown', 0x25, 0, false),
-    getMockKeyEvent('keypress', 0x25, 0, false)
+    getMockKeyEvent('keydown', 0x25, 0, false, input),
+    getMockKeyEvent('keypress', 0x25, 0, false, input)
   ].forEach(function(mockKeyEvent) {
     webIME.handleEvent(mockKeyEvent);
   });
@@ -344,20 +348,20 @@ test('handleEvent(right arrow)', function() {
       return true;
     }
   };
+  var input =  document.createElement('input');
   var elements = {
-    input: document.createElement('input'),
     composition: document.createElement('p'),
     candidatesList: document.createElement('ul')
   };
-  var webIME = new JSZhuyinWebIME(mockJSZhuyin, elements);
+  var webIME = new JSZhuyinWebIME(elements, mockJSZhuyin);
   webIME.candidatesList.goForwardPage = function() {
     ok(false, 'Passed!');
   };
   [ // WebKit/Blink
-    getMockKeyEvent('keydown', 0x27, 0, false),
+    getMockKeyEvent('keydown', 0x27, 0, false, input),
     // Firefox
-    getMockKeyEvent('keydown', 0x27, 0, false),
-    getMockKeyEvent('keypress', 0x27, 0, false)
+    getMockKeyEvent('keydown', 0x27, 0, false, input),
+    getMockKeyEvent('keypress', 0x27, 0, false, input)
   ].forEach(function(mockKeyEvent) {
     webIME.handleEvent(mockKeyEvent);
   });
@@ -373,12 +377,12 @@ test('handleEvent(Shift + selection keys)', function() {
       return true;
     }
   };
+  var input =  document.createElement('input');
   var elements = {
-    input: document.createElement('input'),
     composition: document.createElement('p'),
     candidatesList: document.createElement('ul')
   };
-  var webIME = new JSZhuyinWebIME(mockJSZhuyin, elements);
+  var webIME = new JSZhuyinWebIME(elements, mockJSZhuyin);
   webIME.candidatesList.selectCandidate = function(index) {
     ok(true, 'Passed!');
     return true;
@@ -390,15 +394,18 @@ test('handleEvent(Shift + selection keys)', function() {
 
     // WebKit/Blink
     events.push(
-      getMockKeyEvent('keydown', keyCode, 0, false, { shiftKey: true }));
+      getMockKeyEvent('keydown', keyCode, 0, false, input, { shiftKey: true }));
     events.push(
-      getMockKeyEvent('keypress', charCode, charCode, true, { shiftKey: true }));
+      getMockKeyEvent('keypress', charCode, charCode, true, input,
+                      { shiftKey: true }));
 
     // Firefox
     events.push(
-      getMockKeyEvent('keydown', keyCode, 0, false, { shiftKey: true }));
+      getMockKeyEvent('keydown', keyCode, 0, false, input,
+                      { shiftKey: true }));
     events.push(
-      getMockKeyEvent('keypress', 0, charCode, true, { shiftKey: true }));
+      getMockKeyEvent('keypress', 0, charCode, true, input,
+                      { shiftKey: true }));
   });
 
   events.forEach(function(mockKeyEvent) {
@@ -416,12 +423,12 @@ test('handleEvent(Shift + selection keys) (unhandled by candidate list)', functi
       return true;
     }
   };
+  var input =  document.createElement('input');
   var elements = {
-    input: document.createElement('input'),
     composition: document.createElement('p'),
     candidatesList: document.createElement('ul')
   };
-  var webIME = new JSZhuyinWebIME(mockJSZhuyin, elements);
+  var webIME = new JSZhuyinWebIME(elements, mockJSZhuyin);
   webIME.candidatesList.selectCandidate = function(index) {
     ok(true, 'Passed!');
     return false;
@@ -433,16 +440,17 @@ test('handleEvent(Shift + selection keys) (unhandled by candidate list)', functi
 
     // WebKit/Blink
     events.push(
-      getMockKeyEvent('keydown', keyCode, 0, false, { shiftKey: true }));
+      getMockKeyEvent('keydown', keyCode, 0, false, input, { shiftKey: true }));
     events.push(
       getMockKeyEvent(
-        'keypress', charCode, charCode, true, { shiftKey: true }));
+        'keypress', charCode, charCode, true, input, { shiftKey: true }));
 
     // Firefox
     events.push(
-      getMockKeyEvent('keydown', keyCode, 0, false, { shiftKey: true }));
+      getMockKeyEvent('keydown', keyCode, 0, false, input, { shiftKey: true }));
     events.push(
-      getMockKeyEvent('keypress', 0, charCode, true, { shiftKey: true }));
+      getMockKeyEvent('keypress', 0, charCode, true, input,
+                      { shiftKey: true }));
   });
 
   events.forEach(function(mockKeyEvent) {
@@ -460,12 +468,12 @@ test('handleEvent(keys)', function() {
       return true;
     }
   };
+  var input =  document.createElement('input');
   var elements = {
-    input: document.createElement('input'),
     composition: document.createElement('p'),
     candidatesList: document.createElement('ul')
   };
-  var webIME = new JSZhuyinWebIME(mockJSZhuyin, elements);
+  var webIME = new JSZhuyinWebIME(elements, mockJSZhuyin);
   var events = [];
 
   var chars = (function getLowerCaseAtoZ() {
@@ -493,16 +501,16 @@ test('handleEvent(keys)', function() {
 
     // WebKit/Blink
     events.push(
-      getMockKeyEvent('keydown', keyCode, 0, false));
+      getMockKeyEvent('keydown', keyCode, 0, false, input));
     events.push(
       getMockKeyEvent(
-        'keypress', charCode, charCode, true));
+        'keypress', charCode, charCode, true, input));
 
     // Firefox
     events.push(
-      getMockKeyEvent('keydown', keyCode, 0, false));
+      getMockKeyEvent('keydown', keyCode, 0, false, input));
     events.push(
-      getMockKeyEvent('keypress', 0, charCode, true));
+      getMockKeyEvent('keypress', 0, charCode, true, input));
   });
 
   events.forEach(function(mockKeyEvent) {
@@ -520,12 +528,12 @@ test('handleEvent(Shift + keys)', function() {
       return true;
     }
   };
+  var input =  document.createElement('input');
   var elements = {
-    input: document.createElement('input'),
     composition: document.createElement('p'),
     candidatesList: document.createElement('ul')
   };
-  var webIME = new JSZhuyinWebIME(mockJSZhuyin, elements);
+  var webIME = new JSZhuyinWebIME(elements, mockJSZhuyin);
   webIME.candidatesList.selectCandidate = function(index) {
     return false;
   };
@@ -556,16 +564,17 @@ test('handleEvent(Shift + keys)', function() {
 
     // WebKit/Blink
     events.push(
-      getMockKeyEvent('keydown', keyCode, 0, false, { shiftKey: true }));
+      getMockKeyEvent('keydown', keyCode, 0, false, input, { shiftKey: true }));
     events.push(
       getMockKeyEvent(
-        'keypress', charCode, charCode, true, { shiftKey: true }));
+        'keypress', charCode, charCode, true, input, { shiftKey: true }));
 
     // Firefox
     events.push(
-      getMockKeyEvent('keydown', keyCode, 0, false, { shiftKey: true }));
+      getMockKeyEvent('keydown', keyCode, 0, false, input, { shiftKey: true }));
     events.push(
-      getMockKeyEvent('keypress', 0, charCode, true, { shiftKey: true }));
+      getMockKeyEvent('keypress', 0, charCode, true, input,
+                      { shiftKey: true }));
   });
 
   events.forEach(function(mockKeyEvent) {

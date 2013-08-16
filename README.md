@@ -10,6 +10,33 @@ This library was intially developed as part of [Mozilla Firefox OS - Gaia](https
 
 MIT License
 
+## 安裝至網站
+
+您可以直接連結 Github 上的檔案：
+
+    <script type="text/javascript" src="http://timdream.org/jszhuyin/lib/client.js"></script>
+    <script type="text/javascript" src="http://timdream.org/jszhuyin/lib/web.js"></script>
+
+準備基本的 HTML 元素（分別為待選字的注音，以及候選字詞），請自行加上適合的 CSS 樣式或是浮動視窗等等：
+
+    <p id="composition"></p>
+    <ol id="candidates"></ol>
+
+使用以下程式碼啟動輸入法：
+
+    JSZhuyinServerIframeLoader.prototype.IFRAME_URL =
+      'http://timdream.org/jszhuyin/lib/frame.html';
+    var webIME = new JSZhuyinWebIME({
+      composition: document.getElementById('composition'),
+      candidatesList: document.getElementById('candidates')
+    });
+
+啟動完成之後，JS 注音即會開始處理鍵盤輸入。
+
+### 虛擬鍵盤
+
+虛擬鍵盤可以將使用者點選的注音轉成 charCode 之後傳至 `webIME.handleKeyEvent(code)`。請確保虛擬鍵盤不會搶走 focus。
+
 ## 詞庫
 
 使用 MIT License 授權的[小麥注音](http://mcbopomofo.openvanilla.org)詞庫，由 [mjhsieh](https://github.com/mjhsieh) 維護，基於 [libtabe](http://sourceforge.net/projects/libtabe/)。

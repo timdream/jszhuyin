@@ -239,11 +239,10 @@
         status.textContent = T.ERROR;
       };
 
-      var webIME = new JSZhuyinWebIME(client, {
-        input: inputarea,
+      var webIME = new JSZhuyinWebIME({
         composition: composition,
         candidatesList: candidatesList
-      });
+      }, client);
 
       var leaveDistractionFree = function leaveDistractionFree() {
         window.removeEventListener('mousemove', leaveDistractionFree);
