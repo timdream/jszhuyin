@@ -114,8 +114,12 @@ test('load()', function() {
   ime.IDB_VERSION = 1;
   ime.JSON_URL = './resources/';
   ime.JSON_FILES = ['testdata.json'];
-  ime.onloadend = function() {
-    ok(true, 'Passed!');
+  expect(4);
+  ime.onchunkload = ime.onpartlyloaded = ime.onload = function(status) {
+    equal(status, ime.status, 'Passed!');
+  };
+  ime.onloadend = function(status) {
+    equal(status, ime.status, 'Passed!');
     ime.unload();
 
     start();

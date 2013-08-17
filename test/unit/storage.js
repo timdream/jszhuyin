@@ -343,8 +343,15 @@ test('load()', function() {
   storage.IDB_VERSION = 1;
   storage.JSON_URL = './resources/';
   storage.JSON_FILES = ['test1.json', 'test2.json'];
-  expect(4);
-  storage.onloadend = function() {
+  expect(2 + 1 + 2 + 1 + 5);
+  storage.onchunkload =
+  storage.onpartlyloaded =
+  storage.onpopulated =
+  storage.onload = function(status) {
+    equal(status, storage.status, 'Passed!');
+  };
+  storage.onloadend = function(status) {
+    equal(status, storage.status, 'Passed!');
     ok(storage.loaded, 'Passed!');
     ok(storage.partlyLoaded, 'Passed!');
     ok(!storage.jsonStorage, 'Passed!');
@@ -511,8 +518,15 @@ test('load()', function() {
   storage.IDB_VERSION = 1;
   storage.JSON_URL = './resources/';
   storage.JSON_FILES = ['test1.json', 'test2.json'];
-  expect(4);
-  storage.onloadend = function() {
+  expect(2 + 1 + 0 + 1 + 5);
+  storage.onchunkload =
+  storage.onpartlyloaded =
+  storage.onpopulated =
+  storage.onload = function(status) {
+    equal(status, storage.status, 'Passed!');
+  };
+  storage.onloadend = function(status) {
+    equal(status, storage.status, 'Passed!');
     ok(storage.loaded, 'Passed!');
     ok(storage.partlyLoaded, 'Passed!');
     ok(storage.jsonStorage, 'Passed!');

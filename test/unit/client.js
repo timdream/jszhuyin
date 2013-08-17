@@ -47,6 +47,31 @@ module('JSZhuyinClient (iframe)', {
   }
 });
 
+test('load()', function() {
+  var ime = new JSZhuyinClient();
+  expect(5);
+  ime.onchunkload =
+  ime.onpartlyloaded =
+  ime.onpopulated =
+  ime.onload = function(status) {
+    equal(status, ime.status, 'Passed!');
+  };
+  ime.onloadend = function(status) {
+    equal(status, ime.status, 'Passed!');
+    ime.unload();
+
+    start();
+  };
+
+  stop();
+  ime.load(new JSZhuyinServerIframeLoader('../lib/frame.html'), {
+    IDB_NAME: 'TestDatabase',
+    IDB_VERSION: 1,
+    JSON_URL: '../test/resources/',
+    JSON_FILES: ['testdata.json']
+  });
+});
+
 test('Run a simple interactive query.', function() {
   var ime = new JSZhuyinClient();
   expect(9);

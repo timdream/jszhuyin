@@ -189,7 +189,7 @@
 
     var T = {
       LOADING: '載入中...',
-      PARTLYLOADED: '載入完整詞庫中...',
+      PARTLYLOADED: '載入完整詞庫中（%status）...',
       LOADED: '載入完成。',
       ERROR: '載入失敗，無法使用。',
       CONFIRMDELETE: '您確定要移除已下載的詞庫資料？您需要重新下載與載入詞庫才能再次使用。',
@@ -225,9 +225,15 @@
       client.onpartlyloaded = function() {
         inputarea.setAttribute('contenteditable', true);
         inputarea.focus();
-
-        status.textContent = T.PARTLYLOADED;
       };
+      client.onchunkload =
+      client.onpopulated = function() {
+        status.textContent =
+          T.PARTLYLOADED.replace('%status',
+            client.status.loadedCount + '/' +
+            client.status.populatedCount + '/' +
+            client.status.totalCount);
+      }
       client.onload = function() {
         inputarea.setAttribute('contenteditable', true);
         inputarea.focus();
