@@ -72,6 +72,35 @@ test('load()', function() {
   });
 });
 
+test('load() non-exist files', function() {
+  var ime = new JSZhuyinClient();
+  expect(2);
+  ime.onchunkload =
+  ime.onpartlyloaded =
+  ime.onpopulated =
+  ime.onload = function(status) {
+    ok(false, 'Passed!');
+  };
+  ime.onerror = function(status) {
+    equal(status, ime.status, 'Passed!');
+  };
+  ime.onloadend = function(status) {
+    equal(status, ime.status, 'Passed!');
+    ime.unload();
+
+    start();
+  };
+
+  stop();
+  ime.load(new JSZhuyinServerIframeLoader('../lib/frame.html'), {
+    IDB_NAME: 'TestDatabase',
+    IDB_VERSION: 1,
+    JSON_URL: '../test/resources/',
+    JSON_FILES: ['404.json']
+  });
+});
+
+
 test('Run a simple interactive query.', function() {
   var ime = new JSZhuyinClient();
   expect(9);
