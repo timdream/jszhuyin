@@ -228,18 +228,23 @@
       };
       client.onchunkload =
       client.onpopulated = function() {
+        var statusText =
+          client.status.loadedCount + '/' +
+          ((client.status.useIndexedDB) ?
+            client.status.populatedCount + '/' : '')  +
+          client.status.totalCount;
+
         status.textContent =
-          T.PARTLYLOADED.replace('%status',
-            client.status.loadedCount + '/' +
-            client.status.populatedCount + '/' +
-            client.status.totalCount);
+          T.PARTLYLOADED.replace('%status', statusText);
       }
       client.onload = function() {
         inputarea.setAttribute('contenteditable', true);
         inputarea.focus();
 
         status.textContent = T.LOADED;
-        deleteDatabase.hidden = false;
+        if (client.status.useIndexedDB) {
+          deleteDatabase.hidden = false;
+        }
       };
       client.onerror = function() {
         status.textContent = T.ERROR;
