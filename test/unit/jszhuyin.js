@@ -507,6 +507,58 @@ test('sendActionHandled()', function() {
   ime.load();
 });
 
+test('Simple interactive query (send all keys in one action).', function() {
+  var ime = new JSZhuyin();
+  ime.IDB_NAME = 'TestDatabase';
+  ime.IDB_VERSION = 1;
+  ime.JSON_URL = './resources/';
+  ime.JSON_FILES = ['testdata.json'];
+  expect(8);
+
+  ime.onloadend = function() {
+    var expectedCompositions = ['ㄊ', 'ㄊㄞ', 'ㄊㄞˊ'];
+    ime.oncompositionupdate = function(composition) {
+      equal(composition, expectedCompositions.shift(), 'Passed!');
+    };
+
+    var expectedCandidates = [
+      [["ㄊㄞ", 1]],
+      [["台",1],["臺",1],["抬",1],["颱",1],["檯",1],["苔",1],["跆",1],
+       ["邰",1],["鮐",1],["薹",1],["嬯",1],["秮",1],["旲",1],["炱",1],
+       ["儓",1],["駘",1],["籉",1]]];
+    ime.oncandidateschange = function(candidates) {
+      deepEqual(candidates, expectedCandidates.shift(), 'Passed!');
+    };
+
+    var nextActions = [
+      function() {
+        ok(ime.handleKeyEvent('ㄊ'.charCodeAt(0)), 'Passed!');
+        ok(ime.handleKeyEvent('ㄞ'.charCodeAt(0)), 'Passed!');
+      },
+      function() {
+        ok(ime.handleKeyEvent('ˊ'.charCodeAt(0)), 'Passed!');
+      },
+      function() { }
+    ];
+    ime.onactionhandled = function() {
+      if (!nextActions.length) {
+        setTimeout(function() {
+          ime.unload();
+          start();
+        });
+
+        return;
+      }
+
+      (nextActions.shift())();
+    };
+    (nextActions.shift())();
+  };
+
+  stop();
+  ime.load();
+});
+
 test('Run a simple interactive query.', function() {
   var ime = new JSZhuyin();
   ime.IDB_NAME = 'TestDatabase';
@@ -518,7 +570,7 @@ test('Run a simple interactive query.', function() {
   ime.onloadend = function() {
     var expectedCompositions = ['ㄊ', 'ㄊㄞ', 'ㄊㄞˊ'];
     ime.oncompositionupdate = function(composition) {
-      equal(composition, expectedCompositions.shift(), '3Passed!');
+      equal(composition, expectedCompositions.shift(), 'Passed!');
     };
 
     var expectedCandidates = [
@@ -528,18 +580,18 @@ test('Run a simple interactive query.', function() {
        ["邰",1],["鮐",1],["薹",1],["嬯",1],["秮",1],["旲",1],["炱",1],
        ["儓",1],["駘",1],["籉",1]]];
     ime.oncandidateschange = function(candidates) {
-      deepEqual(candidates, expectedCandidates.shift(), '2Passed!');
+      deepEqual(candidates, expectedCandidates.shift(), 'Passed!');
     };
 
     var nextActions = [
       function() {
-        ok(ime.handleKeyEvent('ㄊ'.charCodeAt(0)), '1Passed!');
+        ok(ime.handleKeyEvent('ㄊ'.charCodeAt(0)), 'Passed!');
       },
       function() {
-        ok(ime.handleKeyEvent('ㄞ'.charCodeAt(0)), '1Passed!');
+        ok(ime.handleKeyEvent('ㄞ'.charCodeAt(0)), 'Passed!');
       },
       function() {
-        ok(ime.handleKeyEvent('ˊ'.charCodeAt(0)), '1Passed!');
+        ok(ime.handleKeyEvent('ˊ'.charCodeAt(0)), 'Passed!');
       }
     ];
     ime.onactionhandled = function() {
