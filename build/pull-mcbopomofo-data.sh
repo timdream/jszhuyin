@@ -13,6 +13,7 @@ echo Generate data.txt...
 ${MAKE} -C ${TMPDIR}/McBopomofo/Source/Data data.txt
 echo
 echo Copying data.txt and cleaning up...
+mkdir -p ./data
 cp ${TMPDIR}/McBopomofo/Source/Data/data.txt ./data/
 ${GIT} --git-dir=${TMPDIR}/McBopomofo/.git log -n 1 --format=%H > \
   ./data/data-commit-hash
