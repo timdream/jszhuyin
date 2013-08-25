@@ -12,9 +12,11 @@ test('load()', function() {
   var storage = new JSONStorage();
   storage.JSON_URL = './resources/';
   storage.JSON_FILES = ['test1.json', 'test2.json'];
-  expect(8);
-  storage.onchunkload = function(chunk) {
+  expect(10);
+  var names = ['test1.json', 'test2.json'];
+  storage.onchunkload = function(chunk, name) {
     ok(chunk instanceof JSONDataChunk, 'Passed!');
+    ok(name, names.shift(), 'Passed!');
     ok(storage.partlyLoaded, 'Passed!');
   };
   storage.onload = function() {
@@ -225,8 +227,8 @@ test('checkPopulated()', function() {
   expect(2);
   storage.onloadend = function() {
     storage.checkPopulated(function(populated) {
-      ok(!populated, 'Passed!');
-      ok(!storage.populated, 'Passed!');
+      deepEqual(populated, [], 'Passed!');
+      deepEqual(storage.populated, [], 'Passed!');
       storage.unload();
 
       start();
@@ -241,11 +243,10 @@ test('setPopulated()', function() {
   var storage = new IndexedDBStorage();
   storage.IDB_NAME = 'TestDatabase';
   storage.IDB_VERSION = 1;
-  expect(5);
+  expect(4);
   storage.onloadend = function() {
-    storage.setPopulated(function(success) {
+    storage.setPopulated('name', function(success) {
       ok(success, 'Passed!');
-      ok(storage.partlyPopulated, 'Passed!');
       ok(storage.populated, 'Passed!');
       storage.unload();
       storage = null;
@@ -255,8 +256,8 @@ test('setPopulated()', function() {
       storage2.IDB_VERSION = 1;
       storage2.onloadend = function() {
         storage2.checkPopulated(function(populated) {
-          ok(populated, 'Passed!');
-          ok(storage2.populated, 'Passed!');
+          deepEqual(populated, ['name'], 'Passed!');
+          deepEqual(storage2.populated, ['name'], 'Passed!');
           storage2.unload();
 
           start();
@@ -337,27 +338,293 @@ test('create instance', function() {
   ok(!storage.partlyLoaded, 'Passed!');
 });
 
-test('load()', function() {
+test('load() and populated IndexedDB.', function() {
   var storage = new HybirdStorage();
   storage.IDB_NAME = 'TestDatabase';
   storage.IDB_VERSION = 1;
   storage.JSON_URL = './resources/';
   storage.JSON_FILES = ['test1.json', 'test2.json'];
-  expect(2 + 1 + 2 + 1 + 5);
-  storage.onchunkload =
-  storage.onpartlyloaded =
-  storage.onpopulated =
+  expect(2 + 2 + 2 + 1 + 5);
+
+  var chunkloadStatus = [
+    {
+      useIndexedDB: true,
+      useJSON: true,
+      populatedCount: undefined,
+      loadedCount: 1,
+      totalCount: 2
+    },
+    {
+      useIndexedDB: true,
+      useJSON: true,
+      populatedCount: undefined,
+      loadedCount: 2,
+      totalCount: 2
+    }
+  ];
+  storage.onchunkload = function(status) {
+    var expectedStatus = chunkloadStatus.shift();
+    expectedStatus.populatedCount = status.populatedCount;
+    deepEqual(status, expectedStatus, 'Passed!');
+  };
+
+  storage.onpartlyloaded = function(status) {
+    deepEqual(status, {
+      useIndexedDB: true,
+      useJSON: true,
+      populatedCount: 0,
+      loadedCount: 1,
+      totalCount: 2 }, 'Passed!');
+    ok(storage.partlyLoaded, 'Passed!');
+  };
+
+  var populatedStatus = [
+    {
+      useIndexedDB: true,
+      useJSON: true,
+      populatedCount: 1,
+      loadedCount: undefined,
+      totalCount: 2
+    },
+    {
+      useIndexedDB: true,
+      useJSON: true,
+      populatedCount: 2,
+      loadedCount: undefined,
+      totalCount: 2
+    }
+  ];
+  storage.onpopulated = function(status) {
+    var expectedStatus = populatedStatus.shift();
+    expectedStatus.loadedCount = status.loadedCount;
+
+    deepEqual(status, expectedStatus, 'Passed!');
+  };
+
   storage.onload = function(status) {
-    equal(status, storage.status, 'Passed!');
+    deepEqual(status, {
+      useIndexedDB: true,
+      useJSON: true,
+      populatedCount: 2,
+      loadedCount: 2,
+      totalCount: 2 }, 'Passed!');
   };
   storage.onloadend = function(status) {
-    equal(status, storage.status, 'Passed!');
+    deepEqual(status, {
+      useIndexedDB: true,
+      useJSON: true,
+      populatedCount: 2,
+      loadedCount: 2,
+      totalCount: 2 }, 'Passed!');
     ok(storage.loaded, 'Passed!');
     ok(storage.partlyLoaded, 'Passed!');
     ok(!storage.jsonStorage, 'Passed!');
     ok(storage.idbStorage, 'Passed!');
     storage.unload();
     start();
+  };
+
+  stop();
+  storage.load();
+});
+
+test('load() without populated IndexedDB.', function() {
+  var storage = new HybirdStorage();
+  storage.IDB_NAME = 'TestDatabase';
+  storage.IDB_VERSION = 1;
+  storage.JSON_URL = './resources/';
+  storage.JSON_FILES = ['test1.json', 'test2.json'];
+  storage.USE_JSON = false;
+  expect(0 + 2 + 0 + 1 + 5);
+
+  storage.onchunkload = function(status) {
+    ok(false, 'Passed!');
+  };
+
+  storage.onpartlyloaded = function(status) {
+    deepEqual(status, {
+      useIndexedDB: true,
+      useJSON: false,
+      populatedCount: undefined,
+      loadedCount: undefined,
+      totalCount: undefined }, 'Passed!');
+    ok(storage.partlyLoaded, 'Passed!');
+  };
+
+  storage.onpopulated = function(status) {
+    ok(false, 'Passed!');
+  };
+
+  storage.onload = function(status) {
+    deepEqual(status, {
+      useIndexedDB: true,
+      useJSON: false,
+      populatedCount: undefined,
+      loadedCount: undefined,
+      totalCount: undefined }, 'Passed!');
+  };
+  storage.onloadend = function(status) {
+    deepEqual(status, {
+      useIndexedDB: true,
+      useJSON: false,
+      populatedCount: undefined,
+      loadedCount: undefined,
+      totalCount: undefined }, 'Passed!');
+    ok(storage.loaded, 'Passed!');
+    ok(storage.partlyLoaded, 'Passed!');
+    ok(!storage.jsonStorage, 'Passed!');
+    ok(storage.idbStorage, 'Passed!');
+    storage.unload();
+    start();
+  };
+
+  stop();
+  storage.load();
+});
+
+test('load() and resume populated IndexedDB.', function() {
+  var storage = new HybirdStorage();
+  storage.IDB_NAME = 'TestDatabase';
+  storage.IDB_VERSION = 1;
+  storage.JSON_URL = './resources/';
+  storage.JSON_FILES = ['test1.json'];
+
+  storage.onloadend = function(status) {
+    storage.unload();
+
+    var storage2 = new HybirdStorage();
+    storage2.IDB_NAME = 'TestDatabase';
+    storage2.IDB_VERSION = 1;
+    storage2.JSON_URL = './resources/';
+    storage2.JSON_FILES = ['test1.json', 'test2.json'];
+    expect(1 + 2 + 1 + 1 + 5);
+
+    var chunkloadStatus = [
+      {
+        useIndexedDB: true,
+        useJSON: true,
+        populatedCount: 1,
+        loadedCount: 2,
+        totalCount: 2
+      }
+    ];
+    storage2.onchunkload = function(status) {
+      var expectedStatus = chunkloadStatus.shift();
+      deepEqual(status, expectedStatus, 'Passed!');
+    };
+
+    storage2.onpartlyloaded = function(status) {
+      deepEqual(status, {
+        useIndexedDB: true,
+        useJSON: true,
+        populatedCount: 1,
+        loadedCount: 1,
+        totalCount: 2 }, 'Passed!');
+      ok(storage2.partlyLoaded, 'Passed!');
+    };
+
+    var populatedStatus = [
+      {
+        useIndexedDB: true,
+        useJSON: true,
+        populatedCount: 2,
+        loadedCount: 2,
+        totalCount: 2
+      }
+    ];
+    storage2.onpopulated = function(status) {
+      var expectedStatus = populatedStatus.shift();
+
+      deepEqual(status, expectedStatus, 'Passed!');
+    };
+
+    storage2.onload = function(status) {
+      deepEqual(status, {
+        useIndexedDB: true,
+        useJSON: true,
+        populatedCount: 2,
+        loadedCount: 2,
+        totalCount: 2 }, 'Passed!');
+    };
+    storage2.onloadend = function(status) {
+      deepEqual(status, {
+        useIndexedDB: true,
+        useJSON: true,
+        populatedCount: 2,
+        loadedCount: 2,
+        totalCount: 2 }, 'Passed!');
+      ok(storage2.loaded, 'Passed!');
+      ok(storage2.partlyLoaded, 'Passed!');
+      ok(!storage2.jsonStorage, 'Passed!');
+      ok(storage2.idbStorage, 'Passed!');
+      storage2.unload();
+      start();
+    };
+    storage2.load();
+  };
+
+  stop();
+  storage.load();
+});
+
+test('load() with populated IndexedDB.', function() {
+  var storage = new HybirdStorage();
+  storage.IDB_NAME = 'TestDatabase';
+  storage.IDB_VERSION = 1;
+  storage.JSON_URL = './resources/';
+  storage.JSON_FILES = ['test1.json', 'test2.json'];
+
+  storage.onloadend = function(status) {
+    storage.unload();
+
+    var storage2 = new HybirdStorage();
+    storage2.IDB_NAME = 'TestDatabase';
+    storage2.IDB_VERSION = 1;
+    storage2.JSON_URL = './resources/';
+    storage2.JSON_FILES = ['test1.json', 'test2.json'];
+    expect(0 + 2 + 0 + 1 + 5);
+
+    storage2.onchunkload = function(status) {
+      ok(false, 'Passed!');
+    };
+
+    storage2.onpartlyloaded = function(status) {
+      deepEqual(status, {
+        useIndexedDB: true,
+        useJSON: false,
+        populatedCount: 2,
+        loadedCount: 2,
+        totalCount: 2 }, 'Passed!');
+      ok(storage2.partlyLoaded, 'Passed!');
+    };
+
+    storage2.onpopulated = function(status) {
+      ok(false, 'Passed!');
+    };
+
+    storage2.onload = function(status) {
+      deepEqual(status, {
+        useIndexedDB: true,
+        useJSON: false,
+        populatedCount: 2,
+        loadedCount: 2,
+        totalCount: 2 }, 'Passed!');
+    };
+    storage2.onloadend = function(status) {
+      deepEqual(status, {
+        useIndexedDB: true,
+        useJSON: false,
+        populatedCount: 2,
+        loadedCount: 2,
+        totalCount: 2 }, 'Passed!');
+      ok(storage2.loaded, 'Passed!');
+      ok(storage2.partlyLoaded, 'Passed!');
+      ok(!storage2.jsonStorage, 'Passed!');
+      ok(storage2.idbStorage, 'Passed!');
+      storage2.unload();
+      start();
+    };
+    storage2.load();
   };
 
   stop();
@@ -518,15 +785,57 @@ test('load()', function() {
   storage.IDB_VERSION = 1;
   storage.JSON_URL = './resources/';
   storage.JSON_FILES = ['test1.json', 'test2.json'];
-  expect(2 + 1 + 0 + 1 + 5);
-  storage.onchunkload =
-  storage.onpartlyloaded =
-  storage.onpopulated =
+  expect(2 + 2 + 0 + 1 + 5);
+  var chunkloadStatus = [
+    {
+      useIndexedDB: false,
+      useJSON: true,
+      populatedCount: undefined,
+      loadedCount: 1,
+      totalCount: 2
+    },
+    {
+      useIndexedDB: false,
+      useJSON: true,
+      populatedCount: undefined,
+      loadedCount: 2,
+      totalCount: 2
+    }
+  ];
+  storage.onchunkload = function(status) {
+    var expectedStatus = chunkloadStatus.shift();
+    deepEqual(status, expectedStatus, 'Passed!');
+  };
+
+  storage.onpartlyloaded = function(status) {
+    deepEqual(status, {
+      useIndexedDB: false,
+      useJSON: true,
+      populatedCount: undefined,
+      loadedCount: 1,
+      totalCount: 2 }, 'Passed!');
+    ok(storage.partlyLoaded, 'Passed!');
+  };
+
+  storage.onpopulated = function(status) {
+    ok(false, 'Passed!');
+  };
+
   storage.onload = function(status) {
-    equal(status, storage.status, 'Passed!');
+    deepEqual(status, {
+      useIndexedDB: false,
+      useJSON: true,
+      populatedCount: undefined,
+      loadedCount: 2,
+      totalCount: 2 }, 'Passed!');
   };
   storage.onloadend = function(status) {
-    equal(status, storage.status, 'Passed!');
+    deepEqual(status, {
+      useIndexedDB: false,
+      useJSON: true,
+      populatedCount: undefined,
+      loadedCount: 2,
+      totalCount: 2 }, 'Passed!');
     ok(storage.loaded, 'Passed!');
     ok(storage.partlyLoaded, 'Passed!');
     ok(storage.jsonStorage, 'Passed!');
