@@ -24,10 +24,19 @@ module['exports'] = function convertData(filename, outputDir, callback) {
 
     var results = {
       'words': {},
-      'phrases': {},
-      'more': {},
+      'phrases0': {},
+      'phrases1': {},
+      'phrases2': {},
+      'phrases3': {},
+      'more0': {},
+      'more1': {},
+      'more2': {},
+      'more3': {},
       'shortcuts': {},
-      'shortcuts-more': {}
+      'shortcuts-more0': {},
+      'shortcuts-more1': {},
+      'shortcuts-more2': {},
+      'shortcuts-more3': {}
     };
 
     var lines = data.split('\n');
@@ -60,6 +69,7 @@ module['exports'] = function convertData(filename, outputDir, callback) {
 
       var resultObj;
       var shortcutResultObj;
+      var k = (symbols.charCodeAt(0) & 0x0003).toString(10);
       switch (encodedStr.length) {
         case 1:
           resultObj = results['words'];
@@ -67,13 +77,13 @@ module['exports'] = function convertData(filename, outputDir, callback) {
           break;
 
         case 2:
-          resultObj = results['phrases'];
+          resultObj = results['phrases' + k];
           shortcutResultObj = results['shortcuts'];
           break;
 
         default:
-          resultObj = results['more'];
-          shortcutResultObj = results['shortcuts-more'];
+          resultObj = results['more' + k];
+          shortcutResultObj = results['shortcuts-more' + k];
           break;
       }
 
