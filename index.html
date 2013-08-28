@@ -27,6 +27,10 @@
         padding: 70px 0;
       }
 
+      *[hidden] {
+        display: none;
+      }
+
       #inputarea {
         min-height: 8em;
       }
@@ -244,7 +248,7 @@
 
         status.textContent = T.LOADED;
         if (client.status.useIndexedDB) {
-          deleteDatabase.hidden = false;
+          deleteDatabase.removeAttribute('hidden');
         }
       };
       client.onerror = function() {
@@ -271,12 +275,12 @@
 
         if (!candidatesList.children.length &&
             !composition.textContent.length) {
-          panel.hidden = true;
+          panel.setAttribute('hidden', 'true');
 
           return;
         }
 
-        panel.hidden = false;
+        panel.removeAttribute('hidden');
       };
 
 
@@ -289,7 +293,7 @@
 
           inputarea.setAttribute('contenteditable', false);
           status.textContent = T.DELETING;
-          deleteDatabase.hidden = true;
+          deleteDatabase.setAttribute('hidden', 'true');
 
           client.onunload = function() {
             status.textContent = T.UNLOADED;
