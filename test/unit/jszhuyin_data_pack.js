@@ -19,8 +19,8 @@ test('decodeString()', function() {
 module('JSZhuyinDataPack');
 
 test('construct with packed string.', function() {
-  var data = new JSZhuyinDataPack('ÛIÀ2台北台#台灣');
-  equal(data.packed, 'ÛIÀ2台北台#台灣', 'Passed!');
+  var data = new JSZhuyinDataPack('ÛIÀB台北台#台灣');
+  equal(data.packed, 'ÛIÀB台北台#台灣', 'Passed!');
 });
 
 test('construct with structured data.', function() {
@@ -38,13 +38,26 @@ test('construct with structured data.', function() {
 });
 
 test('unpack()', function() {
-  var data = new JSZhuyinDataPack('ÛIÀ2台北台#台灣');
+  var data = new JSZhuyinDataPack('ÛIÀB台北台#台灣');
   data.unpack();
 
   deepEqual(data.unpacked, [
     { str: '台北', score: -3.1415927410125732 },
     { str: '台' },
     { str: '台灣' }
+  ], 'Passed!');
+});
+
+test('unpack() with symbols', function() {
+  var data = new JSZhuyinDataPack('ÛIÀb台北పȳ台#ప~台灣పŉ');
+  data.unpack();
+
+  deepEqual(data.unpacked, [
+    { str: '台北',
+      symbols: 'పȳ',
+      score: -3.1415927410125732 },
+    { str: '台', symbols: 'ప' },
+    { str: '台灣', symbols: 'పŉ' }
   ], 'Passed!');
 });
 
@@ -56,11 +69,25 @@ test('pack()', function() {
   ]);
   data.pack();
 
-  equal(data.packed, 'ÛIÀ2台北台#台灣', 'Passed!');
+  equal(data.packed, 'ÛIÀB台北台#台灣', 'Passed!');
 });
 
+test('pack() with symbols', function() {
+  var data = new JSZhuyinDataPack([
+    { str: '台北',
+      symbols: 'పȳ',
+      score: -3.1415927410125732 },
+    { str: '台', symbols: 'ప' },
+    { str: '台灣', symbols: 'పŉ' }
+  ]);
+  data.pack();
+
+  equal(data.packed, 'ÛIÀb台北పȳ台#ప~台灣పŉ', 'Passed!');
+});
+
+
 test('getResults()', function() {
-  var data = new JSZhuyinDataPack('ÛIÀ2台北台#台灣');
+  var data = new JSZhuyinDataPack('ÛIÀB台北台#台灣');
   deepEqual(data.getResults(), [
     { str: '台北', score: -3.1415927410125732 },
     { str: '台' },
@@ -74,18 +101,27 @@ test('getPackedString()', function() {
     { str: '台' },
     { str: '台灣' }
   ]);
-  equal(data.getPackedString(), 'ÛIÀ2台北台#台灣', 'Passed!');
+  equal(data.getPackedString(), 'ÛIÀB台北台#台灣', 'Passed!');
 });
 
 test('getFirstResult()', function() {
-  var data = new JSZhuyinDataPack('ÛIÀ2台北台#台灣');
+  var data = new JSZhuyinDataPack('ÛIÀB台北台#台灣');
   deepEqual(data.getFirstResult(),
     { str: '台北', score: -3.1415927410125732 },
     'Passed!');
 });
 
+test('getFirstResult() with symbols', function() {
+  var data = new JSZhuyinDataPack('ÛIÀb台北పȳ台#ప~台灣పŉ');
+  deepEqual(data.getFirstResult(),
+    { str: '台北',
+      symbols: 'పȳ',
+      score: -3.1415927410125732 },
+    'Passed!');
+});
+
 test('getFirstResultScore()', function() {
-  var data = new JSZhuyinDataPack('ÛIÀ2台北台#台灣');
+  var data = new JSZhuyinDataPack('ÛIÀB台北台#台灣');
   equal(data.getFirstResultScore(),
     -3.1415927410125732, 'Passed!');
 });
