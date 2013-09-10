@@ -112,11 +112,11 @@ test('Run a simple interactive query.', function() {
     };
 
     var expectedCandidates = [
-      [["ㄊ", 1]],
-      [["ㄊㄞ", 1]],
-      [["台",1],["臺",1],["抬",1],["颱",1],["檯",1],["苔",1],["跆",1],
-       ["邰",1],["鮐",1],["薹",1],["嬯",1],["秮",1],["旲",1],["炱",1],
-       ["儓",1],["駘",1],["籉",1]]];
+      [["ㄊ", "ఀ"]],
+      [["ㄊㄞ", "఩"]],
+      [["台","ప"],["臺","ప"],["抬","ప"],["颱","ప"],["檯","ప"],["苔","ప"],
+       ["跆","ప"],["邰","ప"],["鮐","ప"],["薹","ప"],["嬯","ప"],["秮","ప"],
+       ["旲","ప"],["炱","ప"],["儓","ప"],["駘","ప"],["籉","ప"]]];
     ime.oncandidateschange = function(candidates) {
       deepEqual(candidates, expectedCandidates.shift(), '2Passed!');
     };
@@ -158,7 +158,7 @@ test('Run a simple interactive query.', function() {
 
 test('Confirm text with Enter key.', function() {
   var ime = new JSZhuyinClient();
-  expect(13);
+  expect(14);
 
   ime.onloadend = function() {
     ime.oncompositionend = function(str) {
@@ -171,12 +171,13 @@ test('Confirm text with Enter key.', function() {
     };
 
     var expectedCandidates = [
-      [["ㄊ", 1]],
-      [["ㄊㄞ", 1]],
-      [["台",1],["臺",1],["抬",1],["颱",1],["檯",1],["苔",1],["跆",1],
-       ["邰",1],["鮐",1],["薹",1],["嬯",1],["秮",1],["旲",1],["炱",1],
-       ["儓",1],["駘",1],["籉",1]],
-      []];
+      [["ㄊ", "ఀ"]],
+      [["ㄊㄞ", "఩"]],
+      [["台","ప"],["臺","ప"],["抬","ప"],["颱","ప"],["檯","ప"],["苔","ప"],
+       ["跆","ప"],["邰","ప"],["鮐","ప"],["薹","ప"],["嬯","ప"],["秮","ప"],
+       ["旲","ప"],["炱","ప"],["儓","ప"],["駘","ప"],["籉","ప"]],
+      [], // Confirm
+      [["北",""],["北市",""]]]; // Suggestions
     ime.oncandidateschange = function(candidates) {
       deepEqual(candidates, expectedCandidates.shift(), 'Passed!');
     };
@@ -221,7 +222,7 @@ test('Confirm text with Enter key.', function() {
 
 test('Confirm text with a non-Bopomofo key.', function() {
   var ime = new JSZhuyinClient();
-  expect(13);
+  expect(14);
 
   ime.onloadend = function() {
     ime.oncompositionend = function(str) {
@@ -234,12 +235,13 @@ test('Confirm text with a non-Bopomofo key.', function() {
     };
 
     var expectedCandidates = [
-      [["ㄊ", 1]],
-      [["ㄊㄞ", 1]],
-      [["台",1],["臺",1],["抬",1],["颱",1],["檯",1],["苔",1],["跆",1],
-       ["邰",1],["鮐",1],["薹",1],["嬯",1],["秮",1],["旲",1],["炱",1],
-       ["儓",1],["駘",1],["籉",1]],
-      []];
+      [["ㄊ", "ఀ"]],
+      [["ㄊㄞ", "఩"]],
+      [["台","ప"],["臺","ప"],["抬","ప"],["颱","ప"],["檯","ప"],["苔","ప"],
+       ["跆","ప"],["邰","ప"],["鮐","ప"],["薹","ప"],["嬯","ప"],["秮","ప"],
+       ["旲","ప"],["炱","ప"],["儓","ప"],["駘","ప"],["籉","ప"]],
+      [], // Confirm
+      []]; // Suggestions
     ime.oncandidateschange = function(candidates) {
       deepEqual(candidates, expectedCandidates.shift(), 'Passed!');
     };
@@ -305,7 +307,7 @@ test('Don\'t handle Enter key if there is no candidates.', function() {
 
 test('Confirm text with candidate selection.', function() {
   var ime = new JSZhuyinClient();
-  expect(12);
+  expect(13);
 
   ime.onloadend = function() {
     ime.oncompositionend = function(str) {
@@ -318,12 +320,13 @@ test('Confirm text with candidate selection.', function() {
     };
 
     var expectedCandidates = [
-      [["ㄊ", 1]],
-      [["ㄊㄞ", 1]],
-      [["台",1],["臺",1],["抬",1],["颱",1],["檯",1],["苔",1],["跆",1],
-       ["邰",1],["鮐",1],["薹",1],["嬯",1],["秮",1],["旲",1],["炱",1],
-       ["儓",1],["駘",1],["籉",1]],
-      []];
+      [["ㄊ", "ఀ"]],
+      [["ㄊㄞ", "఩"]],
+      [["台","ప"],["臺","ప"],["抬","ప"],["颱","ప"],["檯","ప"],["苔","ప"],
+       ["跆","ప"],["邰","ప"],["鮐","ప"],["薹","ప"],["嬯","ప"],["秮","ప"],
+       ["旲","ప"],["炱","ప"],["儓","ప"],["駘","ప"],["籉","ప"]],
+      [], // Confirm
+      []]; // Suggestions
     ime.oncandidateschange = function(candidates) {
       deepEqual(candidates, expectedCandidates.shift(), 'Passed!');
     };
@@ -339,7 +342,7 @@ test('Confirm text with candidate selection.', function() {
         ok(ime.handleKeyEvent('ˊ'.charCodeAt(0)), 'Passed!');
       },
       function() {
-        ime.selectCandidate(["颱",1]);
+        ime.selectCandidate(["颱","ప"]);
       }
     ];
     ime.onactionhandled = function() {
@@ -377,17 +380,18 @@ test('Backspace key cancels the last symbol.', function() {
     };
 
     var expectedCandidates = [
-      [["ㄊ", 1]],
-      [["ㄊㄞ", 1]],
-      [["台",1],["臺",1],["抬",1],["颱",1],["檯",1],["苔",1],["跆",1],
-       ["邰",1],["鮐",1],["薹",1],["嬯",1],["秮",1],["旲",1],["炱",1],
-       ["儓",1],["駘",1],["籉",1]],
-      [["台ˊ",2], ["台",1],["臺",1],["抬",1],["颱",1],["檯",1],["苔",1],["跆",1],
-       ["邰",1],["鮐",1],["薹",1],["嬯",1],["秮",1],["旲",1],["炱",1],
-       ["儓",1],["駘",1],["籉",1]],
-      [["台",1],["臺",1],["抬",1],["颱",1],["檯",1],["苔",1],["跆",1],
-       ["邰",1],["鮐",1],["薹",1],["嬯",1],["秮",1],["旲",1],["炱",1],
-       ["儓",1],["駘",1],["籉",1]]];
+      [["ㄊ", "ఀ"]],
+      [["ㄊㄞ", "఩"]],
+      [["台","ప"],["臺","ప"],["抬","ప"],["颱","ప"],["檯","ప"],["苔","ప"],
+       ["跆","ప"],["邰","ప"],["鮐","ప"],["薹","ప"],["嬯","ప"],["秮","ప"],
+       ["旲","ప"],["炱","ప"],["儓","ప"],["駘","ప"],["籉","ప"]],
+      [["台ˊ","ప"],
+       ["台","ప"],["臺","ప"],["抬","ప"],["颱","ప"],["檯","ప"],["苔","ప"],
+       ["跆","ప"],["邰","ప"],["鮐","ప"],["薹","ప"],["嬯","ప"],["秮","ప"],
+       ["旲","ప"],["炱","ప"],["儓","ప"],["駘","ప"],["籉","ప"]],
+      [["台","ప"],["臺","ప"],["抬","ప"],["颱","ప"],["檯","ప"],["苔","ప"],
+       ["跆","ప"],["邰","ప"],["鮐","ప"],["薹","ప"],["嬯","ప"],["秮","ప"],
+       ["旲","ప"],["炱","ప"],["儓","ప"],["駘","ప"],["籉","ప"]]];
     ime.oncandidateschange = function(candidates) {
       deepEqual(candidates, expectedCandidates.shift(), 'Passed!');
     };

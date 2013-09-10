@@ -113,7 +113,9 @@ module['exports'] = function convertData(filename, outputDir, callback) {
 
         if (!found) {
           shortcutResultObj[shortcutEncodedStr].push(
-            { 'str': row[0], 'score': parseFloat(row[2]) });
+            { 'str': row[0],
+              'symbols': encodedStr,
+              'score': parseFloat(row[2]) });
         }
       }
     }

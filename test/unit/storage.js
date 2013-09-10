@@ -322,6 +322,39 @@ test('putChunk() and get() multiple keys in one transation', function() {
   storage.load();
 });
 
+test('putChunk() and getRange()', function() {
+  var storage = new IndexedDBStorage();
+  storage.IDB_NAME = 'TestDatabase';
+  storage.IDB_VERSION = 1;
+  expect(1);
+  storage.onloadend = function() {
+    var chunk = new JSONDataChunk({
+      'key': 'value0value0',
+      'key1': 'value1value2',
+      'key2': 'value3value4',
+      'kei': 'value5value6' });
+
+    storage.putChunk(chunk, function() {
+      storage.getRange('key', function(values) {
+        deepEqual(values, [{
+          'key': 'key1',
+          'values': 'value1value2'
+        },
+        {
+          'key': 'key2',
+          'values': 'value3value4'
+        }], 'Passed');
+
+        storage.unload();
+        start();
+      });
+    });
+  };
+
+  stop();
+  storage.load();
+});
+
 module('HybirdStorage', {
   teardown: function() {
     var IDB = IndexedDBStorage.prototype.IDB;
@@ -763,6 +796,32 @@ test('get() while only partly loaded', function() {
   storage.onloadend = function() {
     storage.unload();
     start();
+  };
+
+  stop();
+  storage.load();
+});
+
+test('getRange()', function() {
+  var storage = new HybirdStorage();
+  storage.IDB_NAME = 'TestDatabase';
+  storage.IDB_VERSION = 1;
+  storage.JSON_URL = './resources/';
+  storage.JSON_FILES = ['test1.json', 'test2.json'];
+  expect(1);
+  storage.onloadend = function() {
+    storage.getRange('Key', function(values) {
+      deepEqual(values, [{
+          'key': 'Key1',
+          'values': 'value1value2'
+        },
+        {
+          'key': 'Key2',
+          'values': 'value3value4'
+        }], 'Passed!');
+      storage.unload();
+      start();
+    });
   };
 
   stop();
