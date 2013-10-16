@@ -5,6 +5,7 @@ var SHORTCUT_ENTRY_LENGTH = 16;
 var fs = require('fs');
 var BopomofoEncoder = require('../lib/bopomofo_encoder.js');
 var JSZhuyinDataPack = require('../lib/jszhuyin_data_pack.js');
+var BlobStoreBuilder = require('../build/database_builder.js');
 
 module['exports'] = function convertData(filename, outputDir, callback) {
   fs.readFile(filename, { encoding: 'utf8' }, function read(err, data) {
@@ -43,6 +44,8 @@ module['exports'] = function convertData(filename, outputDir, callback) {
     data = undefined;
 
     console.log('Processing ' + lines.length + ' entries in the directory...');
+
+    var bsb = new BlobStoreBuilder();
 
     var length = lines.length;
     for (var i = 0; i < length; i++) {
@@ -129,7 +132,16 @@ module['exports'] = function convertData(filename, outputDir, callback) {
       var filename = outputFilename.shift();
 
       if (!filename) {
-        callback();
+        console.log('Create binary database file...');
+        fs.writeFile(
+          outputDir + '/database.data',
+          bsb.getBlob(),
+          function written(err) {
+            if (err)
+              throw err;
+
+            callback();
+          });
 
         return;
       }
@@ -152,6 +164,8 @@ module['exports'] = function convertData(filename, outputDir, callback) {
         }
 
         result[encodedStr] = new JSZhuyinDataPack(result[encodedStr]);
+
+        bsb.put(encodedStr, result[encodedStr].getPackedString());
       }
 
       fs.writeFile(

@@ -233,11 +233,11 @@
       };
       client.onchunkload =
       client.onpopulated = function() {
-        var statusText =
-          client.status.loadedCount + '/' +
-          ((client.status.useIndexedDB) ?
-            client.status.populatedCount + '/' : '')  +
-          client.status.totalCount;
+        var statusText = '...';
+//          client.status.loadedCount + '/' +
+//          ((client.status.useIndexedDB) ?
+//            client.status.populatedCount + '/' : '')  +
+          //client.status.totalCount;
 
         status.textContent =
           T.PARTLYLOADED.replace('%status', statusText);
@@ -247,9 +247,9 @@
         inputarea.focus();
 
         status.textContent = T.LOADED;
-        if (client.status.useIndexedDB) {
-          deleteDatabase.removeAttribute('hidden');
-        }
+        //if (client.status.useIndexedDB) {
+        //  deleteDatabase.removeAttribute('hidden');
+        //}
       };
       client.onerror = function() {
         status.textContent = T.ERROR;
