@@ -43,16 +43,6 @@ test('decodeArrayBuffer()', function() {
   equal(Float32Encoder.decodeArrayBuffer(buf2), -3.1415927410125732, 'Passed!');
 });
 
-test('encodeString()', function() {
-  equal(Float32Encoder.encodeString(3.1415927410125732), 'Ǜďŉŀ', 'Passed!');
-  equal(Float32Encoder.encodeString(-3.1415927410125732), 'Ǜďŉǀ', 'Passed!');
-});
-
-test('decodeString()', function() {
-  equal(Float32Encoder.decodeString('Ǜďŉŀ'), 3.1415927410125732, 'Passed!');
-  equal(Float32Encoder.decodeString('Ǜďŉǀ'), -3.1415927410125732, 'Passed!');
-});
-
 module('JSZhuyinDataPack');
 
 test('construct with packed string.', function() {
