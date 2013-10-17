@@ -6,6 +6,43 @@ test('isSupported', function() {
   ok(Float32Encoder.isSupported, 'Passed!');
 });
 
+function compareArrayBuffer(bufferA, bufferB) {
+  if (bufferA.constructor !== ArrayBuffer ||
+      bufferB.constructor !== ArrayBuffer) {
+    return false;
+  }
+
+  var viewA = Uint8Array(bufferA);
+  var viewB = Uint8Array(bufferB);
+
+  if (viewA.length !== viewB.length)
+    return false;
+
+  var notIdentical = Array.prototype.some.call(viewA, function(byteA, i) {
+    var byteB = viewB[i];
+
+    return (byteA !== byteB);
+  });
+
+  return !notIdentical;
+}
+
+test('encodeArrayBuffer()', function() {
+  var buf1 = (new Float32Array([3.1415927410125732])).buffer;
+  ok(compareArrayBuffer(
+    Float32Encoder.encodeArrayBuffer(3.1415927410125732), buf1), 'Passed!');
+  var buf2 = (new Float32Array([-3.1415927410125732])).buffer;
+  ok(compareArrayBuffer(
+    Float32Encoder.encodeArrayBuffer(-3.1415927410125732), buf2), 'Passed!');
+});
+
+test('decodeArrayBuffer()', function() {
+  var buf1 = (new Float32Array([3.1415927410125732])).buffer;
+  equal(Float32Encoder.decodeArrayBuffer(buf1), 3.1415927410125732, 'Passed!');
+  var buf2 = (new Float32Array([-3.1415927410125732])).buffer;
+  equal(Float32Encoder.decodeArrayBuffer(buf2), -3.1415927410125732, 'Passed!');
+});
+
 test('encodeString()', function() {
   equal(Float32Encoder.encodeString(3.1415927410125732), 'Ǜďŉŀ', 'Passed!');
   equal(Float32Encoder.encodeString(-3.1415927410125732), 'Ǜďŉǀ', 'Passed!');
