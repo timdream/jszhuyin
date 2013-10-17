@@ -6,34 +6,14 @@ test('isSupported', function() {
   ok(Float32Encoder.isSupported, 'Passed!');
 });
 
-function compareArrayBuffer(bufferA, bufferB) {
-  if (bufferA.constructor !== ArrayBuffer ||
-      bufferB.constructor !== ArrayBuffer) {
-    return false;
-  }
-
-  var viewA = Uint8Array(bufferA);
-  var viewB = Uint8Array(bufferB);
-
-  if (viewA.length !== viewB.length)
-    return false;
-
-  var notIdentical = Array.prototype.some.call(viewA, function(byteA, i) {
-    var byteB = viewB[i];
-
-    return (byteA !== byteB);
-  });
-
-  return !notIdentical;
-}
-
 test('encodeArrayBuffer()', function() {
   var buf1 = (new Float32Array([3.1415927410125732])).buffer;
-  ok(compareArrayBuffer(
-    Float32Encoder.encodeArrayBuffer(3.1415927410125732), buf1), 'Passed!');
+  deepEqual(
+    Float32Encoder.encodeArrayBuffer(3.1415927410125732), buf1, 'Passed!');
   var buf2 = (new Float32Array([-3.1415927410125732])).buffer;
-  ok(compareArrayBuffer(
-    Float32Encoder.encodeArrayBuffer(-3.1415927410125732), buf2), 'Passed!');
+  deepEqual(
+    arrayBufferToString(Float32Encoder.encodeArrayBuffer(-3.1415927410125732)),
+    arrayBufferToString(buf2), 'Passed!');
 });
 
 test('decodeArrayBuffer()', function() {
@@ -45,9 +25,15 @@ test('decodeArrayBuffer()', function() {
 
 module('JSZhuyinDataPack');
 
-test('construct with packed string.', function() {
-  var data = new JSZhuyinDataPack('ǛďŉǀB台北台#台灣');
-  equal(data.packed, 'ǛďŉǀB台北台#台灣', 'Passed!');
+test('construct with packed array buffer.', function() {
+  var buf =
+    Uint16Array([0x0fdb, 0x4049 /* (new Float32Array([3.1415927410125732])) */,
+                 0x42 /* B */,
+                 0x53f0, 0x5317, 0x53f0, 0x23, 0x53f0, 0x7063 /* 台北台#台灣 */])
+    .buffer;
+  var data = new JSZhuyinDataPack(buf);
+  deepEqual(
+    arrayBufferToString(data.packed), arrayBufferToString(buf), 'Passed!');
 });
 
 test('construct with structured data.', function() {
@@ -65,7 +51,13 @@ test('construct with structured data.', function() {
 });
 
 test('unpack()', function() {
-  var data = new JSZhuyinDataPack('ǛďŉǀB台北台#台灣');
+  var buf =
+    Uint16Array([0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
+                 0x42 /* B */,
+                 0x53f0, 0x5317, 0x53f0, 0x23, 0x53f0, 0x7063 /* 台北台#台灣 */])
+      .buffer;
+
+  var data = new JSZhuyinDataPack(buf);
   data.unpack();
 
   deepEqual(data.unpacked, [
@@ -76,7 +68,12 @@ test('unpack()', function() {
 });
 
 test('unpack() with symbols', function() {
-  var data = new JSZhuyinDataPack('Ǜďŉǀb台北పȳ台#ప~台灣పŉ');
+  var buf =
+    Uint16Array([0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
+                 0x62 /* b */,
+                 0x53f0, 0x5317, 0xc2a, 0x233, 0x53f0, 0x23, 0xc2a, 0x7e,
+                 0x53f0, 0x7063, 0xc2a, 0x149] /* 台北పȳ台#ప~台灣పŉ */).buffer;
+  var data = new JSZhuyinDataPack(buf);
   data.unpack();
 
   deepEqual(data.unpacked, [
@@ -89,6 +86,11 @@ test('unpack() with symbols', function() {
 });
 
 test('pack()', function() {
+  var buf =
+    Uint16Array([0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
+                 0x42 /* B */,
+                 0x53f0, 0x5317, 0x53f0, 0x23, 0x53f0, 0x7063 /* 台北台#台灣 */])
+      .buffer;
   var data = new JSZhuyinDataPack([
     { str: '台北', score: -3.1415927410125732 },
     { str: '台' },
@@ -96,10 +98,16 @@ test('pack()', function() {
   ]);
   data.pack();
 
-  equal(data.packed, 'ǛďŉǀB台北台#台灣', 'Passed!');
+  deepEqual(
+    arrayBufferToString(data.packed), arrayBufferToString(buf), 'Passed!');
 });
 
 test('pack() with symbols', function() {
+  var buf =
+    Uint16Array([0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
+                 0x62 /* b */,
+                 0x53f0, 0x5317, 0xc2a, 0x233, 0x53f0, 0x23, 0xc2a, 0x7e,
+                 0x53f0, 0x7063, 0xc2a, 0x149] /* 台北పȳ台#ప~台灣పŉ */).buffer;
   var data = new JSZhuyinDataPack([
     { str: '台北',
       symbols: 'పȳ',
@@ -109,12 +117,18 @@ test('pack() with symbols', function() {
   ]);
   data.pack();
 
-  equal(data.packed, 'Ǜďŉǀb台北పȳ台#ప~台灣పŉ', 'Passed!');
+  deepEqual(
+    arrayBufferToString(data.packed), arrayBufferToString(buf), 'Passed!');
 });
 
 
 test('getResults()', function() {
-  var data = new JSZhuyinDataPack('ǛďŉǀB台北台#台灣');
+  var buf =
+    Uint16Array([0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
+                 0x42 /* B */,
+                 0x53f0, 0x5317, 0x53f0, 0x23, 0x53f0, 0x7063 /* 台北台#台灣 */])
+      .buffer;
+  var data = new JSZhuyinDataPack(buf);
   deepEqual(data.getResults(), [
     { str: '台北', score: -3.1415927410125732 },
     { str: '台' },
@@ -122,24 +136,39 @@ test('getResults()', function() {
   ], 'Passed!');
 });
 
-test('getPackedString()', function() {
+test('getPacked()', function() {
+  var buf =
+    Uint16Array([0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
+                 0x42 /* B */,
+                 0x53f0, 0x5317, 0x53f0, 0x23, 0x53f0, 0x7063 /* 台北台#台灣 */])
+      .buffer;
   var data = new JSZhuyinDataPack([
     { str: '台北', score: -3.1415927410125732 },
     { str: '台' },
     { str: '台灣' }
   ]);
-  equal(data.getPackedString(), 'ǛďŉǀB台北台#台灣', 'Passed!');
+  deepEqual(data.getPacked(), buf, 'Passed!');
 });
 
 test('getFirstResult()', function() {
-  var data = new JSZhuyinDataPack('ǛďŉǀB台北台#台灣');
+  var buf =
+    Uint16Array([0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
+                 0x42 /* B */,
+                 0x53f0, 0x5317, 0x53f0, 0x23, 0x53f0, 0x7063 /* 台北台#台灣 */])
+      .buffer;
+  var data = new JSZhuyinDataPack(buf);
   deepEqual(data.getFirstResult(),
     { str: '台北', score: -3.1415927410125732 },
     'Passed!');
 });
 
 test('getFirstResult() with symbols', function() {
-  var data = new JSZhuyinDataPack('Ǜďŉǀb台北పȳ台#ప~台灣పŉ');
+  var buf =
+    Uint16Array([0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
+                 0x62 /* b */,
+                 0x53f0, 0x5317, 0xc2a, 0x233, 0x53f0, 0x23, 0xc2a, 0x7e,
+                 0x53f0, 0x7063, 0xc2a, 0x149] /* 台北పȳ台#ప~台灣పŉ */).buffer;
+  var data = new JSZhuyinDataPack(buf);
   deepEqual(data.getFirstResult(),
     { str: '台北',
       symbols: 'పȳ',
@@ -148,7 +177,12 @@ test('getFirstResult() with symbols', function() {
 });
 
 test('getFirstResultScore()', function() {
-  var data = new JSZhuyinDataPack('ǛďŉǀB台北台#台灣');
+  var buf =
+    Uint16Array([0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
+                 0x42 /* B */,
+                 0x53f0, 0x5317, 0x53f0, 0x23, 0x53f0, 0x7063 /* 台北台#台灣 */])
+      .buffer;
+  var data = new JSZhuyinDataPack(buf);
   equal(data.getFirstResultScore(),
     -3.1415927410125732, 'Passed!');
 });
