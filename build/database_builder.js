@@ -41,8 +41,7 @@ DatabaseBuilder.prototype.getBlob = function bsb_getBlob() {
    * BLOCK0: Header. Fixed length at 4 bytes.
    *         0-1 byte: Uint16, element length of BLOCK2 and BLOCK3.
    *         2-3 byte: Uint16, element length of BLOCK1.
-   * BLOCK1: Content of this table (JszhuyinDataPack string) with each character
-   *         stored as Uint16.
+   * BLOCK1: Content of this table (JSZhuyinDataPack arraybuffer).
    * BLOCK2: Keys of sub-tables. Each key is in Uint16.
    * BLOCK3: Address to other tables. Each address is in Uint32.
    */
@@ -62,17 +61,23 @@ DatabaseBuilder.prototype.getBlob = function bsb_getBlob() {
       ptrTable.push(table[i]);
     };
 
-    var content = table[0] || '';
+    var content = table[0];
 
     var blockIndex = blobLength;
 
-    var header = new Uint16Array([].concat(
-      [keyTable.length, content.length],
-      content.split('').map(function str2CharCode(char) {
-        return char.charCodeAt(0);
-      })));
+    var header = new Uint16Array(
+      [keyTable.length, 0]);
+    if (content) {
+      header[1] = content.byteLength / Uint16Array.BYTES_PER_ELEMENT;
+    }
     blobParts.push(header);
     blobLength += header.length * header.BYTES_PER_ELEMENT;
+
+    if (content) {
+      blobParts.push(content);
+
+      blobLength += content.byteLength;
+    }
 
     var keyArr = new Uint16Array(keyTable);
     blobParts.push(keyArr);
@@ -109,7 +114,9 @@ DatabaseBuilder.prototype.getBlob = function bsb_getBlob() {
     var buf = new Buffer(blobLength);
     var i = 0;
     for (var j = 0; j < blobParts.length; j++) {
-      var view = new Uint8Array(blobParts[j].buffer);
+      var view = new Uint8Array(
+        (blobParts[j].constructor === ArrayBuffer) ?
+        blobParts[j] : blobParts[j].buffer);
       for (var k = 0; k < view.length; k++) {
         buf[i] = view[k];
         i++;

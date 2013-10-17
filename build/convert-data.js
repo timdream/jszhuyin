@@ -21,7 +21,7 @@ module['exports'] = function convertData(filename, outputDir, callback) {
     data = undefined;
     console.log('Processing ' + lines.length + ' entries in the directory...');
 
-    var bsb = new BlobStoreBuilder();
+    var db = new BlobStoreBuilder();
 
     var length = lines.length;
     for (var i = 0; i < length; i++) {
@@ -78,7 +78,7 @@ module['exports'] = function convertData(filename, outputDir, callback) {
         }
       );
 
-      bsb.put(encodedStr, (new JSZhuyinDataPack(result)).getPackedString());
+      db.put(encodedStr, (new JSZhuyinDataPack(result)).getPacked());
     }
 
     for (var encodedStr in shortcutResults) {
@@ -92,11 +92,11 @@ module['exports'] = function convertData(filename, outputDir, callback) {
       // a single symbol shortcut.
       result = result.slice(0, SHORTCUT_ENTRY_LENGTH);
 
-      bsb.put(encodedStr, (new JSZhuyinDataPack(result)).getPackedString());
+      db.put(encodedStr, (new JSZhuyinDataPack(result)).getPacked());
     }
 
     console.log('Create binary database file...');
-    var blob = bsb.getBlob();
+    var blob = db.getBlob();
 
     console.log('Write file to disk...');
     fs.writeFile(outputDir + '/database.data', blob,
