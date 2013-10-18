@@ -8,7 +8,7 @@ var JSZhuyinDataPack = require('../lib/jszhuyin_data_pack.js');
 var BlobStoreBuilder = require('../build/database_builder.js');
 var McBopomofoDataParser = require('../build/mcbopomofo_data_parser.js');
 
-module['exports'] = function convertData(filename, outputDir, callback) {
+module['exports'] = function convertData(filename, output, callback) {
   fs.readFile(filename, { encoding: 'utf8' }, function read(err, data) {
     if (err)
       throw err;
@@ -99,13 +99,14 @@ module['exports'] = function convertData(filename, outputDir, callback) {
     var blob = db.getBlob();
 
     console.log('Write file to disk...');
-    fs.writeFile(outputDir + '/database.data', blob,
+    fs.writeFile(output, blob,
       function written(err) {
         if (err)
           throw err;
 
         console.log('Done!');
-        callback();
+        if (callback)
+          callback();
       }
     );
   });
