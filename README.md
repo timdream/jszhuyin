@@ -47,10 +47,6 @@ MIT License
 
 窮舉法與積分比較（笑）。窮舉是用很簡單的 <a href="http://stackoverflow.com/questions/8375439">Composition of a natural number</a>，積分是小麥注音詞庫提供的。不過因為是窮舉，如果有正確的詞庫應該可以做其他的 phonetic IME。
 
-## 離線儲存
-
-在提供新實作的 IndexedDB 的瀏覽器會將詞庫存進 IndexedDB，加快載入速度。
-
 ## 為何範例頁互動不像正常的桌機智慧注音？
 
 因為 JS 注音是手機輸入法 :-/

@@ -53,6 +53,6 @@ module.exports = function(grunt) {
   grunt.registerTask('convert-data', function gruntDataFuncitonTask() {
     var convertData = require('./build/convert-data.js');
     var done = this.async();
-    convertData('./data/data.txt', './data', done);
+    convertData('./data/data.txt', './data/database.data', done);
   });
 };

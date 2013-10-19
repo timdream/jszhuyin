@@ -185,7 +185,7 @@
       <div class="panel-heading"><span id="composition"></span></div>
       <ul class="pagination" id="candidates"></ul>
     </div>
-    <p><span id="status">...</span><span id="delete_database" hidden><a id="delete_db_link" href="#">移除詞庫資料</a>。</span></p>
+    <p><span id="status">...</span></p>
   </div>
   <script type="text/javascript" src="lib/client.js"></script>
   <script type="text/javascript" src="lib/web.js"></script>
@@ -194,12 +194,8 @@
 
     var T = {
       LOADING: '載入中...',
-      PARTLYLOADED: '載入完整詞庫中（%status）...',
       LOADED: '載入完成。',
-      ERROR: '載入失敗，無法使用。',
-      CONFIRMDELETE: '您確定要移除已下載的詞庫資料？您需要重新下載與載入詞庫才能再次使用。',
-      DELETING: '刪除詞庫中...',
-      UNLOADED: '詞庫刪除完成，要再次使用請重新載入網頁。'
+      ERROR: '載入失敗，無法使用。'
     };
 
     window.onload = function() {
@@ -227,29 +223,11 @@
         {
           'REORDER_SYMBOLS': true
         });
-      client.onpartlyloaded = function() {
-        inputarea.setAttribute('contenteditable', true);
-        inputarea.focus();
-      };
-      client.onchunkload =
-      client.onpopulated = function() {
-        var statusText =
-          client.status.loadedCount + '/' +
-          ((client.status.useIndexedDB) ?
-            client.status.populatedCount + '/' : '')  +
-          client.status.totalCount;
-
-        status.textContent =
-          T.PARTLYLOADED.replace('%status', statusText);
-      }
       client.onload = function() {
         inputarea.setAttribute('contenteditable', true);
         inputarea.focus();
 
         status.textContent = T.LOADED;
-        if (client.status.useIndexedDB) {
-          deleteDatabase.removeAttribute('hidden');
-        }
       };
       client.onerror = function() {
         status.textContent = T.ERROR;
@@ -282,24 +260,6 @@
 
         panel.removeAttribute('hidden');
       };
-
-
-      document.getElementById('delete_db_link')
-        .addEventListener('click', function(evt) {
-          evt.preventDefault();
-
-          if (!window.confirm(T.CONFIRMDELETE))
-            return;
-
-          inputarea.setAttribute('contenteditable', false);
-          status.textContent = T.DELETING;
-          deleteDatabase.setAttribute('hidden', 'true');
-
-          client.onunload = function() {
-            status.textContent = T.UNLOADED;
-          };
-          client.uninstall();
-        });
 
       // Overwrite the addCandidateItem() method because
       // we need an extra wrapped <span> for every item.

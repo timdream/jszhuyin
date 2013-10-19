@@ -5,166 +5,109 @@ var SHORTCUT_ENTRY_LENGTH = 16;
 var fs = require('fs');
 var BopomofoEncoder = require('../lib/bopomofo_encoder.js');
 var JSZhuyinDataPack = require('../lib/jszhuyin_data_pack.js');
+var BlobStoreBuilder = require('../build/database_builder.js');
+var McBopomofoDataParser = require('../build/mcbopomofo_data_parser.js');
 
-module['exports'] = function convertData(filename, outputDir, callback) {
+module['exports'] = function convertData(filename, output, callback) {
   fs.readFile(filename, { encoding: 'utf8' }, function read(err, data) {
     if (err)
       throw err;
 
-    // This regexp adds the first tone to data given by McBopomofo.
-    var regexp = new RegExp('([^' +
-      String.fromCharCode(BopomofoEncoder.BOPOMOFO_TONE_2,
-                          BopomofoEncoder.BOPOMOFO_TONE_3,
-                          BopomofoEncoder.BOPOMOFO_TONE_4,
-                          BopomofoEncoder.BOPOMOFO_TONE_5) +
-      '])(\-|$)', 'g');
+    var results = {};
 
-    var replaceStr = '$1' +
-      String.fromCharCode(BopomofoEncoder.BOPOMOFO_TONE_1) + '$2';
-
-    var results = {
-      'words': {},
-      'phrases0': {},
-      'phrases1': {},
-      'phrases2': {},
-      'phrases3': {},
-      'more0': {},
-      'more1': {},
-      'more2': {},
-      'more3': {},
-      'shortcuts': {},
-      'shortcuts-more0': {},
-      'shortcuts-more1': {},
-      'shortcuts-more2': {},
-      'shortcuts-more3': {}
-    };
+    var shortcutResults = {};
 
     var lines = data.split('\n');
     data = undefined;
-
     console.log('Processing ' + lines.length + ' entries in the directory...');
+
+    var db = new BlobStoreBuilder();
 
     var length = lines.length;
     for (var i = 0; i < length; i++) {
-      if (!lines[i])
-        continue;
+      var lineData = McBopomofoDataParser.parse(lines[i]);
 
-      var row = lines[i].split(' ');
+      if (!lineData)
+        continue;
 
       if (!(i % 1000)) {
         process.stdout.write(i + '... ');
       }
 
-      if (row[1].indexOf('_punctuation_') !== -1)
-        continue;
-
-      var symbols = row[1].replace(regexp, replaceStr);
-
-      var encodedStr = BopomofoEncoder.encode(symbols.replace(/\-/g, ''));
-      var shortcutEncodedStr = BopomofoEncoder.encode((function() {
-        return symbols.split('-').map(function(str) {
-          return str[0];
-        }).join('');
-      }()));
-
-      var resultObj;
-      var shortcutResultObj;
-      var k = (symbols.charCodeAt(0) & 0x0003).toString(10);
-      switch (encodedStr.length) {
-        case 1:
-          resultObj = results['words'];
-          shortcutResultObj = results['shortcuts'];
-          break;
-
-        case 2:
-          resultObj = results['phrases' + k];
-          shortcutResultObj = results['shortcuts'];
-          break;
-
-        default:
-          resultObj = results['more' + k];
-          shortcutResultObj = results['shortcuts-more' + k];
-          break;
+      if (!results[lineData.encodedStr]) {
+        results[lineData.encodedStr] = [];
       }
 
-      if (!resultObj[encodedStr]) {
-        resultObj[encodedStr] = [];
-      }
-
-      resultObj[encodedStr].push(
-        { 'str': row[0], 'score': parseFloat(row[2]) });
+      results[lineData.encodedStr].push({
+        'str': lineData.str,
+        'score': lineData.score
+      });
 
       // We should not process shortcut that is unreachable
       // or identital to the original.
       // (unreachable, e.g. ㄓㄨ reaches 諸, not 中文)
       // XXX: How do we make these shortcuts reachable from UI?
-      if (encodedStr !== shortcutEncodedStr &&
-          encodedStr.length === shortcutEncodedStr.length) {
-        if (!shortcutResultObj[shortcutEncodedStr]) {
-          shortcutResultObj[shortcutEncodedStr] = [];
+      if (lineData.encodedStr !== lineData.shortcutEncodedStr &&
+          lineData.encodedStr.length === lineData.shortcutEncodedStr.length) {
+        if (!shortcutResults[lineData.shortcutEncodedStr]) {
+          shortcutResults[lineData.shortcutEncodedStr] = [];
         }
 
-        var found = shortcutResultObj[shortcutEncodedStr].some(function(obj) {
-          if (obj.str === row[0]) {
-            return true;
-          }
-          return false;
+        var found = shortcutResults[lineData.shortcutEncodedStr].some(function(obj) {
+          return (obj.str === lineData.str);
         });
 
         if (!found) {
-          shortcutResultObj[shortcutEncodedStr].push(
-            { 'str': row[0],
-              'symbols': encodedStr,
-              'score': parseFloat(row[2]) });
+          shortcutResults[lineData.shortcutEncodedStr].push({
+            'str': lineData.str,
+            'score': lineData.score,
+            'symbols': lineData.encodedStr
+          });
         }
       }
     }
-
-    console.log('Done.');
     lines = undefined;
+    console.log('Done.');
 
-    var outputFilename = Object.keys(results);
+    console.log('Sorting entries ...');
 
-    var putResult = function putResult() {
-      var filename = outputFilename.shift();
-
-      if (!filename) {
-        callback();
-
-        return;
-      }
-
-      console.log('Sorting and saving entries (' + filename + ')...');
-
-      var result = results[filename];
-      for (encodedStr in result) {
-        result[encodedStr] = result[encodedStr].sort(
-          function(a, b) {
-            return (b.score - a.score);
-          }
-        );
-
-        // Conserve disk space by only save the most frequent words for
-        // a single symbol shortcut.
-        if (encodedStr.length === 1 && filename.substr(0, 9) === 'shortcuts') {
-          result[encodedStr] =
-            result[encodedStr].slice(0, SHORTCUT_ENTRY_LENGTH);
+    for (var encodedStr in results) {
+      var result = results[encodedStr].sort(
+        function(a, b) {
+          return (b.score - a.score);
         }
+      );
 
-        result[encodedStr] = new JSZhuyinDataPack(result[encodedStr]);
+      db.put(encodedStr, (new JSZhuyinDataPack(result)).getPacked());
+    }
+
+    for (var encodedStr in shortcutResults) {
+      var result = shortcutResults[encodedStr].sort(
+        function(a, b) {
+          return (b.score - a.score);
+        }
+      );
+
+      // Conserve disk space by only save the most frequent words for
+      // a single symbol shortcut.
+      result = result.slice(0, SHORTCUT_ENTRY_LENGTH);
+
+      db.put(encodedStr, (new JSZhuyinDataPack(result)).getPacked());
+    }
+
+    console.log('Create binary database file...');
+    var blob = db.getBlob();
+
+    console.log('Write file to disk...');
+    fs.writeFile(output, blob,
+      function written(err) {
+        if (err)
+          throw err;
+
+        console.log('Done!');
+        if (callback)
+          callback();
       }
-
-      fs.writeFile(
-        outputDir + '/' + filename + '.json',
-        JSON.stringify(result, null, ' '),
-        function written(err) {
-          if (err)
-            throw err;
-
-          putResult();
-        });
-    };
-
-    putResult();
+    );
   });
 };

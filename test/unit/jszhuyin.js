@@ -93,15 +93,7 @@ test('queue() 3 async actions.', function() {
   queue.queue('c', 'd', 'e');
 });
 
-module('JSZhuyin', {
-  teardown: function() {
-    var IDB = IndexedDBStorage.prototype.IDB;
-    var req = IDB.deleteDatabase('TestDatabase');
-    req.onerror = function() {
-      throw 'Teardown error';
-    };
-  }
-});
+module('JSZhuyin');
 
 test('create instance', function() {
   var ime = new JSZhuyin();
@@ -110,16 +102,11 @@ test('create instance', function() {
 
 test('load()', function() {
   var ime = new JSZhuyin();
-  ime.IDB_NAME = 'TestDatabase';
-  ime.IDB_VERSION = 1;
-  ime.JSON_URL = './resources/';
-  ime.JSON_FILES = ['testdata.json'];
-  expect(4);
-  ime.onchunkload = ime.onpartlyloaded = ime.onload = function(status) {
-    equal(status, ime.status, 'Passed!');
-  };
+  ime.DATA_URL = './resources/testdata.data';
+  expect(2);
   ime.onloadend = function(status) {
-    equal(status, ime.status, 'Passed!');
+    ok(ime.loaded, 'Passed!');
+    ok(ime.storage.loaded, 'Passed!');
     ime.unload();
 
     start();
@@ -131,10 +118,7 @@ test('load()', function() {
 
 test('load() non-exist files', function() {
   var ime = new JSZhuyin();
-  ime.IDB_NAME = 'TestDatabase';
-  ime.IDB_VERSION = 1;
-  ime.JSON_URL = './resources/';
-  ime.JSON_FILES = ['404.json'];
+  ime.DATA_URL = './resources/404.data';
   expect(2);
   ime.onerror = function() {
     ok(true, 'Passed!');
@@ -153,18 +137,15 @@ test('load() non-exist files', function() {
 
 test('query() a word', function() {
   var ime = new JSZhuyin();
-  ime.IDB_NAME = 'TestDatabase';
-  ime.IDB_VERSION = 1;
-  ime.JSON_URL = './resources/';
-  ime.JSON_FILES = ['testdata.json'];
+  ime.DATA_URL = './resources/testdata.data';
   ime.onloadend = function() {
     ime.syllables = 'ㄊㄞˊ';
     expect(1);
     ime.updateCandidates = function(results) {
       deepEqual(results,
         [["台","ప"],["臺","ప"],["抬","ప"],["颱","ప"],["檯","ప"],["苔","ప"],
-         ["跆","ప"],["邰","ప"],["鮐","ప"],["薹","ప"],["嬯","ప"],["秮","ప"],
-         ["旲","ప"],["炱","ప"],["儓","ప"],["駘","ప"],["籉","ప"]],
+         ["跆","ప"],["邰","ప"],["鮐","ప"],["旲","ప"],["炱","ప"],["嬯","ప"],
+         ["儓","ప"],["薹","ప"],["駘","ప"],["籉","ప"],["秮","ప"]],
         'Passed!');
     };
     ime.queue.done = function() {
@@ -181,18 +162,15 @@ test('query() a word', function() {
 
 test('query() the same word twice', function() {
   var ime = new JSZhuyin();
-  ime.IDB_NAME = 'TestDatabase';
-  ime.IDB_VERSION = 1;
-  ime.JSON_URL = './resources/';
-  ime.JSON_FILES = ['testdata.json'];
+  ime.DATA_URL = './resources/testdata.data';
   ime.onloadend = function() {
     ime.syllables = 'ㄊㄞˊ';
     expect(4);
     ime.updateCandidates = function(results) {
       deepEqual(results,
         [["台","ప"],["臺","ప"],["抬","ప"],["颱","ప"],["檯","ప"],["苔","ప"],
-         ["跆","ప"],["邰","ప"],["鮐","ప"],["薹","ప"],["嬯","ప"],["秮","ప"],
-         ["旲","ప"],["炱","ప"],["儓","ప"],["駘","ప"],["籉","ప"]],
+         ["跆","ప"],["邰","ప"],["鮐","ప"],["旲","ప"],["炱","ప"],["嬯","ప"],
+         ["儓","ప"],["薹","ప"],["駘","ప"],["籉","ప"],["秮","ప"]],
         'Passed!');
     };
     ime.cache.cleanup = function mockCleanup(supersetKey) {
@@ -221,10 +199,7 @@ test('query() the same word twice', function() {
 
 test('query() a two-word phrase', function() {
   var ime = new JSZhuyin();
-  ime.IDB_NAME = 'TestDatabase';
-  ime.IDB_VERSION = 1;
-  ime.JSON_URL = './resources/';
-  ime.JSON_FILES = ['testdata.json'];
+  ime.DATA_URL = './resources/testdata.data';
   ime.onloadend = function() {
     ime.syllables = 'ㄊㄞˊㄅㄟˇ';
     expect(1);
@@ -232,8 +207,8 @@ test('query() a two-word phrase', function() {
       deepEqual(results,
         [["台北","పȳ"],
          ["台","ప"],["臺","ప"],["抬","ప"],["颱","ప"],["檯","ప"],["苔","ప"],
-         ["跆","ప"],["邰","ప"],["鮐","ప"],["薹","ప"],["嬯","ప"],["秮","ప"],
-         ["旲","ప"],["炱","ప"],["儓","ప"],["駘","ప"],["籉","ప"]],
+         ["跆","ప"],["邰","ప"],["鮐","ప"],["旲","ప"],["炱","ప"],["嬯","ప"],
+         ["儓","ప"],["薹","ప"],["駘","ప"],["籉","ప"],["秮","ప"]],
         'Passed!');
     };
     ime.queue.done = function() {
@@ -250,10 +225,7 @@ test('query() a two-word phrase', function() {
 
 test('query() a three-word phrase', function() {
   var ime = new JSZhuyin();
-  ime.IDB_NAME = 'TestDatabase';
-  ime.IDB_VERSION = 1;
-  ime.JSON_URL = './resources/';
-  ime.JSON_FILES = ['testdata.json'];
+  ime.DATA_URL = './resources/testdata.data';
   ime.onloadend = function() {
     ime.syllables = 'ㄊㄞˊㄅㄟˇㄕˋ';
     expect(1);
@@ -262,8 +234,8 @@ test('query() a three-word phrase', function() {
         [["台北市","పȳ∄"],["臺北市","పȳ∄"],["台北是","పȳ∄"],
          ["台北","పȳ"],
          ["台","ప"],["臺","ప"],["抬","ప"],["颱","ప"],["檯","ప"],["苔","ప"],
-         ["跆","ప"],["邰","ప"],["鮐","ప"],["薹","ప"],["嬯","ప"],["秮","ప"],
-         ["旲","ప"],["炱","ప"],["儓","ప"],["駘","ప"],["籉","ప"]],
+         ["跆","ప"],["邰","ప"],["鮐","ప"],["旲","ప"],["炱","ప"],["嬯","ప"],
+         ["儓","ప"],["薹","ప"],["駘","ప"],["籉","ప"],["秮","ప"]],
         'Passed!');
     };
     ime.queue.done = function() {
@@ -280,10 +252,7 @@ test('query() a three-word phrase', function() {
 
 test('query() with syllables exceeds MAX_SYLLABLES_LENGTH.', function() {
   var ime = new JSZhuyin();
-  ime.IDB_NAME = 'TestDatabase';
-  ime.IDB_VERSION = 1;
-  ime.JSON_URL = './resources/';
-  ime.JSON_FILES = ['testdata.json'];
+  ime.DATA_URL = './resources/testdata.data';
   ime.MAX_SYLLABLES_LENGTH = 3;
   ime.onloadend = function() {
     ime.syllables = 'ㄊㄞˊㄅㄟˇ';
@@ -298,8 +267,8 @@ test('query() with syllables exceeds MAX_SYLLABLES_LENGTH.', function() {
       deepEqual(results,
         [["台北","పȳ"],
          ["台","ప"],["臺","ప"],["抬","ప"],["颱","ప"],["檯","ప"],["苔","ప"],
-         ["跆","ప"],["邰","ప"],["鮐","ప"],["薹","ప"],["嬯","ప"],["秮","ప"],
-         ["旲","ప"],["炱","ప"],["儓","ప"],["駘","ప"],["籉","ప"]],
+         ["跆","ప"],["邰","ప"],["鮐","ప"],["旲","ప"],["炱","ప"],["嬯","ప"],
+         ["儓","ప"],["薹","ప"],["駘","ప"],["籉","ప"],["秮","ప"]],
         'Passed!');
     };
     ime.queue.done = function() {
@@ -308,8 +277,8 @@ test('query() with syllables exceeds MAX_SYLLABLES_LENGTH.', function() {
         deepEqual(results,
           [["台是","ప∄"],
            ["台","ప"],["臺","ప"],["抬","ప"],["颱","ప"],["檯","ప"],["苔","ప"],
-           ["跆","ప"],["邰","ప"],["鮐","ప"],["薹","ప"],["嬯","ప"],["秮","ప"],
-           ["旲","ప"],["炱","ప"],["儓","ప"],["駘","ప"],["籉","ప"]],
+           ["跆","ప"],["邰","ప"],["鮐","ప"],["旲","ప"],["炱","ప"],["嬯","ప"],
+           ["儓","ప"],["薹","ప"],["駘","ప"],["籉","ప"],["秮","ప"]],
           'Passed!');
       };
       ime.queue.done = function() {
@@ -329,10 +298,7 @@ test('query() with syllables exceeds MAX_SYLLABLES_LENGTH.', function() {
 
 test('query() two words which don\'t made up a phrase', function() {
   var ime = new JSZhuyin();
-  ime.IDB_NAME = 'TestDatabase';
-  ime.IDB_VERSION = 1;
-  ime.JSON_URL = './resources/';
-  ime.JSON_FILES = ['testdata.json'];
+  ime.DATA_URL = './resources/testdata.data';
   ime.onloadend = function() {
     ime.syllables = 'ㄅㄟˇㄕˋ';
     expect(1);
@@ -355,10 +321,7 @@ test('query() two words which don\'t made up a phrase', function() {
 
 test('query() non-exist word', function() {
   var ime = new JSZhuyin();
-  ime.IDB_NAME = 'TestDatabase';
-  ime.IDB_VERSION = 1;
-  ime.JSON_URL = './resources/';
-  ime.JSON_FILES = ['testdata.json'];
+  ime.DATA_URL = './resources/testdata.data';
   ime.onloadend = function() {
     ime.syllables = 'ㄅㄟˊ';
     expect(1);
@@ -381,10 +344,7 @@ test('query() non-exist word', function() {
 
 test('query() non-exist phrase', function() {
   var ime = new JSZhuyin();
-  ime.IDB_NAME = 'TestDatabase';
-  ime.IDB_VERSION = 1;
-  ime.JSON_URL = './resources/';
-  ime.JSON_FILES = ['testdata.json'];
+  ime.DATA_URL = './resources/testdata.data';
   ime.onloadend = function() {
     ime.syllables = 'ㄊㄞˊㄅㄟˊ';
     expect(1);
@@ -392,8 +352,8 @@ test('query() non-exist phrase', function() {
       deepEqual(results,
         [["台ㄅㄟˊ","పȲ"],
          ["台","ప"],["臺","ప"],["抬","ప"],["颱","ప"],["檯","ప"],["苔","ప"],
-         ["跆","ప"],["邰","ప"],["鮐","ప"],["薹","ప"],["嬯","ప"],["秮","ప"],
-         ["旲","ప"],["炱","ప"],["儓","ప"],["駘","ప"],["籉","ప"]],
+         ["跆","ప"],["邰","ప"],["鮐","ప"],["旲","ప"],["炱","ప"],["嬯","ప"],
+         ["儓","ప"],["薹","ప"],["駘","ప"],["籉","ప"],["秮","ప"]],
         'Passed!');
     };
     ime.queue.done = function() {
@@ -410,10 +370,7 @@ test('query() non-exist phrase', function() {
 
 test('updateComposition()', function() {
   var ime = new JSZhuyin();
-  ime.IDB_NAME = 'TestDatabase';
-  ime.IDB_VERSION = 1;
-  ime.JSON_URL = './resources/';
-  ime.JSON_FILES = ['testdata.json'];
+  ime.DATA_URL = './resources/testdata.data';
   expect(1);
   ime.oncompositionupdate = function(composition) {
     equal(composition, 'ㄊㄞˊㄅㄟˇ', 'Passed!');
@@ -431,16 +388,13 @@ test('updateComposition()', function() {
 
 test('updateCandidates()', function() {
   var ime = new JSZhuyin();
-  ime.IDB_NAME = 'TestDatabase';
-  ime.IDB_VERSION = 1;
-  ime.JSON_URL = './resources/';
-  ime.JSON_FILES = ['testdata.json'];
+  ime.DATA_URL = './resources/testdata.data';
   expect(2);
   ime.oncandidateschange = function(results) {
     deepEqual(results,
       [["台","ప"],["臺","ప"],["抬","ప"],["颱","ప"],["檯","ప"],["苔","ప"],
-       ["跆","ప"],["邰","ప"],["鮐","ప"],["薹","ప"],["嬯","ప"],["秮","ప"],
-       ["旲","ప"],["炱","ప"],["儓","ప"],["駘","ప"],["籉","ప"]],
+       ["跆","ప"],["邰","ప"],["鮐","ప"],["薹","ప"],["嬯","ప"],["旲","ప"],
+       ["炱","ప"],["儓","ప"],["駘","ప"],["籉","ప"],["秮","ప"]],
       'Passed!');
     deepEqual(ime.defaultCandidate, ["台","ప"], 'Passed!');
 
@@ -450,8 +404,8 @@ test('updateCandidates()', function() {
   ime.onloadend = function() {
     ime.updateCandidates([
        ["台","ప"],["臺","ప"],["抬","ప"],["颱","ప"],["檯","ప"],["苔","ప"],
-       ["跆","ప"],["邰","ప"],["鮐","ప"],["薹","ప"],["嬯","ప"],["秮","ప"],
-       ["旲","ప"],["炱","ప"],["儓","ప"],["駘","ప"],["籉","ప"]]);
+       ["跆","ప"],["邰","ప"],["鮐","ప"],["薹","ప"],["嬯","ప"],["旲","ప"],
+       ["炱","ప"],["儓","ప"],["駘","ప"],["籉","ప"],["秮","ప"]]);
   };
 
   stop();
@@ -460,10 +414,7 @@ test('updateCandidates()', function() {
 
 test('confirmCandidate()', function() {
   var ime = new JSZhuyin();
-  ime.IDB_NAME = 'TestDatabase';
-  ime.IDB_VERSION = 1;
-  ime.JSON_URL = './resources/';
-  ime.JSON_FILES = ['testdata.json'];
+  ime.DATA_URL = './resources/testdata.data';
   expect(3);
   ime.oncompositionend = function(string) {
     equal(string, '台', 'Passed!');
@@ -487,10 +438,7 @@ test('confirmCandidate()', function() {
 
 test('sendActionHandled()', function() {
   var ime = new JSZhuyin();
-  ime.IDB_NAME = 'TestDatabase';
-  ime.IDB_VERSION = 1;
-  ime.JSON_URL = './resources/';
-  ime.JSON_FILES = ['testdata.json'];
+  ime.DATA_URL = './resources/testdata.data';
   expect(1);
 
   ime.onactionhandled = function(reqId) {
@@ -510,11 +458,8 @@ test('sendActionHandled()', function() {
 
 test('Simple interactive query (send all keys in one action).', function() {
   var ime = new JSZhuyin();
-  ime.IDB_NAME = 'TestDatabase';
-  ime.IDB_VERSION = 1;
-  ime.JSON_URL = './resources/';
-  ime.JSON_FILES = ['testdata.json'];
-  expect(8);
+  ime.DATA_URL = './resources/testdata.data';
+  expect(9);
 
   ime.onloadend = function() {
     var expectedCompositions = ['ㄊ', 'ㄊㄞ', 'ㄊㄞˊ'];
@@ -523,10 +468,16 @@ test('Simple interactive query (send all keys in one action).', function() {
     };
 
     var expectedCandidates = [
-      [["ㄊㄞ", "఩"]],
+      /* 'ㄊ' (shortcut) */
       [["台","ప"],["臺","ప"],["抬","ప"],["颱","ప"],["檯","ప"],["苔","ప"],
-       ["跆","ప"],["邰","ప"],["鮐","ప"],["薹","ప"],["嬯","ప"],["秮","ప"],
-       ["旲","ప"],["炱","ప"],["儓","ప"],["駘","ప"],["籉","ప"]]];
+       ["跆","ప"],["邰","ప"],["鮐","ప"],["旲","ప"],["炱","ప"],["嬯","ప"],
+       ["儓","ప"],["薹","ప"],["駘","ప"],["籉","ప"]],
+      /* 'ㄊㄞ' */
+      [["ㄊㄞ", "఩"]],
+      /* 'ㄊㄞˊ' */
+      [["台","ప"],["臺","ప"],["抬","ప"],["颱","ప"],["檯","ప"],["苔","ప"],
+       ["跆","ప"],["邰","ప"],["鮐","ప"],["旲","ప"],["炱","ప"],["嬯","ప"],
+       ["儓","ప"],["薹","ప"],["駘","ప"],["籉","ప"],["秮","ప"]]];
     ime.oncandidateschange = function(candidates) {
       deepEqual(candidates, expectedCandidates.shift(), 'Passed!');
     };
@@ -535,10 +486,9 @@ test('Simple interactive query (send all keys in one action).', function() {
       function() {
         ok(ime.handleKeyEvent('ㄊ'.charCodeAt(0)), 'Passed!');
         ok(ime.handleKeyEvent('ㄞ'.charCodeAt(0)), 'Passed!');
-      },
-      function() {
         ok(ime.handleKeyEvent('ˊ'.charCodeAt(0)), 'Passed!');
       },
+      function() { },
       function() { }
     ];
     ime.onactionhandled = function() {
@@ -562,10 +512,7 @@ test('Simple interactive query (send all keys in one action).', function() {
 
 test('Run a simple interactive query.', function() {
   var ime = new JSZhuyin();
-  ime.IDB_NAME = 'TestDatabase';
-  ime.IDB_VERSION = 1;
-  ime.JSON_URL = './resources/';
-  ime.JSON_FILES = ['testdata.json'];
+  ime.DATA_URL = './resources/testdata.data';
   expect(9);
 
   ime.onloadend = function() {
@@ -575,11 +522,16 @@ test('Run a simple interactive query.', function() {
     };
 
     var expectedCandidates = [
-      [["ㄊ", "ఀ"]],
-      [["ㄊㄞ", "఩"]],
+      /* 'ㄊ' (shortcut) */
       [["台","ప"],["臺","ప"],["抬","ప"],["颱","ప"],["檯","ప"],["苔","ప"],
-       ["跆","ప"],["邰","ప"],["鮐","ప"],["薹","ప"],["嬯","ప"],["秮","ప"],
-       ["旲","ప"],["炱","ప"],["儓","ప"],["駘","ప"],["籉","ప"]]];
+       ["跆","ప"],["邰","ప"],["鮐","ప"],["旲","ప"],["炱","ప"],["嬯","ప"],
+       ["儓","ప"],["薹","ప"],["駘","ప"],["籉","ప"]],
+      /* 'ㄊㄞ' */
+      [["ㄊㄞ", "఩"]],
+      /* 'ㄊㄞˊ' */
+      [["台","ప"],["臺","ప"],["抬","ప"],["颱","ప"],["檯","ప"],["苔","ప"],
+       ["跆","ప"],["邰","ప"],["鮐","ప"],["旲","ప"],["炱","ప"],["嬯","ప"],
+       ["儓","ప"],["薹","ప"],["駘","ప"],["籉","ప"],["秮","ప"]]];
     ime.oncandidateschange = function(candidates) {
       deepEqual(candidates, expectedCandidates.shift(), 'Passed!');
     };
@@ -616,10 +568,7 @@ test('Run a simple interactive query.', function() {
 
 test('Confirm text with Enter key.', function() {
   var ime = new JSZhuyin();
-  ime.IDB_NAME = 'TestDatabase';
-  ime.IDB_VERSION = 1;
-  ime.JSON_URL = './resources/';
-  ime.JSON_FILES = ['testdata.json'];
+  ime.DATA_URL = './resources/testdata.data';
   expect(14);
 
   ime.onloadend = function() {
@@ -633,13 +582,20 @@ test('Confirm text with Enter key.', function() {
     };
 
     var expectedCandidates = [
-      [["ㄊ", "ఀ"]],
-      [["ㄊㄞ", "఩"]],
+      /* 'ㄊ' (shortcut) */
       [["台","ప"],["臺","ప"],["抬","ప"],["颱","ప"],["檯","ప"],["苔","ప"],
-       ["跆","ప"],["邰","ప"],["鮐","ప"],["薹","ప"],["嬯","ప"],["秮","ప"],
-       ["旲","ప"],["炱","ప"],["儓","ప"],["駘","ప"],["籉","ప"]],
-      [], // Confirm
-      [["北",""],["北市",""]]]; // Suggestions
+       ["跆","ప"],["邰","ప"],["鮐","ప"],["旲","ప"],["炱","ప"],["嬯","ప"],
+       ["儓","ప"],["薹","ప"],["駘","ప"],["籉","ప"]],
+      /* 'ㄊㄞ' */
+      [["ㄊㄞ", "఩"]],
+      /* 'ㄊㄞˊ' */
+      [["台","ప"],["臺","ప"],["抬","ప"],["颱","ప"],["檯","ప"],["苔","ప"],
+       ["跆","ప"],["邰","ప"],["鮐","ప"],["旲","ప"],["炱","ప"],["嬯","ప"],
+       ["儓","ప"],["薹","ప"],["駘","ప"],["籉","ప"],["秮","ప"]],
+      /* Confirm */
+      [],
+      /* Suggestions */
+      [["北",""],["北市",""]]];
     ime.oncandidateschange = function(candidates) {
       deepEqual(candidates, expectedCandidates.shift(), 'Passed!');
     };
@@ -679,10 +635,7 @@ test('Confirm text with Enter key.', function() {
 
 test('Confirm text with a non-Bopomofo key.', function() {
   var ime = new JSZhuyin();
-  ime.IDB_NAME = 'TestDatabase';
-  ime.IDB_VERSION = 1;
-  ime.JSON_URL = './resources/';
-  ime.JSON_FILES = ['testdata.json'];
+  ime.DATA_URL = './resources/testdata.data';
   expect(14);
 
   ime.onloadend = function() {
@@ -696,13 +649,20 @@ test('Confirm text with a non-Bopomofo key.', function() {
     };
 
     var expectedCandidates = [
-      [["ㄊ", "ఀ"]],
-      [["ㄊㄞ", "఩"]],
+      /* 'ㄊ' (shortcut) */
       [["台","ప"],["臺","ప"],["抬","ప"],["颱","ప"],["檯","ప"],["苔","ప"],
-       ["跆","ప"],["邰","ప"],["鮐","ప"],["薹","ప"],["嬯","ప"],["秮","ప"],
-       ["旲","ప"],["炱","ప"],["儓","ప"],["駘","ప"],["籉","ప"]],
-      [], // Confirm
-      []]; // Suggestions
+       ["跆","ప"],["邰","ప"],["鮐","ప"],["旲","ప"],["炱","ప"],["嬯","ప"],
+       ["儓","ప"],["薹","ప"],["駘","ప"],["籉","ప"]],
+      /* 'ㄊㄞ' */
+      [["ㄊㄞ", "఩"]],
+      /* 'ㄊㄞˊ' */
+      [["台","ప"],["臺","ప"],["抬","ప"],["颱","ప"],["檯","ప"],["苔","ప"],
+       ["跆","ప"],["邰","ప"],["鮐","ప"],["旲","ప"],["炱","ప"],["嬯","ప"],
+       ["儓","ప"],["薹","ప"],["駘","ప"],["籉","ప"],["秮","ప"]],
+      /* Confirm */
+      [],
+      /* Suggestions */
+      []];
     ime.oncandidateschange = function(candidates) {
       deepEqual(candidates, expectedCandidates.shift(), 'Passed!');
     };
@@ -742,10 +702,7 @@ test('Confirm text with a non-Bopomofo key.', function() {
 
 test('Don\'t handle Enter key if there is no candidates.', function() {
   var ime = new JSZhuyin();
-  ime.IDB_NAME = 'TestDatabase';
-  ime.IDB_VERSION = 1;
-  ime.JSON_URL = './resources/';
-  ime.JSON_FILES = ['testdata.json'];
+  ime.DATA_URL = './resources/testdata.data';
   expect(1);
 
   ime.onloadend = function() {
@@ -762,10 +719,7 @@ test('Don\'t handle Enter key if there is no candidates.', function() {
 
 test('Confirm text with candidate selection.', function() {
   var ime = new JSZhuyin();
-  ime.IDB_NAME = 'TestDatabase';
-  ime.IDB_VERSION = 1;
-  ime.JSON_URL = './resources/';
-  ime.JSON_FILES = ['testdata.json'];
+  ime.DATA_URL = './resources/testdata.data';
 
   expect(13);
   ime.onloadend = function() {
@@ -779,13 +733,20 @@ test('Confirm text with candidate selection.', function() {
     };
 
     var expectedCandidates = [
-      [["ㄊ", "ఀ"]],
-      [["ㄊㄞ", "఩"]],
+      /* 'ㄊ' (shortcut) */
       [["台","ప"],["臺","ప"],["抬","ప"],["颱","ప"],["檯","ప"],["苔","ప"],
-       ["跆","ప"],["邰","ప"],["鮐","ప"],["薹","ప"],["嬯","ప"],["秮","ప"],
-       ["旲","ప"],["炱","ప"],["儓","ప"],["駘","ప"],["籉","ప"]],
-      [], // Confirm
-      []]; // Suggestions
+       ["跆","ప"],["邰","ప"],["鮐","ప"],["旲","ప"],["炱","ప"],["嬯","ప"],
+       ["儓","ప"],["薹","ప"],["駘","ప"],["籉","ప"]],
+      /* 'ㄊㄞ' */
+      [["ㄊㄞ", "఩"]],
+      /* 'ㄊㄞˊ' */
+      [["台","ప"],["臺","ప"],["抬","ప"],["颱","ప"],["檯","ప"],["苔","ప"],
+       ["跆","ప"],["邰","ప"],["鮐","ప"],["旲","ప"],["炱","ప"],["嬯","ప"],
+       ["儓","ప"],["薹","ప"],["駘","ప"],["籉","ప"],["秮","ప"]],
+      /* Confirm */
+      [],
+      /* Suggestions */
+      []];
     ime.oncandidateschange = function(candidates) {
       deepEqual(candidates, expectedCandidates.shift(), 'Passed!');
     };
@@ -825,10 +786,7 @@ test('Confirm text with candidate selection.', function() {
 
 test('Backspace key cancels the last symbol.', function() {
   var ime = new JSZhuyin();
-  ime.IDB_NAME = 'TestDatabase';
-  ime.IDB_VERSION = 1;
-  ime.JSON_URL = './resources/';
-  ime.JSON_FILES = ['testdata.json'];
+  ime.DATA_URL = './resources/testdata.data';
 
   expect(15);
   ime.onloadend = function() {
@@ -838,18 +796,25 @@ test('Backspace key cancels the last symbol.', function() {
     };
 
     var expectedCandidates = [
-      [["ㄊ", "ఀ"]],
-      [["ㄊㄞ", "఩"]],
+      /* 'ㄊ' (shortcut) */
       [["台","ప"],["臺","ప"],["抬","ప"],["颱","ప"],["檯","ప"],["苔","ప"],
-       ["跆","ప"],["邰","ప"],["鮐","ప"],["薹","ప"],["嬯","ప"],["秮","ప"],
-       ["旲","ప"],["炱","ప"],["儓","ప"],["駘","ప"],["籉","ప"]],
+       ["跆","ప"],["邰","ప"],["鮐","ప"],["旲","ప"],["炱","ప"],["嬯","ప"],
+       ["儓","ప"],["薹","ప"],["駘","ప"],["籉","ప"]],
+      /* 'ㄊㄞ' */
+      [["ㄊㄞ", "఩"]],
+      /* 'ㄊㄞˊ' */
+      [["台","ప"],["臺","ప"],["抬","ప"],["颱","ప"],["檯","ప"],["苔","ప"],
+       ["跆","ప"],["邰","ప"],["鮐","ప"],["旲","ప"],["炱","ప"],["嬯","ప"],
+       ["儓","ప"],["薹","ప"],["駘","ప"],["籉","ప"],["秮","ప"]],
+      /* 'ㄊㄞˊˊ' */
       [["台ˊ","ప"],
        ["台","ప"],["臺","ప"],["抬","ప"],["颱","ప"],["檯","ప"],["苔","ప"],
-       ["跆","ప"],["邰","ప"],["鮐","ప"],["薹","ప"],["嬯","ప"],["秮","ప"],
-       ["旲","ప"],["炱","ప"],["儓","ప"],["駘","ప"],["籉","ప"]],
+       ["跆","ప"],["邰","ప"],["鮐","ప"],["旲","ప"],["炱","ప"],["嬯","ప"],
+       ["儓","ప"],["薹","ప"],["駘","ప"],["籉","ప"],["秮","ప"]],
+      /* 'ㄊㄞˊ' */
       [["台","ప"],["臺","ప"],["抬","ప"],["颱","ప"],["檯","ప"],["苔","ప"],
-       ["跆","ప"],["邰","ప"],["鮐","ప"],["薹","ప"],["嬯","ప"],["秮","ప"],
-       ["旲","ప"],["炱","ప"],["儓","ప"],["駘","ప"],["籉","ప"]]];
+       ["跆","ప"],["邰","ప"],["鮐","ప"],["旲","ప"],["炱","ప"],["嬯","ప"],
+       ["儓","ప"],["薹","ప"],["駘","ప"],["籉","ప"],["秮","ప"]]];
     ime.oncandidateschange = function(candidates) {
       deepEqual(candidates, expectedCandidates.shift(), 'Passed!');
     };
@@ -892,10 +857,7 @@ test('Backspace key cancels the last symbol.', function() {
 
 test('Don\'t handle Backspace key if there is no compositions.', function() {
   var ime = new JSZhuyin();
-  ime.IDB_NAME = 'TestDatabase';
-  ime.IDB_VERSION = 1;
-  ime.JSON_URL = './resources/';
-  ime.JSON_FILES = ['testdata.json'];
+  ime.DATA_URL = './resources/testdata.data';
 
   expect(1);
   ime.onloadend = function() {
