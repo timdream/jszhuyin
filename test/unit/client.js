@@ -38,7 +38,7 @@ test('load()', function() {
 });
 
 
-module('JSZhuyinClient (iframe)');
+module('JSZhuyinClient (worker)');
 
 test('load()', function() {
   var ime = new JSZhuyinClient();
@@ -54,7 +54,7 @@ test('load()', function() {
   };
 
   stop();
-  ime.load(new JSZhuyinServerIframeLoader('../lib/frame.html'), {
+  ime.load(new JSZhuyinServerWorkerLoader('../lib/worker.js'), {
     DATA_URL: '../test/resources/testdata.data'
   });
 });
@@ -79,7 +79,7 @@ test('load() non-exist files', function() {
   };
 
   stop();
-  ime.load(new JSZhuyinServerIframeLoader('../lib/frame.html'), {
+  ime.load(new JSZhuyinServerWorkerLoader('../lib/worker.js'), {
     DATA_URL: '../test/resources/404.data'
   });
 });
@@ -137,7 +137,7 @@ test('Run a simple interactive query.', function() {
   };
 
   stop();
-  ime.load(new JSZhuyinServerIframeLoader('../lib/frame.html'), {
+  ime.load(new JSZhuyinServerWorkerLoader('../lib/worker.js'), {
     DATA_URL: '../test/resources/testdata.data'
   });
 });
@@ -205,7 +205,7 @@ test('Confirm text with Enter key.', function() {
   };
 
   stop();
-  ime.load(new JSZhuyinServerIframeLoader('../lib/frame.html'), {
+  ime.load(new JSZhuyinServerWorkerLoader('../lib/worker.js'), {
     DATA_URL: '../test/resources/testdata.data'
   });
 });
@@ -273,7 +273,7 @@ test('Confirm text with a non-Bopomofo key.', function() {
   };
 
   stop();
-  ime.load(new JSZhuyinServerIframeLoader('../lib/frame.html'), {
+  ime.load(new JSZhuyinServerWorkerLoader('../lib/worker.js'), {
     DATA_URL: '../test/resources/testdata.data'
   });
 });
@@ -291,7 +291,7 @@ test('Don\'t handle Enter key if there is no candidates.', function() {
   };
 
   stop();
-  ime.load(new JSZhuyinServerIframeLoader('../lib/frame.html'), {
+  ime.load(new JSZhuyinServerWorkerLoader('../lib/worker.js'), {
     DATA_URL: '../test/resources/testdata.data'
   });
 });
@@ -359,7 +359,7 @@ test('Confirm text with candidate selection.', function() {
   };
 
   stop();
-  ime.load(new JSZhuyinServerIframeLoader('../lib/frame.html'), {
+  ime.load(new JSZhuyinServerWorkerLoader('../lib/worker.js'), {
     DATA_URL: '../test/resources/testdata.data'
   });
 });
@@ -431,7 +431,7 @@ test('Backspace key cancels the last symbol.', function() {
   };
 
   stop();
-  ime.load(new JSZhuyinServerIframeLoader('../lib/frame.html'), {
+  ime.load(new JSZhuyinServerWorkerLoader('../lib/worker.js'), {
     DATA_URL: '../test/resources/testdata.data'
   });
 });
@@ -449,7 +449,7 @@ test('Don\'t handle Backspace key if there is no compositions.', function() {
   };
 
   stop();
-  ime.load(new JSZhuyinServerIframeLoader('../lib/frame.html'), {
+  ime.load(new JSZhuyinServerWorkerLoader('../lib/worker.js'), {
     DATA_URL: '../test/resources/testdata.data'
   });
 });
