@@ -151,10 +151,6 @@
       margin-top: 3px;
       width: 1.5em;
     }
-
-    iframe {
-      display: none;
-    }
   </style>
 </head>
 <body>
@@ -219,7 +215,7 @@
 
       var client = new JSZhuyinClient();
       client.load(
-        new JSZhuyinServerIframeLoader(),
+        new JSZhuyinServerWorkerLoader(),
         {
           'REORDER_SYMBOLS': true
         });
