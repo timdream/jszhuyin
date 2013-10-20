@@ -111,6 +111,20 @@ test('get()', function() {
   storage.load();
 });
 
+test('get() (not found)', function() {
+  var storage = new BinStorage();
+  storage.DATA_URL = './resources/test.data';
+  expect(1);
+  storage.onloadend = function() {
+    var value = storage.get(String.fromCharCode(0x41, 0x42, 0x45));
+    equal(value, undefined, 'Passed!');
+    start();
+  };
+
+  stop();
+  storage.load();
+});
+
 test('getRange()', function() {
   var storage = new BinStorage();
   storage.DATA_URL = './resources/test.data';
@@ -121,6 +135,22 @@ test('getRange()', function() {
     var value = storage.getRange(String.fromCharCode(0x41, 0x42));
     equal(value.length, 1, 'Passed!');
     deepEqual(arrayBufferToArray(value[0]), resArray0, 'Passed!');
+    start();
+  };
+
+  stop();
+  storage.load();
+});
+
+test('getRange() (not found)', function() {
+  var storage = new BinStorage();
+  storage.DATA_URL = './resources/test.data';
+  expect(1);
+  var resArray0 = arrayBufferToArray(
+      (new Uint16Array([0x6666, 0x7777, 0x8888, 0x9999])).buffer);
+  storage.onloadend = function() {
+    var value = storage.getRange(String.fromCharCode(0x41, 0x42, 0x45));
+    deepEqual([], [], 'Passed!');
     start();
   };
 
