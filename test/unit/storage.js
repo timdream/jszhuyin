@@ -102,10 +102,9 @@ test('get()', function() {
   var resArray = arrayBufferToArray(
     (new Uint16Array([0x6666, 0x7777, 0x8888, 0x9999])).buffer);
   storage.onloadend = function() {
-    storage.get(String.fromCharCode(0x41, 0x42, 0x43), function(value) {
-      deepEqual(arrayBufferToArray(value), resArray, 'Passed!');
-      start();
-    });
+    var value = storage.get(String.fromCharCode(0x41, 0x42, 0x43));
+    deepEqual(arrayBufferToArray(value), resArray, 'Passed!');
+    start();
   };
 
   stop();
@@ -119,11 +118,10 @@ test('getRange()', function() {
   var resArray0 = arrayBufferToArray(
       (new Uint16Array([0x6666, 0x7777, 0x8888, 0x9999])).buffer);
   storage.onloadend = function() {
-    storage.getRange(String.fromCharCode(0x41, 0x42), function(value) {
-      equal(value.length, 1, 'Passed!');
-      deepEqual(arrayBufferToArray(value[0]), resArray0, 'Passed!');
-      start();
-    });
+    var value = storage.getRange(String.fromCharCode(0x41, 0x42));
+    equal(value.length, 1, 'Passed!');
+    deepEqual(arrayBufferToArray(value[0]), resArray0, 'Passed!');
+    start();
   };
 
   stop();
