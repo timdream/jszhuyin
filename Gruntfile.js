@@ -17,6 +17,14 @@ module.exports = function(grunt) {
           stderr: true,
           failOnError: true
         }
+      },
+      'qunit-slimerjs': {
+        command: './build/run-slimerjs.sh http://localhost:' + HTTPD_PORT + '/test/',
+        options: {
+          stdout: true,
+          stderr: true,
+          failOnError: true
+        }
       }
     },
     connect: {
@@ -43,8 +51,11 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-qunit');
   grunt.loadNpmTasks('grunt-contrib-connect');
 
-  // Run the test suite with QUnit on PhantomJS
-  grunt.registerTask('test', ['connect', 'qunit']);
+  // Run the test suite with QUnit on PhantomJS (currently broken.)
+  grunt.registerTask('test-phantomjs', ['connect', 'qunit']);
+
+  // Run the test suite with QUnit on SlimerJS
+  grunt.registerTask('test', ['connect', 'shell:qunit-slimerjs']);
 
   // Pull data from McBopomofo repo and convert them to JSON.
   grunt.registerTask('data', ['shell:data', 'convert-data', 'clean:data']);

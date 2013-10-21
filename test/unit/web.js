@@ -87,6 +87,15 @@ test('endComposition(empty contenteditable)', function() {
   document.body.appendChild(input);
   input.focus();
 
+  // Force selection range to the focused element.
+  // (needed for SlimerJS)
+  var sel = window.getSelection();
+  var range = document.createRange();
+  range.setStart(input, 0);
+  range.collapse(true);
+  sel.removeAllRanges();
+  sel.addRange(range);
+
   var elements = {
     input: input,
     composition: document.createElement('p'),
