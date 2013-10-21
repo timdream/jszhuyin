@@ -1,4 +1,4 @@
-# JSZhuyin - JS 注音 [![Build Status](https://travis-ci.org/timream/jszhuyin.png)](https://travis-ci.org/timream/jszhuyin)
+# JSZhuyin - JS 注音 [![Build Status](https://travis-ci.org/timdream/jszhuyin.png)](https://travis-ci.org/timdream/jszhuyin)
 
 "Smart" Chinese Zhuyin Input Method in Javascript. Javascript 自動選字注音輸入法。[示範網頁](http://timdream.org/jszhuyin/)。
 
