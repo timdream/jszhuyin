@@ -6,7 +6,7 @@ var arrayBufferToArray = function arrayBufferToArray(buf) {
     return buf;
 
   if (buf.byteLength % Uint16Array.BYTES_PER_ELEMENT)
-    throw 'byteLength (' + buf.byteLength + ') is not divisible by 4.';
+    throw 'byteLength (' + buf.byteLength + ') is not dividable by 2.';
 
   return Array.prototype.concat.apply([], new Uint16Array(buf))
     .map(function(n) {
@@ -20,7 +20,7 @@ var arrayBufferToString = function arrayBufferToArray(buf) {
     return buf;
 
   if (buf.byteLength % Uint16Array.BYTES_PER_ELEMENT)
-    throw 'byteLength (' + buf.byteLength + ') is not divisible by 4.';
+    throw 'byteLength (' + buf.byteLength + ') is not dividable by 2.';
 
   return String.fromCharCode.apply(String, new Uint16Array(buf));
 };
