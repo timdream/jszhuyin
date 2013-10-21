@@ -95,10 +95,10 @@ module['exports'] = function convertData(filename, output, callback) {
       db.put(encodedStr, (new JSZhuyinDataPack(result)).getPacked());
     }
 
-    console.log('Create binary database file...');
+    console.log('Creating binary database file ...');
     var blob = db.getBlob();
 
-    console.log('Write file to disk...');
+    console.log('Writing file to disk ...');
     fs.writeFile(output, blob,
       function written(err) {
         if (err)
