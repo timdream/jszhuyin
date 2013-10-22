@@ -28,10 +28,11 @@ test('load()', function() {
         0x0000,         // pad
         0x0018, 0x0000, // Table1 ptr table, ptr to table2 (32bit LE)
 
-        0x0001, 0x0005, // Table2 header
-        0x1111, 0x2222, 0x3333, 0x4444, 0x5555, // Table2 content
+        0x0001, 0x0006, // Table2 header
+        0x1111, 0x2222, 0x3333, 0x4444, 0x5555, 0x0, // Table2 content
         0x0043,         // Table2 key table
-        0x002c, 0x0000, // Table2 ptr table, ptr to table3 (32bit LE)
+        0x0000,         // pad
+        0x0030, 0x0000, // Table2 ptr table, ptr to table3 (32bit LE)
 
         0x0000, 0x0004, // Table3 header
         0x6666, 0x7777, 0x8888, 0x9999 // Table3 content
@@ -77,10 +78,11 @@ test('unload()', function() {
         0x0000,         // pad
         0x0018, 0x0000, // Table1 ptr table, ptr to table2 (32bit LE)
 
-        0x0001, 0x0005, // Table2 header
-        0x1111, 0x2222, 0x3333, 0x4444, 0x5555, // Table2 content
+        0x0001, 0x0006, // Table2 header
+        0x1111, 0x2222, 0x3333, 0x4444, 0x5555, 0x0, // Table2 content
         0x0043,         // Table2 key table
-        0x002c, 0x0000, // Table2 ptr table, ptr to table3 (32bit LE)
+        0x0000,         // pad
+        0x0030, 0x0000, // Table2 ptr table, ptr to table3 (32bit LE)
 
         0x0000, 0x0004, // Table3 header
         0x6666, 0x7777, 0x8888, 0x9999 // Table3 content
@@ -98,12 +100,32 @@ test('unload()', function() {
 test('get()', function() {
   var storage = new BinStorage();
   storage.DATA_URL = './resources/test.data';
-  expect(1);
-  var resArray = arrayBufferToArray(
-    (new Uint16Array([0x6666, 0x7777, 0x8888, 0x9999])).buffer);
+  expect(3);
   storage.onloadend = function() {
     var value = storage.get(String.fromCharCode(0x41, 0x42, 0x43));
-    deepEqual(arrayBufferToArray(value), resArray, 'Passed!');
+    deepEqual(arrayBufferToArray(value[0]),
+      arrayBufferToArray((new Uint16Array([
+        0x0001, 0x0000, // Table0 header
+        0x0041,         // Table0 key table
+        0x0000,         // pad
+        0x000c, 0x0000, // Table0 ptr table, ptr to table1 (32bit LE)
+
+        0x0001, 0x0000, // Table1 header
+        0x0042,         // Table1 key table
+        0x0000,         // pad
+        0x0018, 0x0000, // Table1 ptr table, ptr to table2 (32bit LE)
+
+        0x0001, 0x0006, // Table2 header
+        0x1111, 0x2222, 0x3333, 0x4444, 0x5555, 0x0, // Table2 content
+        0x0043,         // Table2 key table
+        0x0000,         // pad
+        0x0030, 0x0000, // Table2 ptr table, ptr to table3 (32bit LE)
+
+        0x0000, 0x0004, // Table3 header
+        0x6666, 0x7777, 0x8888, 0x9999 // Table3 content
+      ])).buffer), 'Passed!');
+    equal(value[1], 0x34 /* start address of Table3 content */, 'Passed!');
+    equal(value[2], 4 /* length of Table3 content */, 'Passed!');
     start();
   };
 
@@ -128,13 +150,33 @@ test('get() (not found)', function() {
 test('getRange()', function() {
   var storage = new BinStorage();
   storage.DATA_URL = './resources/test.data';
-  expect(2);
-  var resArray0 = arrayBufferToArray(
-      (new Uint16Array([0x6666, 0x7777, 0x8888, 0x9999])).buffer);
+  expect(4);
   storage.onloadend = function() {
     var value = storage.getRange(String.fromCharCode(0x41, 0x42));
     equal(value.length, 1, 'Passed!');
-    deepEqual(arrayBufferToArray(value[0]), resArray0, 'Passed!');
+    deepEqual(arrayBufferToArray(value[0][0]),
+      arrayBufferToArray((new Uint16Array([
+        0x0001, 0x0000, // Table0 header
+        0x0041,         // Table0 key table
+        0x0000,         // pad
+        0x000c, 0x0000, // Table0 ptr table, ptr to table1 (32bit LE)
+
+        0x0001, 0x0000, // Table1 header
+        0x0042,         // Table1 key table
+        0x0000,         // pad
+        0x0018, 0x0000, // Table1 ptr table, ptr to table2 (32bit LE)
+
+        0x0001, 0x0006, // Table2 header
+        0x1111, 0x2222, 0x3333, 0x4444, 0x5555, 0x0, // Table2 content
+        0x0043,         // Table2 key table
+        0x0000,         // pad
+        0x0030, 0x0000, // Table2 ptr table, ptr to table3 (32bit LE)
+
+        0x0000, 0x0004, // Table3 header
+        0x6666, 0x7777, 0x8888, 0x9999 // Table3 content
+      ])).buffer), 'Passed!');
+    equal(value[0][1], 0x34 /* start address of Table3 content */, 'Passed!');
+    equal(value[0][2], 4 /* length of Table3 content */, 'Passed!');
     start();
   };
 

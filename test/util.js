@@ -22,5 +22,6 @@ var arrayBufferToString = function arrayBufferToArray(buf) {
   if (buf.byteLength % Uint16Array.BYTES_PER_ELEMENT)
     throw 'byteLength (' + buf.byteLength + ') is not dividable by 2.';
 
-  return String.fromCharCode.apply(String, new Uint16Array(buf));
+  return String.fromCharCode.apply(String, new Uint16Array(buf))
+    .replace('\u0000', '\u2400');
 };

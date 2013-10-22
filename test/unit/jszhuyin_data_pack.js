@@ -27,13 +27,32 @@ module('JSZhuyinDataPack');
 
 test('construct with packed array buffer.', function() {
   var buf =
-    Uint16Array([0x0fdb, 0x4049 /* (new Float32Array([3.1415927410125732])) */,
+    Uint16Array([0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
                  0x42 /* B */,
-                 0x53f0, 0x5317, 0x53f0, 0x23, 0x53f0, 0x7063 /* 台北台#台灣 */])
+                 0x53f0, 0x5317, 0x53f0, 0x0, 0x53f0, 0x7063, /* 台北台NUL台灣 */
+                 0x0 /* pad */])
     .buffer;
   var data = new JSZhuyinDataPack(buf);
   deepEqual(
     arrayBufferToString(data.packed), arrayBufferToString(buf), 'Passed!');
+  equal(data.byteOffset, 0, 'Passed!');
+  equal(data.length, 10, 'Passed!');
+});
+
+test('construct with packed array buffer (byteOffset !== 0).', function() {
+  var buf =
+    Uint16Array([0x9999, 0x9999, 0x9999, 0x9999,
+                 0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
+                 0x42 /* B */,
+                 0x53f0, 0x5317, 0x53f0, 0x0, 0x53f0, 0x7063, /* 台北台NUL台灣 */
+                 0x0,
+                 0x9999, 0x9999, 0x9999, 0x9999 /* pad */])
+    .buffer;
+  var data = new JSZhuyinDataPack(buf, 8, 10);
+  deepEqual(
+    arrayBufferToString(data.packed), arrayBufferToString(buf), 'Passed!');
+  equal(data.byteOffset, 8, 'Passed!');
+  equal(data.length, 10, 'Passed!');
 });
 
 test('construct with structured data.', function() {
@@ -54,10 +73,31 @@ test('unpack()', function() {
   var buf =
     Uint16Array([0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
                  0x42 /* B */,
-                 0x53f0, 0x5317, 0x53f0, 0x23, 0x53f0, 0x7063 /* 台北台#台灣 */])
+                 0x53f0, 0x5317, 0x53f0, 0x0, 0x53f0, 0x7063, /* 台北台NUL台灣 */
+                 0x0 /* pad */])
       .buffer;
 
   var data = new JSZhuyinDataPack(buf);
+  data.unpack();
+
+  deepEqual(data.unpacked, [
+    { str: '台北', score: -3.1415927410125732 },
+    { str: '台' },
+    { str: '台灣' }
+  ], 'Passed!');
+});
+
+test('unpack() (byteOffset !== 0)', function() {
+  var buf =
+    Uint16Array([0x9999, 0x9999, 0x9999, 0x9999,
+                 0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
+                 0x42 /* B */,
+                 0x53f0, 0x5317, 0x53f0, 0x0, 0x53f0, 0x7063, /* 台北台NUL台灣 */
+                 0x0,
+                 0x9999, 0x9999, 0x9999, 0x9999 /* pad */])
+      .buffer;
+
+  var data = new JSZhuyinDataPack(buf, 8, 10);
   data.unpack();
 
   deepEqual(data.unpacked, [
@@ -71,8 +111,9 @@ test('unpack() with symbols', function() {
   var buf =
     Uint16Array([0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
                  0x62 /* b */,
-                 0x53f0, 0x5317, 0xc2a, 0x233, 0x53f0, 0x23, 0xc2a, 0x7e,
-                 0x53f0, 0x7063, 0xc2a, 0x149] /* 台北పȳ台#ప~台灣పŉ */).buffer;
+                 0x53f0, 0x5317, 0xc2a, 0x233, 0x53f0, 0x0, 0xc2a, 0x0,
+                 0x53f0, 0x7063, 0xc2a, 0x149,  /* 台北పȳ台NULపNUL台灣పŉ */
+                 0x0 /* pad */]).buffer;
   var data = new JSZhuyinDataPack(buf);
   data.unpack();
 
@@ -89,7 +130,8 @@ test('pack()', function() {
   var buf =
     Uint16Array([0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
                  0x42 /* B */,
-                 0x53f0, 0x5317, 0x53f0, 0x23, 0x53f0, 0x7063 /* 台北台#台灣 */])
+                 0x53f0, 0x5317, 0x53f0, 0x0, 0x53f0, 0x7063, /* 台北台NUL台灣 */
+                 0x0 /* pad */])
       .buffer;
   var data = new JSZhuyinDataPack([
     { str: '台北', score: -3.1415927410125732 },
@@ -100,14 +142,17 @@ test('pack()', function() {
 
   deepEqual(
     arrayBufferToString(data.packed), arrayBufferToString(buf), 'Passed!');
+  equal(data.byteOffset, 0, 'Passed!');
+  equal(data.length, 10, 'Passed!');
 });
 
 test('pack() with symbols', function() {
   var buf =
     Uint16Array([0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
                  0x62 /* b */,
-                 0x53f0, 0x5317, 0xc2a, 0x233, 0x53f0, 0x23, 0xc2a, 0x7e,
-                 0x53f0, 0x7063, 0xc2a, 0x149] /* 台北పȳ台#ప~台灣పŉ */).buffer;
+                 0x53f0, 0x5317, 0xc2a, 0x233, 0x53f0, 0x0, 0xc2a, 0x0,
+                 0x53f0, 0x7063, 0xc2a, 0x149,  /* 台北పȳ台NULపNUL台灣పŉ */
+                 0x0 /* pad */]).buffer;
   var data = new JSZhuyinDataPack([
     { str: '台北',
       symbols: 'పȳ',
@@ -126,7 +171,8 @@ test('getResults()', function() {
   var buf =
     Uint16Array([0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
                  0x42 /* B */,
-                 0x53f0, 0x5317, 0x53f0, 0x23, 0x53f0, 0x7063 /* 台北台#台灣 */])
+                 0x53f0, 0x5317, 0x53f0, 0x0, 0x53f0, 0x7063, /* 台北台NUL台灣 */
+                 0x0 /* pad */])
       .buffer;
   var data = new JSZhuyinDataPack(buf);
   deepEqual(data.getResults(), [
@@ -140,7 +186,8 @@ test('getPacked()', function() {
   var buf =
     Uint16Array([0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
                  0x42 /* B */,
-                 0x53f0, 0x5317, 0x53f0, 0x23, 0x53f0, 0x7063 /* 台北台#台灣 */])
+                 0x53f0, 0x5317, 0x53f0, 0x0, 0x53f0, 0x7063, /* 台北台NUL台灣 */
+                 0x0 /* pad */])
       .buffer;
   var data = new JSZhuyinDataPack([
     { str: '台北', score: -3.1415927410125732 },
@@ -154,7 +201,8 @@ test('getFirstResult()', function() {
   var buf =
     Uint16Array([0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
                  0x42 /* B */,
-                 0x53f0, 0x5317, 0x53f0, 0x23, 0x53f0, 0x7063 /* 台北台#台灣 */])
+                 0x53f0, 0x5317, 0x53f0, 0x0, 0x53f0, 0x7063, /* 台北台NUL台灣 */
+                 0x0 /* pad */])
       .buffer;
   var data = new JSZhuyinDataPack(buf);
   deepEqual(data.getFirstResult(),
@@ -166,8 +214,9 @@ test('getFirstResult() with symbols', function() {
   var buf =
     Uint16Array([0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
                  0x62 /* b */,
-                 0x53f0, 0x5317, 0xc2a, 0x233, 0x53f0, 0x23, 0xc2a, 0x7e,
-                 0x53f0, 0x7063, 0xc2a, 0x149] /* 台北పȳ台#ప~台灣పŉ */).buffer;
+                 0x53f0, 0x5317, 0xc2a, 0x233, 0x53f0, 0x0, 0xc2a, 0x0,
+                 0x53f0, 0x7063, 0xc2a, 0x149,  /* 台北పȳ台NULపNUL台灣పŉ */
+                 0x0 /* pad */]).buffer;
   var data = new JSZhuyinDataPack(buf);
   deepEqual(data.getFirstResult(),
     { str: '台北',
@@ -180,7 +229,8 @@ test('getFirstResultScore()', function() {
   var buf =
     Uint16Array([0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
                  0x42 /* B */,
-                 0x53f0, 0x5317, 0x53f0, 0x23, 0x53f0, 0x7063 /* 台北台#台灣 */])
+                 0x53f0, 0x5317, 0x53f0, 0x0, 0x53f0, 0x7063, /* 台北台NUL台灣 */
+                 0x0 /* pad */])
       .buffer;
   var data = new JSZhuyinDataPack(buf);
   equal(data.getFirstResultScore(),
