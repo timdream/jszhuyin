@@ -68,10 +68,10 @@ DatabaseBuilder.prototype.getBlob = function bsb_getBlob() {
     var header = new Uint16Array(
       [keyTable.length, 0]);
     if (content) {
-      header[1] = content.byteLength / Uint16Array.BYTES_PER_ELEMENT;
+      header[1] = content.byteLength / (Uint16Array.BYTES_PER_ELEMENT || 2);
     }
     blobParts.push(header);
-    blobLength += header.length * header.BYTES_PER_ELEMENT;
+    blobLength += header.length * (header.BYTES_PER_ELEMENT || 2);
 
     if (content) {
       blobParts.push(content);
@@ -81,17 +81,17 @@ DatabaseBuilder.prototype.getBlob = function bsb_getBlob() {
 
     var keyArr = new Uint16Array(keyTable);
     blobParts.push(keyArr);
-    blobLength += keyArr.length * keyArr.BYTES_PER_ELEMENT;
+    blobLength += keyArr.length * (keyArr.BYTES_PER_ELEMENT || 2);
 
-    if (blobLength % Uint32Array.BYTES_PER_ELEMENT) {
+    if (blobLength % (Uint32Array.BYTES_PER_ELEMENT || 2)) {
       var padArr = new Uint16Array(1);
       blobParts.push(padArr);
-      blobLength += 1 * keyArr.BYTES_PER_ELEMENT;
+      blobLength += 1 * (keyArr.BYTES_PER_ELEMENT || 2);
     }
 
     var ptrArr = new Uint32Array(ptrTable.length);
     blobParts.push(ptrArr);
-    blobLength += ptrArr.length * ptrArr.BYTES_PER_ELEMENT;
+    blobLength += ptrArr.length * (ptrArr.BYTES_PER_ELEMENT || 4);
 
     for (var i = 0; i < ptrTable.length; i++) {
       var ptr = appendTableToBlob(ptrTable[i]);
@@ -106,7 +106,16 @@ DatabaseBuilder.prototype.getBlob = function bsb_getBlob() {
 
   appendTableToBlob(this.data);
 
-  if (typeof Blob === 'function') {
+  var supportsBlobConstructor = (function(){
+    try {
+      new Blob([]);
+    } catch (e) {
+      return false;
+    }
+    return true;
+  })();
+
+  if (supportsBlobConstructor) {
     // Blob in browsers
     return new Blob(blobParts,
       { type: 'application/octet-stream', ending: 'transparent' });
