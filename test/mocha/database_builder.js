@@ -1,6 +1,11 @@
 'use strict';
 
-module('DatabaseBuilder');
+var assert = require('assert');
+var utils = require('../util.js');
+
+var DatabaseBuilder = require('../../build/database_builder.js');
+
+suite('DatabaseBuilder');
 
 test('put()', function() {
   var buf1 = (new Uint16Array([0x1111, 0x2222, 0x3333, 0x4444, 0x5555])).buffer;
@@ -14,7 +19,7 @@ test('put()', function() {
   db.put(String.fromCharCode(0x41, 0x42), buf1);
   db.put(String.fromCharCode(0x41, 0x42, 0x43), buf2);
 
-  deepEqual(db.data, res, 'Pass!');
+  assert.deepEqual(db.data, res, 'Pass!');
 });
 
 test('get()', function() {
@@ -28,8 +33,8 @@ test('get()', function() {
   var db = new DatabaseBuilder();
   db.data = res;
 
-  deepEqual(db.get(String.fromCharCode(0x41, 0x42)), buf1, 'Pass!');
-  deepEqual(db.get(String.fromCharCode(0x41, 0x42, 0x43)), buf2, 'Pass!');
+  assert.deepEqual(db.get(String.fromCharCode(0x41, 0x42)), buf1, 'Pass!');
+  assert.deepEqual(db.get(String.fromCharCode(0x41, 0x42, 0x43)), buf2, 'Pass!');
 });
 
 test('getBlob()', function() {
@@ -40,7 +45,7 @@ test('getBlob()', function() {
   res[0x41][0x42] = [buf1];
   res[0x41][0x42][0x43] = [buf2];
 
-  var resArray = arrayBufferToArray((new Uint16Array([
+  var resArray = utils.arrayBufferToArray((new Uint16Array([
     0x0001, 0x0000, // Table0 header
     0x0041,         // Table0 key table
     0x0000,         // pad
@@ -64,14 +69,7 @@ test('getBlob()', function() {
   db.put(String.fromCharCode(0x41, 0x42), buf1);
   db.put(String.fromCharCode(0x41, 0x42, 0x43), buf2);
 
-  var blob = db.getBlob();
+  var buffer = db.getBlob();
 
-  var reader = new FileReader();
-  reader.addEventListener("loadend", function() {
-    deepEqual(arrayBufferToArray(reader.result), resArray, 'Pass!');
-
-    start();
-  });
-  reader.readAsArrayBuffer(blob);
-  stop();
+  assert.deepEqual(utils.bufferToArray(buffer), resArray, 'Pass!');
 });

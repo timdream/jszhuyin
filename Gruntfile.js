@@ -42,20 +42,34 @@ module.exports = function(grunt) {
           ]
         }
       }
+    },
+    mochaTest: {
+      test: {
+        options: {
+          reporter: 'dot',
+          ui: 'qunit'
+        },
+        src: ['test/mocha/*.js']
+      }
     }
   });
 
   grunt.loadNpmTasks('grunt-shell');
   grunt.loadNpmTasks('grunt-contrib-clean');
 
+  grunt.loadNpmTasks('grunt-mocha-test');
+
   grunt.loadNpmTasks('grunt-contrib-qunit');
   grunt.loadNpmTasks('grunt-contrib-connect');
+
+  // Run tests
+  grunt.registerTask('test', ['mochaTest', 'test-slimerjs']);
 
   // Run the test suite with QUnit on PhantomJS (currently broken.)
   grunt.registerTask('test-phantomjs', ['connect', 'qunit']);
 
   // Run the test suite with QUnit on SlimerJS
-  grunt.registerTask('test', ['connect', 'shell:qunit-slimerjs']);
+  grunt.registerTask('test-slimerjs', ['connect', 'shell:qunit-slimerjs']);
 
   // Pull data from McBopomofo repo and convert them to JSON.
   grunt.registerTask('data', ['shell:data', 'convert-data', 'clean:data']);
