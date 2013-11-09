@@ -11,7 +11,7 @@ branches:
 before_script:
   - "sh -e /etc/init.d/xvfb start"
   - "echo 'Installing SlimerJS'"
-  - "wget http://download.slimerjs.org/v0.8/slimerjs-0.8.3.zip"
+  - "wget http://download.slimerjs.org/v0.8/0.8.3/slimerjs-0.8.3.zip"
   - "unzip slimerjs-0.8.3.zip"
   - "mv slimerjs-0.8.3 ./slimerjs"
   - "echo 'Installing Grunt'"
