@@ -19,7 +19,8 @@ module.exports = function(grunt) {
         }
       },
       'qunit-slimerjs': {
-        command: './build/run-slimerjs.sh http://localhost:' + HTTPD_PORT + '/test/',
+        command: './build/run-slimerjs.sh ' +
+          'http://localhost:' + HTTPD_PORT + '/test/',
         options: {
           stdout: true,
           stderr: true,
@@ -51,8 +52,16 @@ module.exports = function(grunt) {
         },
         src: ['test/mocha/*.js']
       }
+    },
+    jshint: {
+      options: {
+        jshintrc: true
+      },
+      all: ['Gruntfile.js', 'lib/**/*.js', 'test/**/*.js']
     }
   });
+
+  grunt.loadNpmTasks('grunt-contrib-jshint');
 
   grunt.loadNpmTasks('grunt-shell');
   grunt.loadNpmTasks('grunt-contrib-clean');
@@ -63,7 +72,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-connect');
 
   // Run tests
-  grunt.registerTask('test', ['mochaTest', 'test-slimerjs']);
+  grunt.registerTask('test', ['mochaTest', 'jshint', 'test-slimerjs']);
 
   // Run the test suite with QUnit on PhantomJS (currently broken.)
   grunt.registerTask('test-phantomjs', ['connect', 'qunit']);
