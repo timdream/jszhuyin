@@ -1,5 +1,7 @@
 'use strict';
 
+/* global BopomofoEncoder */
+
 module('BopomofoEncoder');
 
 test('encode() should follow the original spec.', function() {
@@ -24,7 +26,8 @@ test('encode() should encode multiple partial symbols.', function() {
   equal(str, 'ἄÐ∀␀ࠀ', 'Passed!');
 });
 
-test('encode() should encode multiple partial symbols with \'tone\' set to \'all\'.', function() {
+test('encode() should encode multiple partial symbols ' +
+    'with \'tone\' set to \'all\'.', function() {
   var syllablesStr = 'ㄓㄨˋㄧㄣㄕㄖㄈ';
   var str = BopomofoEncoder.encode(syllablesStr, { tone: 'all' });
 
@@ -32,16 +35,19 @@ test('encode() should encode multiple partial symbols with \'tone\' set to \'all
   equal(str, 'ἄÑ∁␁ࠁ', 'Passed!');
 });
 
-test('encode() should encode multiple partial symbols with \'tone\' set to \'more-than-one-symbol\'.', function() {
+test('encode() should encode multiple partial symbols ' +
+    'with \'tone\' set to \'more-than-one-symbol\'.', function() {
   var syllablesStr = 'ㄓㄨˋㄧㄣㄕㄖㄈ';
-  var str = BopomofoEncoder.encode(syllablesStr, { tone: 'more-than-one-symbol' });
+  var str =
+    BopomofoEncoder.encode(syllablesStr, { tone: 'more-than-one-symbol' });
 
   // ㄓㄨˋㄧㄣˉㄕㄖㄈ
   equal(str, 'ἄÑ∀␀ࠀ', 'Passed!');
 });
 
 
-test('encode() should encode multiple partial symbols with correct order if \'reorder\' is set to \'true\'.', function() {
+test('encode() should encode multiple partial symbols ' +
+    'with correct order if \'reorder\' is set to \'true\'.', function() {
   var syllablesStr = 'ㄨㄓˋㄧㄣㄕㄖㄈ';
   var str = BopomofoEncoder.encode(syllablesStr, { reorder: true });
 
@@ -49,10 +55,11 @@ test('encode() should encode multiple partial symbols with correct order if \'re
   equal(str, 'ἄ⋐␀ࠀ', 'Passed!');
 });
 
-test('encode() should throw if syllablesStr contains illegal symbol.', function() {
+test('encode() should throw if syllablesStr contains illegal symbol.',
+function() {
   var syllablesStr = 'Hello world!';
   try {
-    var str = BopomofoEncoder.encode(syllablesStr);
+    BopomofoEncoder.encode(syllablesStr);
   } catch (e) {
     ok(true, 'Passed!');
     return;
@@ -98,7 +105,8 @@ test('isBopomofoSymbol() should work with Bopomofo symbol string.', function() {
   equal(flag, false, 'Passed!');
 });
 
-test('isBopomofoSymbol() should work with non-Bopomofo symbol code.', function() {
+test('isBopomofoSymbol() should work with non-Bopomofo symbol code.',
+function() {
   var flag = BopomofoEncoder.isBopomofoSymbol(('x').charCodeAt(0));
 
   equal(flag, false, 'Passed!');

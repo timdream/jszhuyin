@@ -2,23 +2,26 @@
 
 var arrayBufferToArray = function arrayBufferToArray(buf) {
   if (typeof buf === 'undefined' ||
-      buf.constructor !== ArrayBuffer)
+      buf.constructor !== ArrayBuffer) {
     return buf;
+  }
 
-  if (buf.byteLength % Uint16Array.BYTES_PER_ELEMENT)
+  if (buf.byteLength % Uint16Array.BYTES_PER_ELEMENT) {
     throw 'byteLength (' + buf.byteLength + ') is not dividable by 2.';
+  }
 
   return Array.prototype.concat.apply([], new Uint16Array(buf))
-    .map(function(n) {
-      return '0x' + n.toString(16)
+    .map(function (n) {
+      return '0x' + n.toString(16);
     });
 };
 
 // Buffer is an object available in NodeJS
 var bufferToArray = function bufferToArray(buf) {
   if (typeof buf === 'undefined' ||
-      buf.constructor !== Buffer)
+      buf.constructor !== Buffer) {
     return buf;
+  }
 
   var arr = [];
   var i = 0;
@@ -32,19 +35,21 @@ var bufferToArray = function bufferToArray(buf) {
 
 var arrayBufferToString = function arrayBufferToArray(buf) {
   if (typeof buf === 'undefined' ||
-      buf.constructor !== ArrayBuffer)
+      buf.constructor !== ArrayBuffer) {
     return buf;
+  }
 
-  if (buf.byteLength % Uint16Array.BYTES_PER_ELEMENT)
+  if (buf.byteLength % Uint16Array.BYTES_PER_ELEMENT) {
     throw 'byteLength (' + buf.byteLength + ') is not dividable by 2.';
+  }
 
   return String.fromCharCode.apply(String, new Uint16Array(buf))
-    .replace('\u0000', '\u2400');
+    .replace('\0', '\u2400');
 };
 
 // Export as a CommonJS module if we are loaded as one.
-if (typeof module === 'object' && module['exports']) {
-  module['exports'] = {
+if (typeof module === 'object' && module.exports) {
+  module.exports = {
     arrayBufferToArray: arrayBufferToArray,
     bufferToArray: bufferToArray,
     arrayBufferToString: arrayBufferToString

@@ -1,5 +1,7 @@
 'use strict';
 
+/* global JSZhuyinLayoutMapper, JSZhuyinWebIME */
+
 module('JSZhuyinLayoutMapper');
 
 test('getSymbolCodeFromCode()', function() {
@@ -67,12 +69,12 @@ test('endComposition(contenteditable)', function() {
   webIME.endComposition('ing');
   equal(input.textContent, 'testing123', 'Passed!');
 
-  var sel = window.getSelection();
+  var sel2 = window.getSelection();
 
-  equal(sel.anchorNode, input.firstChild, 'Passed!');
-  equal(sel.anchorOffset, 7, 'Passed!');
-  equal(sel.focusNode, input.firstChild, 'Passed!');
-  equal(sel.focusOffset, 7, 'Passed!');
+  equal(sel2.anchorNode, input.firstChild, 'Passed!');
+  equal(sel2.anchorOffset, 7, 'Passed!');
+  equal(sel2.focusNode, input.firstChild, 'Passed!');
+  equal(sel2.focusOffset, 7, 'Passed!');
   document.body.removeChild(input);
   webIME.unload();
 });
@@ -106,12 +108,12 @@ test('endComposition(empty contenteditable)', function() {
   webIME.endComposition('testing123');
   equal(input.textContent, 'testing123', 'Passed!');
 
-  var sel = window.getSelection();
+  var sel2 = window.getSelection();
 
-  equal(sel.anchorNode, input.firstChild, 'Passed!');
-  equal(sel.anchorOffset, 10, 'Passed!');
-  equal(sel.focusNode, input.firstChild, 'Passed!');
-  equal(sel.focusOffset, 10, 'Passed!');
+  equal(sel2.anchorNode, input.firstChild, 'Passed!');
+  equal(sel2.anchorOffset, 10, 'Passed!');
+  equal(sel2.focusNode, input.firstChild, 'Passed!');
+  equal(sel2.focusOffset, 10, 'Passed!');
   document.body.removeChild(input);
   webIME.unload();
 });
@@ -423,7 +425,8 @@ test('handleEvent(Shift + selection keys)', function() {
   webIME.unload();
 });
 
-test('handleEvent(Shift + selection keys) (unhandled by candidate list)', function() {
+test('handleEvent(Shift + selection keys) (unhandled by candidate list)',
+function() {
   expect(6 * 9);
   var mockJSZhuyin = {
     unload: function() {},
