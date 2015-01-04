@@ -4,8 +4,8 @@ var SHORTCUT_ENTRY_LENGTH = 16;
 
 var fs = require('fs');
 var JSZhuyinDataPack = require('../lib/jszhuyin_data_pack.js');
-var BlobStoreBuilder = require('../build/database_builder.js');
-var McBopomofoDataParser = require('../build/mcbopomofo_data_parser.js');
+var DatabaseBuilder = require('../build/database_builder.js');
+var McBopomofoLineData = require('../build/mcbopomofo_line_data.js');
 
 module.exports = function convertData(filename, output, callback) {
   fs.readFile(filename, { encoding: 'utf8' }, function read(err, data) {
@@ -21,13 +21,13 @@ module.exports = function convertData(filename, output, callback) {
     data = undefined;
     console.log('Processing ' + lines.length + ' entries in the directory...');
 
-    var db = new BlobStoreBuilder();
+    var db = new DatabaseBuilder();
 
     var length = lines.length;
     for (var i = 0; i < length; i++) {
-      var lineData = McBopomofoDataParser.parse(lines[i]);
+      var lineData = new McBopomofoLineData(lines[i]);
 
-      if (!lineData) {
+      if (!lineData.isValid) {
         continue;
       }
 
