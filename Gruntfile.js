@@ -58,7 +58,7 @@ module.exports = function(grunt) {
         jshintrc: true
       },
       all: ['Gruntfile.js', 'lib/**/*.js', 'test/**/*.js',
-        '!test/headless-runner.js']
+        '!test/headless-runner.js', 'build/**/*.js']
     }
   });
 

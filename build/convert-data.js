@@ -3,15 +3,15 @@
 var SHORTCUT_ENTRY_LENGTH = 16;
 
 var fs = require('fs');
-var BopomofoEncoder = require('../lib/bopomofo_encoder.js');
 var JSZhuyinDataPack = require('../lib/jszhuyin_data_pack.js');
 var BlobStoreBuilder = require('../build/database_builder.js');
 var McBopomofoDataParser = require('../build/mcbopomofo_data_parser.js');
 
-module['exports'] = function convertData(filename, output, callback) {
+module.exports = function convertData(filename, output, callback) {
   fs.readFile(filename, { encoding: 'utf8' }, function read(err, data) {
-    if (err)
+    if (err) {
       throw err;
+    }
 
     var results = {};
 
@@ -27,10 +27,11 @@ module['exports'] = function convertData(filename, output, callback) {
     for (var i = 0; i < length; i++) {
       var lineData = McBopomofoDataParser.parse(lines[i]);
 
-      if (!lineData)
+      if (!lineData) {
         continue;
+      }
 
-      if (!(i % 1000)) {
+      if ((i % 1000) === 0) {
         process.stdout.write(i + '... ');
       }
 
@@ -53,9 +54,10 @@ module['exports'] = function convertData(filename, output, callback) {
           shortcutResults[lineData.shortcutEncodedStr] = [];
         }
 
-        var found = shortcutResults[lineData.shortcutEncodedStr].some(function(obj) {
-          return (obj.str === lineData.str);
-        });
+        var found = shortcutResults[lineData.shortcutEncodedStr]
+          .some(function(obj) {
+            return (obj.str === lineData.str);
+          });
 
         if (!found) {
           shortcutResults[lineData.shortcutEncodedStr].push({
@@ -70,9 +72,10 @@ module['exports'] = function convertData(filename, output, callback) {
     console.log('Done.');
 
     console.log('Sorting entries ...');
+    var encodedStr, result;
 
-    for (var encodedStr in results) {
-      var result = results[encodedStr].sort(
+    for (encodedStr in results) {
+      result = results[encodedStr].sort(
         function(a, b) {
           return (b.score - a.score);
         }
@@ -81,8 +84,8 @@ module['exports'] = function convertData(filename, output, callback) {
       db.put(encodedStr, (new JSZhuyinDataPack(result)).getPacked());
     }
 
-    for (var encodedStr in shortcutResults) {
-      var result = shortcutResults[encodedStr].sort(
+    for (encodedStr in shortcutResults) {
+      result = shortcutResults[encodedStr].sort(
         function(a, b) {
           return (b.score - a.score);
         }
@@ -101,12 +104,14 @@ module['exports'] = function convertData(filename, output, callback) {
     console.log('Writing file to disk ...');
     fs.writeFile(output, blob,
       function written(err) {
-        if (err)
+        if (err) {
           throw err;
+        }
 
         console.log('Done!');
-        if (callback)
+        if (callback) {
           callback();
+        }
       }
     );
   });

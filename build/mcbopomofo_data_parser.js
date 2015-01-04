@@ -42,11 +42,11 @@ var McBopomofoDataParser = {
       'shortcutEncodedStr': shortcutEncodedStr,
       'str': row[0],
       'score': parseFloat(row[2])
-    }
+    };
   }
 };
 
 // Export as a CommonJS module if we are loaded as one.
-if (typeof module === 'object' && module['exports']) {
-  module['exports'] = McBopomofoDataParser;
+if (typeof module === 'object' && module.exports) {
+  module.exports = McBopomofoDataParser;
 }

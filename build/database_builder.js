@@ -13,8 +13,9 @@ DatabaseBuilder.prototype.put = function bsb_put(key, value) {
   for (var i = 0; i < key.length; i++) {
     var code = key.charCodeAt(i);
 
-    if (!table[code])
+    if (!table[code]) {
       table[code] = [];
+    }
 
     table = table[code];
   }
@@ -26,8 +27,9 @@ DatabaseBuilder.prototype.get = function bsb_get(key) {
   for (var i = 0; i < key.length; i++) {
     var code = key.charCodeAt(i);
 
-    if (!table[code])
+    if (!table[code]) {
       return undefined;
+    }
 
     table = table[code];
   }
@@ -53,13 +55,15 @@ DatabaseBuilder.prototype.getBlob = function bsb_getBlob() {
     var keyTable = [];
     var ptrTable = [];
 
-    for (var i = 1; i < table.length; i++) {
-      if (!table[i])
+    var i;
+    for (i = 1; i < table.length; i++) {
+      if (!table[i]) {
         continue;
+      }
 
       keyTable.push(i);
       ptrTable.push(table[i]);
-    };
+    }
 
     var content = table[0];
 
@@ -93,13 +97,14 @@ DatabaseBuilder.prototype.getBlob = function bsb_getBlob() {
     blobParts.push(ptrArr);
     blobLength += ptrArr.length * (ptrArr.BYTES_PER_ELEMENT || 4);
 
-    for (var i = 0; i < ptrTable.length; i++) {
+    for (i = 0; i < ptrTable.length; i++) {
       var ptr = appendTableToBlob(ptrTable[i]);
-      if (ptr > 0xffffffff)
+      if (ptr > 0xffffffff) {
         throw 'Table pointer address exceeds maximum.';
+      }
 
       ptrArr[i] = ptr;
-    };
+    }
 
     return blockIndex;
   };
@@ -107,12 +112,13 @@ DatabaseBuilder.prototype.getBlob = function bsb_getBlob() {
   appendTableToBlob(this.data);
 
   var supportsBlobConstructor = (function(){
+    var blob;
     try {
-      new Blob([]);
+      blob = new Blob([]);
     } catch (e) {
       return false;
     }
-    return true;
+    return !!blob;
   })();
 
   if (supportsBlobConstructor) {
@@ -130,7 +136,7 @@ DatabaseBuilder.prototype.getBlob = function bsb_getBlob() {
         buf[i] = view[k];
         i++;
       }
-    };
+    }
     return buf;
   } else {
     throw 'No binary constructor available on this platform.';
@@ -139,6 +145,6 @@ DatabaseBuilder.prototype.getBlob = function bsb_getBlob() {
 };
 
 // Export as a CommonJS module if we are loaded as one.
-if (typeof module === 'object' && module['exports']) {
-  module['exports'] = DatabaseBuilder;
+if (typeof module === 'object' && module.exports) {
+  module.exports = DatabaseBuilder;
 }
