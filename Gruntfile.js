@@ -19,7 +19,7 @@ module.exports = function(grunt) {
         }
       },
       'qunit-slimerjs': {
-        command: './build/run-slimerjs.sh ' +
+        command: './test/run-slimerjs.sh ' +
           'http://localhost:' + HTTPD_PORT + '/test/',
         options: {
           stdout: true,
