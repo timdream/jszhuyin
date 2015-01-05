@@ -86,8 +86,59 @@ module.exports = function(grunt) {
 
   // Quick shell command to rsync the code to my site
   grunt.registerTask('convert-data', function gruntDataFuncitonTask() {
-    var convertData = require('./build/convert-data.js');
-    var done = this.async();
-    convertData('./data/data.txt', './data/database.data', done);
+    var McBopomofoDataConverter =
+      require('./build/mcbopomofo_data_converter.js');
+
+    var converter = new McBopomofoDataConverter();
+    converter.onprogress = function(stage, loadedEntries, totalEntries) {
+      switch (stage) {
+        case this.STAGE_READING_FILE:
+          grunt.log.write('Reading file...');
+
+          break;
+        case this.STAGE_CATEGORIZING_ENTRIES:
+          if (!loadedEntries) {
+            grunt.log.ok();
+            grunt.log.write('Categorizing ' + totalEntries + ' entries...');
+            grunt.verbose.writeln('');
+          } else {
+            grunt.verbose.or.write('.');
+          }
+          grunt.verbose.writeln(loadedEntries + '/' + totalEntries);
+
+          break;
+
+        case this.STAGE_SORTING_ENTRIES:
+          grunt.log.ok();
+
+          grunt.log.write('Sorting and packing into binary entries...');
+
+          break;
+
+        case this.STAGE_CREATING_BLOB:
+          grunt.log.ok();
+
+          grunt.log.write('Creating blob from binary entries...');
+
+          break;
+
+        case this.STAGE_WRITING_FILE:
+          grunt.log.ok();
+
+          grunt.log.write('Writing blob into disk...');
+
+          break;
+
+        case this.STAGE_IDLE:
+          grunt.log.ok();
+
+          break;
+
+        default:
+          throw new Error('Unknown stage: ' + stage);
+      }
+    };
+
+    converter.convert('./data/data.txt', './data/database.data');
   });
 };
