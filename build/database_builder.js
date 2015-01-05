@@ -139,11 +139,12 @@ DatabaseBuilder.prototype.getBlob = function bsb_getBlob() {
       var view = new Uint8Array(
         (blobParts[j].constructor === ArrayBuffer) ?
         blobParts[j] : blobParts[j].buffer);
-      for (var k = 0; k < view.length; k++) {
-        buf[i] = view[k];
-        i++;
-      }
+
+      var bufPart = new Buffer(view);
+      bufPart.copy(buf, i);
+      i += bufPart.length;
     }
+
     return buf;
   } else {
     throw 'No binary constructor available on this platform.';
