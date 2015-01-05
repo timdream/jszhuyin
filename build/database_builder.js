@@ -8,6 +8,7 @@ var DatabaseBuilder = function DatabaseBuilder() {
   // Itself is the table0.
   this.data = [];
 };
+DatabaseBuilder.prototype.onprogress = null;
 DatabaseBuilder.prototype.put = function bsb_put(key, value) {
   var table = this.data;
   for (var i = 0; i < key.length; i++) {
@@ -51,7 +52,13 @@ DatabaseBuilder.prototype.getBlob = function bsb_getBlob() {
   var blobParts = [];
   var blobLength = 0;
 
+  var self = this;
+
   var appendTableToBlob = function appendTableToBlob(table) {
+    if (typeof self.onprogress === 'function') {
+      self.onprogress();
+    }
+
     var keyTable = [];
     var ptrTable = [];
 

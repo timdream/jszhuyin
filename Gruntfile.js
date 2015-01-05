@@ -116,9 +116,14 @@ module.exports = function(grunt) {
           break;
 
         case this.STAGE_CREATING_BLOB:
-          grunt.log.ok();
-
-          grunt.log.write('Creating blob from binary entries...');
+          if (!loadedEntries) {
+            grunt.log.ok();
+            grunt.log.write('Creating blob from binary entries...');
+            grunt.verbose.writeln('');
+          } else {
+            grunt.verbose.or.write('.');
+          }
+          grunt.verbose.writeln(loadedEntries);
 
           break;
 

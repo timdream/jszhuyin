@@ -139,7 +139,13 @@ function _sortingResultAndInsertIntoDB(resultCategories) {
 };
 
 McBopomofoDataConverter.prototype._getBlob = function(db) {
-  this._reportProgress(this.STAGE_CREATING_BLOB);
+  var i = 0;
+  db.onprogress = function() {
+    if ((i % 1000) === 0) {
+      this._reportProgress(this.STAGE_CREATING_BLOB, i);
+    }
+    i++;
+  }.bind(this);
   return db.getBlob();
 };
 
