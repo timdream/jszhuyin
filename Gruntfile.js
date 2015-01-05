@@ -101,7 +101,7 @@ module.exports = function(grunt) {
             grunt.log.ok();
             grunt.log.write('Categorizing ' + totalEntries + ' entries...');
             grunt.verbose.writeln('');
-          } else {
+          } else if ((loadedEntries % 1000) === 0) {
             grunt.verbose.or.write('.');
           }
           grunt.verbose.writeln(loadedEntries + '/' + totalEntries);
@@ -109,9 +109,14 @@ module.exports = function(grunt) {
           break;
 
         case this.STAGE_SORTING_ENTRIES:
-          grunt.log.ok();
-
-          grunt.log.write('Sorting and packing into binary entries...');
+          if (!loadedEntries) {
+            grunt.log.ok();
+            grunt.log.write('Sorting and packing into binary entries...');
+            grunt.verbose.writeln('');
+          } else if ((loadedEntries % 1000) === 0) {
+            grunt.verbose.or.write('.');
+          }
+          grunt.verbose.writeln(loadedEntries);
 
           break;
 
@@ -120,7 +125,7 @@ module.exports = function(grunt) {
             grunt.log.ok();
             grunt.log.write('Creating blob from binary entries...');
             grunt.verbose.writeln('');
-          } else {
+          } else if ((loadedEntries % 1000) === 0) {
             grunt.verbose.or.write('.');
           }
           grunt.verbose.writeln(loadedEntries);

@@ -56,9 +56,7 @@ McBopomofoDataConverter.prototype._categorizeEntries = function(lines) {
       continue;
     }
 
-    if ((i % 1000) === 0) {
-      this._reportProgress(this.STAGE_CATEGORIZING_ENTRIES, i, length);
-    }
+    this._reportProgress(this.STAGE_CATEGORIZING_ENTRIES, i, length);
 
     if (!results[lineData.encodedStr]) {
       results[lineData.encodedStr] = [];
@@ -107,26 +105,27 @@ function _sortingResultAndInsertIntoDB(resultCategories) {
   var results = resultCategories.results;
   var shortcutResults = resultCategories.shortcutResults;
 
-  this._reportProgress(this.STAGE_SORTING_ENTRIES);
-
   var encodedStr, result;
+  var i = 0;
 
   for (encodedStr in results) {
-    result = results[encodedStr].sort(
-      function(a, b) {
-        return (b.score - a.score);
-      }
-    );
+    result = results[encodedStr].sort(function(a, b) {
+      this._reportProgress(this.STAGE_SORTING_ENTRIES, i);
+      i++;
+
+      return (b.score - a.score);
+    }.bind(this));
 
     db.put(encodedStr, (new JSZhuyinDataPack(result)).getPacked());
   }
 
   for (encodedStr in shortcutResults) {
-    result = shortcutResults[encodedStr].sort(
-      function(a, b) {
-        return (b.score - a.score);
-      }
-    );
+    result = shortcutResults[encodedStr].sort(function(a, b) {
+      this._reportProgress(this.STAGE_SORTING_ENTRIES, i);
+      i++;
+
+      return (b.score - a.score);
+    }.bind(this));
 
     // Conserve disk space by only save the most frequent words for
     // a single symbol shortcut.
@@ -141,9 +140,7 @@ function _sortingResultAndInsertIntoDB(resultCategories) {
 McBopomofoDataConverter.prototype._getBlob = function(db) {
   var i = 0;
   db.onprogress = function() {
-    if ((i % 1000) === 0) {
-      this._reportProgress(this.STAGE_CREATING_BLOB, i);
-    }
+    this._reportProgress(this.STAGE_CREATING_BLOB, i);
     i++;
   }.bind(this);
   return db.getBlob();
