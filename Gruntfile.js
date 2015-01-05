@@ -50,7 +50,7 @@ module.exports = function(grunt) {
           reporter: 'dot',
           ui: 'qunit'
         },
-        src: ['test/mocha/*.js']
+        src: ['test/build/**/*.js']
       }
     },
     jshint: {
