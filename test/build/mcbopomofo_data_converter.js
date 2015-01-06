@@ -2,8 +2,8 @@
 
 var fs = require('fs');
 var os = require('os');
+var assert = require('chai').assert;
 
-var assert = require('assert');
 var utils = require('../util.js');
 
 var McBopomofoDataConverter =
@@ -22,6 +22,6 @@ test('testdata.txt', function() {
     fs.readFileSync(__dirname + '/../resources/testdata.data');
 
   assert.deepEqual(
-    utils.bufferToArray(actualBuffer),
-    utils.bufferToArray(expectedBuffer));
+    utils.bufferToStringArray(actualBuffer),
+    utils.bufferToStringArray(expectedBuffer));
 });

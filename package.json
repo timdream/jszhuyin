@@ -8,6 +8,7 @@
     "test": "grunt test"
   },
   "devDependencies": {
+    "chai": "^1.10.0",
     "grunt": "~0.4.1",
     "grunt-contrib-clean": "~0.4.1",
     "grunt-contrib-connect": "~0.3.0",

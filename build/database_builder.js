@@ -72,45 +72,56 @@ DatabaseBuilder.prototype.getBlob = function bsb_getBlob() {
       ptrTable.push(table[i]);
     }
 
-    var content = table[0];
+    var contentBuf = table[0];
 
     var blockIndex = blobLength;
 
-    var header = new Uint16Array(
-      [keyTable.length, 0]);
-    if (content) {
-      header[1] = content.byteLength / (Uint16Array.BYTES_PER_ELEMENT || 2);
+    // Create a buffer, containing two Uint16 numbers.
+    var headerView = new DataView(new ArrayBuffer(4));
+    // The first number would always the # of items of the keyTable.
+    headerView.setUint16(0, keyTable.length, true);
+    // The second number would be the # of items of the contentBuf.
+    if (contentBuf) {
+      headerView.setUint16(2, contentBuf.byteLength >> 1, true);
     }
-    blobParts.push(header);
-    blobLength += header.length * (header.BYTES_PER_ELEMENT || 2);
+    blobParts.push(headerView);
+    blobLength += headerView.byteLength;
 
-    if (content) {
-      blobParts.push(content);
-
-      blobLength += content.byteLength;
-    }
-
-    var keyArr = new Uint16Array(keyTable);
-    blobParts.push(keyArr);
-    blobLength += keyArr.length * (keyArr.BYTES_PER_ELEMENT || 2);
-
-    if (blobLength % (Uint32Array.BYTES_PER_ELEMENT || 2)) {
-      var padArr = new Uint16Array(1);
-      blobParts.push(padArr);
-      blobLength += 1 * (keyArr.BYTES_PER_ELEMENT || 2);
+    if (contentBuf) {
+      blobParts.push(contentBuf);
+      blobLength += contentBuf.byteLength;
     }
 
-    var ptrArr = new Uint32Array(ptrTable.length);
-    blobParts.push(ptrArr);
-    blobLength += ptrArr.length * (ptrArr.BYTES_PER_ELEMENT || 4);
+    if (keyTable.length) {
+      var keyView = new DataView(new ArrayBuffer(keyTable.length << 1));
+      keyTable.forEach(function(key, i) {
+        keyView.setUint16(i << 1, key, true);
+      });
+      blobParts.push(keyView);
+      blobLength += keyView.byteLength;
+    }
 
-    for (i = 0; i < ptrTable.length; i++) {
-      var ptr = appendTableToBlob(ptrTable[i]);
-      if (ptr > 0xffffffff) {
-        throw 'Table pointer address exceeds maximum.';
-      }
+    // TODO: DataView does not require the data to align.
+    // Should we remove the padding here?
+    if (blobLength % 4) {
+      var padBuf = new ArrayBuffer(2);
+      blobParts.push(padBuf);
+      blobLength += padBuf.byteLength;
+    }
 
-      ptrArr[i] = ptr;
+    if (ptrTable.length) {
+      var ptrView = new DataView(new ArrayBuffer(ptrTable.length << 2));
+      blobParts.push(ptrView);
+      blobLength += ptrView.byteLength;
+
+      ptrTable.forEach(function(table, i) {
+        var ptr = appendTableToBlob(table);
+        if (ptr > 0xffffffff) {
+          throw 'Table pointer address exceeds maximum.';
+        }
+
+        ptrView.setUint32(i << 2, ptr, true);
+      });
     }
 
     return blockIndex;

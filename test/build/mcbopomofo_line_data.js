@@ -1,6 +1,6 @@
 'use strict';
 
-var assert = require('assert');
+var assert = require('chai').assert;
 
 var BopomofoEncoder = require('../../lib/bopomofo_encoder.js');
 var McBopomofoLineData = require('../../build/mcbopomofo_line_data.js');
