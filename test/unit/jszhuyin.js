@@ -103,7 +103,7 @@ test('create instance', function() {
 
 test('load()', function() {
   var ime = new JSZhuyin();
-  ime.DATA_URL = './resources/testdata.data';
+  ime.dataURL = './resources/testdata.data';
   expect(2);
   ime.onloadend = function(status) {
     ok(ime.loaded, 'Passed!');
@@ -119,7 +119,7 @@ test('load()', function() {
 
 test('load() non-exist files', function() {
   var ime = new JSZhuyin();
-  ime.DATA_URL = './resources/404.data';
+  ime.dataURL = './resources/404.data';
   expect(2);
   ime.onerror = function() {
     ok(true, 'Passed!');
@@ -138,7 +138,7 @@ test('load() non-exist files', function() {
 
 test('query() a word', function() {
   var ime = new JSZhuyin();
-  ime.DATA_URL = './resources/testdata.data';
+  ime.dataURL = './resources/testdata.data';
   ime.onloadend = function() {
     ime.syllables = 'ㄊㄞˊ';
     expect(1);
@@ -163,7 +163,7 @@ test('query() a word', function() {
 
 test('query() the same word twice', function() {
   var ime = new JSZhuyin();
-  ime.DATA_URL = './resources/testdata.data';
+  ime.dataURL = './resources/testdata.data';
   ime.onloadend = function() {
     ime.syllables = 'ㄊㄞˊ';
     expect(4);
@@ -200,7 +200,7 @@ test('query() the same word twice', function() {
 
 test('query() a two-word phrase', function() {
   var ime = new JSZhuyin();
-  ime.DATA_URL = './resources/testdata.data';
+  ime.dataURL = './resources/testdata.data';
   ime.onloadend = function() {
     ime.syllables = 'ㄊㄞˊㄅㄟˇ';
     expect(1);
@@ -226,7 +226,7 @@ test('query() a two-word phrase', function() {
 
 test('query() a three-word phrase', function() {
   var ime = new JSZhuyin();
-  ime.DATA_URL = './resources/testdata.data';
+  ime.dataURL = './resources/testdata.data';
   ime.onloadend = function() {
     ime.syllables = 'ㄊㄞˊㄅㄟˇㄕˋ';
     expect(1);
@@ -253,7 +253,7 @@ test('query() a three-word phrase', function() {
 
 test('query() with syllables exceeds MAX_SYLLABLES_LENGTH.', function() {
   var ime = new JSZhuyin();
-  ime.DATA_URL = './resources/testdata.data';
+  ime.dataURL = './resources/testdata.data';
   ime.MAX_SYLLABLES_LENGTH = 3;
   ime.onloadend = function() {
     ime.syllables = 'ㄊㄞˊㄅㄟˇ';
@@ -299,7 +299,7 @@ test('query() with syllables exceeds MAX_SYLLABLES_LENGTH.', function() {
 
 test('query() two words which don\'t made up a phrase', function() {
   var ime = new JSZhuyin();
-  ime.DATA_URL = './resources/testdata.data';
+  ime.dataURL = './resources/testdata.data';
   ime.onloadend = function() {
     ime.syllables = 'ㄅㄟˇㄕˋ';
     expect(1);
@@ -322,7 +322,7 @@ test('query() two words which don\'t made up a phrase', function() {
 
 test('query() non-exist word', function() {
   var ime = new JSZhuyin();
-  ime.DATA_URL = './resources/testdata.data';
+  ime.dataURL = './resources/testdata.data';
   ime.onloadend = function() {
     ime.syllables = 'ㄅㄟˊ';
     expect(1);
@@ -345,7 +345,7 @@ test('query() non-exist word', function() {
 
 test('query() non-exist phrase', function() {
   var ime = new JSZhuyin();
-  ime.DATA_URL = './resources/testdata.data';
+  ime.dataURL = './resources/testdata.data';
   ime.onloadend = function() {
     ime.syllables = 'ㄊㄞˊㄅㄟˊ';
     expect(1);
@@ -371,7 +371,7 @@ test('query() non-exist phrase', function() {
 
 test('updateComposition()', function() {
   var ime = new JSZhuyin();
-  ime.DATA_URL = './resources/testdata.data';
+  ime.dataURL = './resources/testdata.data';
   expect(1);
   ime.oncompositionupdate = function(composition) {
     equal(composition, 'ㄊㄞˊㄅㄟˇ', 'Passed!');
@@ -389,7 +389,7 @@ test('updateComposition()', function() {
 
 test('updateCandidates()', function() {
   var ime = new JSZhuyin();
-  ime.DATA_URL = './resources/testdata.data';
+  ime.dataURL = './resources/testdata.data';
   expect(2);
   ime.oncandidateschange = function(results) {
     deepEqual(results,
@@ -415,7 +415,7 @@ test('updateCandidates()', function() {
 
 test('confirmCandidate()', function() {
   var ime = new JSZhuyin();
-  ime.DATA_URL = './resources/testdata.data';
+  ime.dataURL = './resources/testdata.data';
   expect(3);
   ime.oncompositionend = function(string) {
     equal(string, '台', 'Passed!');
@@ -439,7 +439,7 @@ test('confirmCandidate()', function() {
 
 test('sendActionHandled()', function() {
   var ime = new JSZhuyin();
-  ime.DATA_URL = './resources/testdata.data';
+  ime.dataURL = './resources/testdata.data';
   expect(1);
 
   ime.onactionhandled = function(reqId) {
@@ -459,7 +459,7 @@ test('sendActionHandled()', function() {
 
 test('Simple interactive query (send all keys in one action).', function() {
   var ime = new JSZhuyin();
-  ime.DATA_URL = './resources/testdata.data';
+  ime.dataURL = './resources/testdata.data';
   expect(9);
 
   ime.onloadend = function() {
@@ -513,7 +513,7 @@ test('Simple interactive query (send all keys in one action).', function() {
 
 test('Run a simple interactive query.', function() {
   var ime = new JSZhuyin();
-  ime.DATA_URL = './resources/testdata.data';
+  ime.dataURL = './resources/testdata.data';
   expect(9);
 
   ime.onloadend = function() {
@@ -569,7 +569,7 @@ test('Run a simple interactive query.', function() {
 
 test('Confirm text with Enter key.', function() {
   var ime = new JSZhuyin();
-  ime.DATA_URL = './resources/testdata.data';
+  ime.dataURL = './resources/testdata.data';
   expect(14);
 
   ime.onloadend = function() {
@@ -636,7 +636,7 @@ test('Confirm text with Enter key.', function() {
 
 test('Confirm text with a non-Bopomofo key.', function() {
   var ime = new JSZhuyin();
-  ime.DATA_URL = './resources/testdata.data';
+  ime.dataURL = './resources/testdata.data';
   expect(14);
 
   ime.onloadend = function() {
@@ -703,7 +703,7 @@ test('Confirm text with a non-Bopomofo key.', function() {
 
 test('Don\'t handle Enter key if there is no candidates.', function() {
   var ime = new JSZhuyin();
-  ime.DATA_URL = './resources/testdata.data';
+  ime.dataURL = './resources/testdata.data';
   expect(1);
 
   ime.onloadend = function() {
@@ -720,7 +720,7 @@ test('Don\'t handle Enter key if there is no candidates.', function() {
 
 test('Confirm text with candidate selection.', function() {
   var ime = new JSZhuyin();
-  ime.DATA_URL = './resources/testdata.data';
+  ime.dataURL = './resources/testdata.data';
 
   expect(13);
   ime.onloadend = function() {
@@ -787,7 +787,7 @@ test('Confirm text with candidate selection.', function() {
 
 test('Backspace key cancels the last symbol.', function() {
   var ime = new JSZhuyin();
-  ime.DATA_URL = './resources/testdata.data';
+  ime.dataURL = './resources/testdata.data';
 
   expect(15);
   ime.onloadend = function() {
@@ -858,7 +858,7 @@ test('Backspace key cancels the last symbol.', function() {
 
 test('Don\'t handle Backspace key if there is no compositions.', function() {
   var ime = new JSZhuyin();
-  ime.DATA_URL = './resources/testdata.data';
+  ime.dataURL = './resources/testdata.data';
 
   expect(1);
   ime.onloadend = function() {

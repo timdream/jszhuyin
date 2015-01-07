@@ -1,6 +1,7 @@
 'use strict';
 
-/* global BinStorage, arrayBufferToStringArray, numberArrayToStringArray */
+/* global BinStorage, arrayBufferToStringArray, numberArrayToStringArray,
+          arrayToUint16LEArrayBuffer */
 
 module('BinStorage');
 
@@ -9,7 +10,7 @@ test('create instance', function() {
   ok(!storage.loaded, 'Passed!');
 });
 
-var resStringArray = numberArrayToStringArray([
+var resArray = [
   0x0001, 0x0000, // Table0 header
   0x0041,         // Table0 key table
   0x0000,         // pad
@@ -27,115 +28,58 @@ var resStringArray = numberArrayToStringArray([
 
   0x0000, 0x0004, // Table3 header
   0x6666, 0x7777, 0x8888, 0x9999 // Table3 content
-]);
+];
 
-test('load()', function() {
+var binStorageData = arrayToUint16LEArrayBuffer(resArray);
+var resStringArray = numberArrayToStringArray(resArray);
+
+test('create instance', function() {
   var storage = new BinStorage();
-  storage.DATA_URL = './resources/test.data';
-  expect(3);
-  storage.onload = function() {
-    ok(storage.loaded, 'Passed!');
-  };
-  storage.onloadend = function() {
-    ok(storage.loaded, 'Passed!');
-    deepEqual(arrayBufferToStringArray(storage._bin), resStringArray);
-    start();
-  };
-
-  stop();
-  storage.load();
-});
-
-test('load() non-exist files', function() {
-  var storage = new BinStorage();
-  storage.DATA_URL = './resources/404.data';
-  expect(2);
-  storage.onerror = function() {
-    ok(true, 'Passed!');
-  };
-  storage.onloadend = function() {
-    ok(!storage.loaded, 'Passed!');
-    start();
-  };
-
-  stop();
-  storage.load();
+  ok(!storage.loaded, 'Passed!');
 });
 
 test('unload()', function() {
   var storage = new BinStorage();
-  storage.DATA_URL = './resources/test.data';
-  expect(4);
-  storage.onloadend = function() {
-    ok(storage.loaded, 'Passed!');
-    deepEqual(arrayBufferToStringArray(storage._bin), resStringArray);
-    storage.unload();
-    ok(!storage.loaded, 'Passed!');
-    equal(storage._bin, undefined, 'Data purged');
-    start();
-  };
 
-  stop();
-  storage.load();
+  storage.load(binStorageData);
+  storage.unload();
+  ok(!storage.loaded, 'Passed!');
+  equal(storage._bin, undefined, 'Data purged');
 });
 
 test('get()', function() {
   var storage = new BinStorage();
-  storage.DATA_URL = './resources/test.data';
-  expect(3);
-  storage.onloadend = function() {
-    var value = storage.get(String.fromCharCode(0x41, 0x42, 0x43));
-    deepEqual(arrayBufferToStringArray(value[0]), resStringArray);
-    equal(value[1], 0x2c + 4 /* start address of Table3 content */);
-    equal(value[2], 4 /* length of Table3 content */, 'Passed!');
-    start();
-  };
+  storage.load(binStorageData);
 
-  stop();
-  storage.load();
+  var value = storage.get(String.fromCharCode(0x41, 0x42, 0x43));
+  deepEqual(arrayBufferToStringArray(value[0]), resStringArray);
+  equal(value[1], 0x2c + 4 /* start address of Table3 content */);
+  equal(value[2], 4 /* length of Table3 content */, 'Passed!');
 });
 
 test('get() (not found)', function() {
   var storage = new BinStorage();
-  storage.DATA_URL = './resources/test.data';
-  expect(1);
-  storage.onloadend = function() {
-    var value = storage.get(String.fromCharCode(0x41, 0x42, 0x45));
-    equal(value, undefined, 'Passed!');
-    start();
-  };
+  storage.load(binStorageData);
 
-  stop();
-  storage.load();
+  var value = storage.get(String.fromCharCode(0x41, 0x42, 0x45));
+  equal(value, undefined, 'Passed!');
 });
 
 test('getRange()', function() {
   var storage = new BinStorage();
-  storage.DATA_URL = './resources/test.data';
-  expect(4);
-  storage.onloadend = function() {
-    var value = storage.getRange(String.fromCharCode(0x41, 0x42));
-    equal(value.length, 1, 'Passed!');
-    deepEqual(arrayBufferToStringArray(value[0][0]), resStringArray);
-    equal(value[0][1], 0x2c + 4 /* start address of Table3 content */);
-    equal(value[0][2], 4 /* length of Table3 content */, 'Passed!');
-    start();
-  };
+  storage.load(binStorageData);
 
-  stop();
-  storage.load();
+  var value = storage.getRange(String.fromCharCode(0x41, 0x42));
+  equal(value.length, 1, 'Passed!');
+  deepEqual(arrayBufferToStringArray(value[0][0]), resStringArray);
+  equal(value[0][1], 0x2c + 4 /* start address of Table3 content */);
+  equal(value[0][2], 4 /* length of Table3 content */, 'Passed!');
 });
 
 test('getRange() (not found)', function() {
   var storage = new BinStorage();
-  storage.DATA_URL = './resources/test.data';
-  expect(1);
-  storage.onloadend = function() {
-    var value = storage.getRange(String.fromCharCode(0x41, 0x42, 0x45));
-    deepEqual(value, [], 'Passed!');
-    start();
-  };
+  storage.load(binStorageData);
 
-  stop();
-  storage.load();
+  var value = storage.getRange(String.fromCharCode(0x41, 0x42, 0x45));
+  deepEqual(value, [], 'Passed!');
 });
