@@ -10,6 +10,7 @@ var McBopomofoDataConverter = function McBopomofoDataConverter() {
 };
 
 McBopomofoDataConverter.prototype.onprogress = null;
+McBopomofoDataConverter.prototype.onwarning = null;
 
 McBopomofoDataConverter.prototype.SHORTCUT_ENTRY_LENGTH = 16;
 
@@ -50,7 +51,9 @@ McBopomofoDataConverter.prototype._categorizeEntries = function(lines) {
   var shortcutResults = {};
 
   for (var i = 0; i < length; i++) {
-    var lineData = new McBopomofoLineData(lines[i]);
+    var lineData = new McBopomofoLineData();
+    lineData.onwarning = this.onwarning;
+    lineData.parse(lines[i]);
 
     if (!lineData.isValid) {
       continue;

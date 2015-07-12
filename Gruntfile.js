@@ -148,6 +148,9 @@ module.exports = function(grunt) {
           throw new Error('Unknown stage: ' + stage);
       }
     };
+    converter.onwarning = function(subject, message) {
+      console.warn(subject + ': ' + message);
+    };
 
     converter.convert('./data/data.txt', './data/database.data');
   });
