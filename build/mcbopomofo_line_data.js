@@ -49,7 +49,7 @@ McBopomofoLineData.prototype.parse = function(lineStr) {
                                this.ADD_FIRST_TONE_REPLACESTR);
   var encodedStr = BopomofoEncoder.encode(symbols.replace(/\-/g, ''));
 
-  if (row[0].length < encodedStr.length) {
+  if (row[0].length !== encodedStr.length) {
     if (typeof this.onwarning === 'function') {
       this.onwarning(
         'McBopomofoLineData' ,

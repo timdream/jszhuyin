@@ -29,7 +29,7 @@ test('✈ ㄈㄟ-ㄐㄧ 0.0', function() {
 // TODO: This should be valid
 test('𡻈 ㄓㄣ 0.0 (CJK Ext. B)', function() {
   var lineData = new McBopomofoLineData();
-  lineData.parse('✈ ㄈㄟ-ㄐㄧ 0.0');
+  lineData.parse('𡻈 ㄓㄣ 0.0');
   assert.equal(lineData.isValid, false);
 });
 
