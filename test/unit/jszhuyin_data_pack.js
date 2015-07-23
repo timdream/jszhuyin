@@ -127,6 +127,29 @@ test('unpack() with symbols', function() {
   ], 'Passed!');
 });
 
+test('unpack() with symbols that is longer than str', function() {
+  var buf = arrayToUint16LEArrayBuffer(
+      [0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
+       0x64 /* d */,
+       0x53f0, 0x5317, 0x0, 0x0,
+       0xc2a, 0x233, 0xc2a, 0x233, /* 台北NULNULపȳపȳ */
+       0x53f0, 0x0, 0x0, 0x0,
+       0xc2a, 0x0, 0x0, 0x0, /* 台NULNULNULపNULNULNUL */
+       0x53f0, 0x7063, 0x0, 0x0,
+       0xc2a, 0x149, 0x0, 0x0, /* 台灣NULNULపŉNULNUL */
+       0x0 /* pad */]);
+  var data = new JSZhuyinDataPack(buf);
+  data.unpack();
+
+  deepEqual(data.unpacked, [
+    { str: '台北',
+      symbols: 'పȳపȳ',
+      score: -3.1415927410125732 },
+    { str: '台', symbols: 'ప' },
+    { str: '台灣', symbols: 'పŉ' }
+  ], 'Passed!');
+});
+
 test('pack()', function() {
   var buf = arrayToUint16LEArrayBuffer(
       [0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
@@ -167,6 +190,29 @@ test('pack() with symbols', function() {
     arrayBufferToString(data.packed), arrayBufferToString(buf), 'Passed!');
 });
 
+test('pack() with symbols that is longer than str', function() {
+  var buf = arrayToUint16LEArrayBuffer(
+      [0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
+       0x64 /* d */,
+       0x53f0, 0x5317, 0x0, 0x0,
+       0xc2a, 0x233, 0xc2a, 0x233, /* 台北NULNULపȳపȳ */
+       0x53f0, 0x0, 0x0, 0x0,
+       0xc2a, 0x0, 0x0, 0x0, /* 台NULNULNULపNULNULNUL */
+       0x53f0, 0x7063, 0x0, 0x0,
+       0xc2a, 0x149, 0x0, 0x0, /* 台灣NULNULపŉNULNUL */
+       0x0 /* pad */]);
+  var data = new JSZhuyinDataPack([
+    { str: '台北',
+      symbols: 'పȳపȳ',
+      score: -3.1415927410125732 },
+    { str: '台', symbols: 'ప' },
+    { str: '台灣', symbols: 'పŉ' }
+  ]);
+  data.pack();
+
+  deepEqual(
+    arrayBufferToString(data.packed), arrayBufferToString(buf), 'Passed!');
+});
 
 test('getResults()', function() {
   var buf = arrayToUint16LEArrayBuffer(
