@@ -19,18 +19,28 @@ test('㎞ _punctuation_list 0.0', function() {
   assert.equal(lineData.isValid, false);
 });
 
-// TODO: This should be valid
 test('✈ ㄈㄟ-ㄐㄧ 0.0', function() {
   var lineData = new McBopomofoLineData();
   lineData.parse('✈ ㄈㄟ-ㄐㄧ 0.0');
-  assert.equal(lineData.isValid, false);
+  assert.equal(lineData.isValid, true);
+  assert.equal(lineData.str, '✈');
+  assert.equal(BopomofoEncoder.decode(lineData.encodedStr),
+    'ㄈㄟˉㄐㄧˉ');
+  assert.equal(BopomofoEncoder.decode(lineData.shortcutEncodedStr),
+    'ㄈㄐ');
+  assert.equal(lineData.score, 0);
 });
 
-// TODO: This should be valid
 test('𡻈 ㄓㄣ 0.0 (CJK Ext. B)', function() {
   var lineData = new McBopomofoLineData();
   lineData.parse('𡻈 ㄓㄣ 0.0');
-  assert.equal(lineData.isValid, false);
+  assert.equal(lineData.isValid, true);
+  assert.equal(lineData.str, '𡻈');
+  assert.equal(BopomofoEncoder.decode(lineData.encodedStr),
+    'ㄓㄣˉ');
+  assert.equal(BopomofoEncoder.decode(lineData.shortcutEncodedStr),
+    'ㄓ');
+  assert.equal(lineData.score, 0);
 });
 
 test('自食其力 ㄗˋ-ㄕˊ-ㄑㄧˊ-ㄌㄧˋ -5.41649390', function() {

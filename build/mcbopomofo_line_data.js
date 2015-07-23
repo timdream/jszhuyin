@@ -49,17 +49,6 @@ McBopomofoLineData.prototype.parse = function(lineStr) {
                                this.ADD_FIRST_TONE_REPLACESTR);
   var encodedStr = BopomofoEncoder.encode(symbols.replace(/\-/g, ''));
 
-  if (row[0].length !== encodedStr.length) {
-    if (typeof this.onwarning === 'function') {
-      this.onwarning(
-        'McBopomofoLineData' ,
-        'Skipping data: "' + row[0] + '" (' + row[0].length + ').' +
-          ' The phonetics are "' + row[1] + '" (' +
-          encodedStr.length + ').');
-    }
-    return;
-  }
-
   this.isValid = true;
   this.str = row[0];
   this.score = parseFloat(row[2], 10);
