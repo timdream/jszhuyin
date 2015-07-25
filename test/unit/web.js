@@ -1,17 +1,215 @@
 'use strict';
 
-/* global JSZhuyinLayoutMapper, JSZhuyinWebIME */
+/* global D3EKeyboardEventHelper, JSZhuyinLayoutMapper, JSZhuyinWebIME */
+
+module('D3EKeyboardEventHelper');
+
+test('Backspace', function() {
+  var events = [
+    { key: 'Backspace', code: 'Backspace' },
+    { keyIdentifier: 'U+0008' },
+    { keyCode: 0x8, charCode: 0 }
+  ];
+
+  events.forEach(function(evt) {
+    equal(D3EKeyboardEventHelper.getCodePropFromEvent(evt), 'Backspace');
+    equal(D3EKeyboardEventHelper.getKeyPropFromEvent(evt), 'Backspace');
+  });
+});
+
+test('Enter', function() {
+  var events = [
+    { key: 'Enter', code: 'Enter' },
+    { keyIdentifier: 'Enter' },
+    { keyCode: 0x0d, charCode: 0x0d },
+    { keyCode: 0x0d, charCode: 0 }
+  ];
+
+  events.forEach(function(evt) {
+    equal(D3EKeyboardEventHelper.getCodePropFromEvent(evt), 'Enter');
+    equal(D3EKeyboardEventHelper.getKeyPropFromEvent(evt), 'Enter');
+  });
+});
+
+test('Escape', function() {
+  var events = [
+    { key: 'Escape', code: 'Escape' },
+    { keyIdentifier: 'U+001B' },
+    { keyCode: 0x1b, charCode: 0x1b },
+    { keyCode: 0x1b, charCode: 0 }
+  ];
+
+  events.forEach(function(evt) {
+    equal(D3EKeyboardEventHelper.getCodePropFromEvent(evt), 'Escape');
+    equal(D3EKeyboardEventHelper.getKeyPropFromEvent(evt), 'Escape');
+  });
+});
+
+test('Space', function() {
+  var events = [
+    { key: 'Space', code: 'Space' },
+    { keyIdentifier: 'U+0020' },
+    { keyCode: 0x20, charCode: 0x20 },
+    { keyCode: 0x20, charCode: 0 }
+  ];
+
+  events.forEach(function(evt) {
+    equal(D3EKeyboardEventHelper.getCodePropFromEvent(evt), 'Space');
+    equal(D3EKeyboardEventHelper.getKeyPropFromEvent(evt), 'Space');
+  });
+});
+
+test('ArrowLeft', function() {
+  var events = [
+    { key: 'ArrowLeft', code: 'ArrowLeft' },
+    { keyIdentifier: 'Left' },
+    { keyCode: 0x25, charCode: 0 }
+  ];
+
+  events.forEach(function(evt) {
+    equal(D3EKeyboardEventHelper.getCodePropFromEvent(evt), 'ArrowLeft');
+    equal(D3EKeyboardEventHelper.getKeyPropFromEvent(evt), 'ArrowLeft');
+  });
+});
+
+test('ArrowRight', function() {
+  var events = [
+    { key: 'ArrowRight', code: 'ArrowRight' },
+    { keyIdentifier: 'Right' },
+    { keyCode: 0x27, charCode: 0 }
+  ];
+
+  events.forEach(function(evt) {
+    equal(D3EKeyboardEventHelper.getCodePropFromEvent(evt), 'ArrowRight');
+    equal(D3EKeyboardEventHelper.getKeyPropFromEvent(evt), 'ArrowRight');
+  });
+});
+
+(function() {
+    // key, code, shiftKey, keyCode
+  var testData = [
+    ['~', 'Backquote', true, 0xc0 ],
+    ['`', 'Backquote', false, 0xc0 ],
+    ['_', 'Minus', true, 0xbd ],
+    ['-', 'Minus', false, 0xbd ],
+    ['_', 'Minus', true, 0xbd ],
+    ['-', 'Minus', false, 0xbd ],
+    ['+', 'Equal', true, 0xbb ],
+    ['=', 'Equal', false, 0xbb ],
+    ['{', 'BracketLeft', true, 0xdb ],
+    ['[', 'BracketLeft', false, 0xdb ],
+    ['}', 'BracketRight', true, 0xdd ],
+    [']', 'BracketRight', false, 0xdd ],
+    [':', 'Semicolon', true, 0xba ],
+    [';', 'Semicolon', false, 0xba ],
+    ['"', 'Quote', true, 0xde ],
+    ['\'', 'Quote', false, 0xde ],
+    ['<', 'Comma', true, 0xbc ],
+    [',', 'Comma', false, 0xbc ],
+    ['>', 'Period', true, 0xbe ],
+    ['.', 'Period', false, 0xbe ],
+    ['?', 'Slash', true, 0xbf ],
+    ['/', 'Slash', false, 0xbf ],
+
+    ['!', 'Digit1', true, 0x31 ],
+    ['@', 'Digit2', true, 0x32 ],
+    ['#', 'Digit3', true, 0x33 ],
+    ['$', 'Digit4', true, 0x34 ],
+    ['%', 'Digit5', true, 0x35 ],
+    ['^', 'Digit6', true, 0x36 ],
+    ['&', 'Digit7', true, 0x37 ],
+    ['*', 'Digit8', true, 0x38 ],
+    ['(', 'Digit9', true, 0x39 ],
+    [')', 'Digit0', true, 0x30 ]
+  ];
+
+  var i, chr;
+  for (i = 0; i < 10; i++) {
+    chr = String.fromCharCode(0x30 + i);
+    testData.push([chr, 'Digit' + chr, false, 0x30 + i ]);
+  }
+
+  for (i = 0; i < 26; i++) {
+    chr = String.fromCharCode(0x41 + i);
+    testData.push([chr, 'Key' + chr, true, 0x41 + i ]);
+    testData.push([chr.toLowerCase(), 'Key' + chr, false, 0x41 + i ]);
+  }
+
+  testData.forEach(function(data) {
+    test(data[0] + ' (' + data[1] + ')', function() {
+      var codepoint = data[0].charCodeAt(0).toString(16).toUpperCase();
+      while (codepoint.length < 4) {
+        codepoint = '0' + codepoint;
+      }
+
+      var events = [
+        // Old events: Firefox
+        { type: 'keydown', keyCode: data[3], codeCode: 0, shiftKey: data[2] },
+        { type: 'keypress', keyCode: 0,
+          charCode: data[0].charCodeAt(0), shiftKey: data[2] },
+
+        // Old events: WebKit/Chrome
+        { type: 'keydown', keyCode: data[3], codeCode: 0, shiftKey: data[2] },
+        { type: 'keypress', keyCode: data[0].charCodeAt(0),
+          charCode: data[0].charCodeAt(0), shiftKey: data[2] },
+
+        // Old DOM3
+        { type: 'keydown', keyCode: data[3], codeCode: 0, shiftKey: data[2],
+          keyIdentifier: 'U+' + codepoint },
+        { type: 'keypress', keyCode: data[0].charCodeAt(0),
+          charCode: data[0].charCodeAt(0), shiftKey: data[2],
+          keyIdentifier: 'U+' + codepoint },
+
+        // DOM3
+        { type: 'keydown', keyCode: data[3], codeCode: 0, shiftKey: data[2],
+          key: data[0], code: data[1] },
+        { type: 'keypress', keyCode: 0,
+          charCode: data[0].charCodeAt(0), shiftKey: data[2],
+          key: data[0], code: data[1] }
+      ];
+
+      events.forEach(function(evt) {
+        equal(D3EKeyboardEventHelper.getCodePropFromEvent(evt), data[1],
+          'Code for ' + JSON.stringify(evt));
+        equal(D3EKeyboardEventHelper.getKeyPropFromEvent(evt), data[0],
+          'Key for ' + JSON.stringify(evt));
+      });
+    });
+  });
+})();
 
 module('JSZhuyinLayoutMapper');
 
-test('getSymbolCodeFromCode()', function() {
-  var code = JSZhuyinLayoutMapper.getSymbolCodeFromCode(('!').charCodeAt(0));
-  equal(code, ('！').charCodeAt(0), 'Passed!');
+JSZhuyinLayoutMapper.codes.forEach(function(code, i) {
+  test('getSymbolFromDOM3Code(' + code + ')', function() {
+    equal(JSZhuyinLayoutMapper.getSymbolFromDOM3Code(code, false),
+      JSZhuyinLayoutMapper.map.charAt(i),
+      'getSymbolFromDOM3Code(' + code + ', false)');
+    equal(JSZhuyinLayoutMapper.getSymbolFromDOM3Code(code, true),
+      JSZhuyinLayoutMapper.shiftMap.charAt(i),
+      'getSymbolFromDOM3Code(' + code + ', true)');
+  });
 });
 
-test('getSelectionIndex()', function() {
-  var index = JSZhuyinLayoutMapper.getSelectionIndex(('!').charCodeAt(0));
-  equal(index, 0, 'Passed!');
+test('getSymbolFromDOM3Code(Tab)', function() {
+  equal(JSZhuyinLayoutMapper.getSymbolFromDOM3Code('Tab', false),
+    undefined,
+    'getSymbolFromDOM3Code(Tab, false)');
+  equal(JSZhuyinLayoutMapper.getSymbolFromDOM3Code('Tab', true),
+    undefined,
+    'getSymbolFromDOM3Code(Tab, true)');
+});
+
+JSZhuyinLayoutMapper.selectionCodes.forEach(function(code, i) {
+  test('getSelectionIndexFromDOM3Code(' + code + ')', function() {
+    equal(JSZhuyinLayoutMapper.getSelectionIndexFromDOM3Code(code),
+      i, 'getSymbolFromDOM3Code(' + code + ')');
+  });
+});
+
+test('getSelectionIndexFromDOM3Code(KeyA)', function() {
+  equal(JSZhuyinLayoutMapper.getSelectionIndexFromDOM3Code('KeyA'),
+    -1, 'getSymbolFromDOM3Code(KeyA)');
 });
 
 module('JSZhuyinWebIME');
@@ -126,7 +324,7 @@ var getMockKeyEvent =
     obj.charCode = charCode;
     obj.target = input;
     obj.preventDefault = function() {
-      ok(expectCancel, '2Passed!');
+      ok(expectCancel, 'evt.preventDefault() called.');
     };
     return obj;
   };
@@ -135,8 +333,8 @@ test('handleEvent(Backspace)', function() {
   expect(4);
   var mockJSZhuyin = {
     unload: function() {},
-    handleKeyEvent: function(code) {
-      equal(code, 0x08, '1Passed!');
+    handleKey: function(code) {
+      equal(code, 'Backspace', '1Passed!');
       return true;
     }
   };
@@ -161,8 +359,8 @@ test('handleEvent(Backspace) (unhandled)', function() {
   expect(2);
   var mockJSZhuyin = {
     unload: function() {},
-    handleKeyEvent: function(code) {
-      equal(code, 0x08, 'Passed!');
+    handleKey: function(code) {
+      equal(code, 'Backspace', '1Passed!');
       return false;
     }
   };
@@ -187,8 +385,8 @@ test('handleEvent(Enter)', function() {
   expect(4);
   var mockJSZhuyin = {
     unload: function() {},
-    handleKeyEvent: function(code) {
-      equal(code, 0x0d, 'Passed!');
+    handleKey: function(code) {
+      equal(code, 'Enter', '1Passed!');
       return true;
     }
   };
@@ -214,8 +412,8 @@ test('handleEvent(Enter) (unhandled)', function() {
   expect(2);
   var mockJSZhuyin = {
     unload: function() {},
-    handleKeyEvent: function(code) {
-      equal(code, 0x0d, 'Passed!');
+    handleKey: function(code) {
+      equal(code, 'Enter', '1Passed!');
       return false;
     }
   };
@@ -241,8 +439,8 @@ test('handleEvent(Escape)', function() {
   expect(4);
   var mockJSZhuyin = {
     unload: function() {},
-    handleKeyEvent: function(code) {
-      equal(code, 0x1b, 'Passed!');
+    handleKey: function(code) {
+      equal(code, 'Escape', '1Passed!');
       return true;
     }
   };
@@ -263,12 +461,12 @@ test('handleEvent(Escape)', function() {
   webIME.unload();
 });
 
-test('handleEvent(Shift + left arrow)', function() {
+test('handleEvent(Shift + ArrowLeft)', function() {
   expect(4);
   var mockJSZhuyin = {
     unload: function() {},
-    handleKeyEvent: function(code) {
-      ok(false, 'Passed!');
+    handleKey: function(code) {
+      equal(code, 'Escape', '1Passed!');
       return true;
     }
   };
@@ -292,12 +490,12 @@ test('handleEvent(Shift + left arrow)', function() {
   webIME.unload();
 });
 
-test('handleEvent(Shift + right arrow)', function() {
+test('handleEvent(Shift + ArrowRight)', function() {
   expect(4);
   var mockJSZhuyin = {
     unload: function() {},
-    handleKeyEvent: function(code) {
-      ok(false, 'Passed!');
+    handleKey: function(code) {
+      ok(false, 'handleKey called.');
       return true;
     }
   };
@@ -321,12 +519,12 @@ test('handleEvent(Shift + right arrow)', function() {
   webIME.unload();
 });
 
-test('handleEvent(left arrow)', function() {
+test('handleEvent(ArrowLeft)', function() {
   expect(0);
   var mockJSZhuyin = {
     unload: function() {},
-    handleKeyEvent: function(code) {
-      ok(false, 'Passed!');
+    handleKey: function(code) {
+      ok(false, 'handleKey called.');
       return true;
     }
   };
@@ -350,12 +548,12 @@ test('handleEvent(left arrow)', function() {
   webIME.unload();
 });
 
-test('handleEvent(right arrow)', function() {
+test('handleEvent(ArrowRight)', function() {
   expect(0);
   var mockJSZhuyin = {
     unload: function() {},
-    handleKeyEvent: function(code) {
-      ok(false, 'Passed!');
+    handleKey: function(code) {
+      ok(false, 'handleKey called.');
       return true;
     }
   };
@@ -379,29 +577,30 @@ test('handleEvent(right arrow)', function() {
   webIME.unload();
 });
 
-test('handleEvent(Shift + selection keys)', function() {
-  expect(4 * 9);
-  var mockJSZhuyin = {
-    unload: function() {},
-    handleKeyEvent: function(code) {
-      ok(false, 'Passed!');
+'!@#$%^&*('.split('').forEach(function(key, i) {
+  var charCode = key.charCodeAt(0);
+  var keyCode = 49 + i; // keyCode of number keys on US keyboard
+
+  test('handleEvent(Shift + ' + i + ')', function() {
+    expect(4);
+    var mockJSZhuyin = {
+      unload: function() {},
+      handleKey: function(code) {
+        ok(false, 'handleKey called.');
+        return true;
+      }
+    };
+    var input =  document.createElement('input');
+    var elements = {
+      composition: document.createElement('p'),
+      candidatesList: document.createElement('ul')
+    };
+    var webIME = new JSZhuyinWebIME(elements, mockJSZhuyin);
+    webIME.candidatesList.selectCandidate = function(index) {
+      ok(true, 'Passed!');
       return true;
-    }
-  };
-  var input =  document.createElement('input');
-  var elements = {
-    composition: document.createElement('p'),
-    candidatesList: document.createElement('ul')
-  };
-  var webIME = new JSZhuyinWebIME(elements, mockJSZhuyin);
-  webIME.candidatesList.selectCandidate = function(index) {
-    ok(true, 'Passed!');
-    return true;
-  };
-  var events = [];
-  JSZhuyinLayoutMapper.selectionKeys.split('').forEach(function(key, i) {
-    var charCode = key.charCodeAt(0);
-    var keyCode = 49 + i; // keyCode of number keys on US keyboard
+    };
+    var events = [];
 
     // WebKit/Blink
     events.push(
@@ -417,38 +616,41 @@ test('handleEvent(Shift + selection keys)', function() {
     events.push(
       getMockKeyEvent('keypress', 0, charCode, true, input,
                       { shiftKey: true }));
-  });
 
-  events.forEach(function(mockKeyEvent) {
-    webIME.handleEvent(mockKeyEvent);
+    events.forEach(function(mockKeyEvent) {
+      webIME.handleEvent(mockKeyEvent);
+    });
+    webIME.unload();
   });
-  webIME.unload();
 });
 
-test('handleEvent(Shift + selection keys) (unhandled by candidate list)',
-function() {
-  expect(6 * 9);
-  var mockJSZhuyin = {
-    unload: function() {},
-    handleKeyEvent: function(code) {
+'!@#$%^&*('.split('').forEach(function(key, i) {
+  var charCode = key.charCodeAt(0);
+  var keyCode = 49 + i; // keyCode of number keys on US keyboard
+
+  test('handleEvent(Shift + ' + i + ') (unhandled by candidate list)',
+  function() {
+    expect(6);
+    var mockJSZhuyin = {
+      unload: function() {},
+      handleKey: function(key) {
+        equal(key,
+          JSZhuyinLayoutMapper.getSymbolFromDOM3Code('Digit' + (i + 1), true),
+          'handleKey called.');
+        return true;
+      }
+    };
+    var input =  document.createElement('input');
+    var elements = {
+      composition: document.createElement('p'),
+      candidatesList: document.createElement('ul')
+    };
+    var webIME = new JSZhuyinWebIME(elements, mockJSZhuyin);
+    webIME.candidatesList.selectCandidate = function(index) {
       ok(true, 'Passed!');
-      return true;
-    }
-  };
-  var input =  document.createElement('input');
-  var elements = {
-    composition: document.createElement('p'),
-    candidatesList: document.createElement('ul')
-  };
-  var webIME = new JSZhuyinWebIME(elements, mockJSZhuyin);
-  webIME.candidatesList.selectCandidate = function(index) {
-    ok(true, 'Passed!');
-    return false;
-  };
-  var events = [];
-  JSZhuyinLayoutMapper.selectionKeys.split('').forEach(function(key, i) {
-    var charCode = key.charCodeAt(0);
-    var keyCode = 49 + i; // keyCode of number keys on US keyboard
+      return false;
+    };
+    var events = [];
 
     // WebKit/Blink
     events.push(
@@ -463,30 +665,26 @@ function() {
     events.push(
       getMockKeyEvent('keypress', 0, charCode, true, input,
                       { shiftKey: true }));
-  });
 
-  events.forEach(function(mockKeyEvent) {
-    webIME.handleEvent(mockKeyEvent);
+    events.forEach(function(mockKeyEvent) {
+      webIME.handleEvent(mockKeyEvent);
+    });
+    webIME.unload();
   });
-  webIME.unload();
 });
 
-test('handleEvent(keys)', function() {
-  expect(4 * (26 + 11 + 10));
-  var mockJSZhuyin = {
-    unload: function() {},
-    handleKeyEvent: function(code) {
-      ok(true, 'Passed!');
-      return true;
+(function() {
+  var keyCodeChars = (function getUpperCaseAtoZ() {
+    var chars = '';
+    for (var i = 0; i < 26; i++) {
+      chars += String.fromCharCode(65 + i);
     }
-  };
-  var input =  document.createElement('input');
-  var elements = {
-    composition: document.createElement('p'),
-    candidatesList: document.createElement('ul')
-  };
-  var webIME = new JSZhuyinWebIME(elements, mockJSZhuyin);
-  var events = [];
+    return chars;
+  })() +
+  String.fromCharCode(
+    0xc0, 0xbd, 0xbb, 0xdb, 0xdd, 0xdc,
+    0xba, 0xde, 0xbc, 0xbe, 0xbf) +
+  '1234567890';
 
   var chars = (function getLowerCaseAtoZ() {
     var chars = '';
@@ -495,49 +693,125 @@ test('handleEvent(keys)', function() {
     }
     return chars;
   })() +
-  '-=[]\\;\',./`' +
+  '`-=[]\\;\',./' +
   '1234567890';
 
-  var keys = (function getUpperCaseAtoZ() {
+  var upperCaseChars = (function getUpperCaseAtoZ() {
     var chars = '';
     for (var i = 0; i < 26; i++) {
       chars += String.fromCharCode(65 + i);
     }
     return chars;
   })() +
-  String.fromCharCode(45, 61, 91, 93, 92, 59, 39, 44, 46, 47, 96) +
-  '1234567890';
+  '~_+{}|:"<>?' +
+  '!@#$%^&*()';
 
-  keys.split('').forEach(function(keyCode, i) {
-    var charCode = chars.charCodeAt(i);
+  keyCodeChars.split('').map(function(keyCodeChar) {
+    return keyCodeChar.charCodeAt(0);
+  }).forEach(function(keyCode, i) {
+    test('handleEvent(' + chars.charAt(i) + ')', function() {
+      expect(4);
+      var charCode = chars.charCodeAt(i);
 
-    // WebKit/Blink
-    events.push(
-      getMockKeyEvent('keydown', keyCode, 0, false, input));
-    events.push(
-      getMockKeyEvent(
-        'keypress', charCode, charCode, true, input));
+      var mockJSZhuyin = {
+        unload: function() {},
+        handleKey: function(key) {
+          var expectedCode = D3EKeyboardEventHelper.getCodePropFromEvent({
+            charCode: charCode
+          });
+          var expectedKey =
+            JSZhuyinLayoutMapper.getSymbolFromDOM3Code(expectedCode) ||
+            chars.charAt(i);
+          equal(key, expectedKey, 'handleKey called.');
+          return true;
+        }
+      };
+      var input =  document.createElement('input');
+      var elements = {
+        composition: document.createElement('p'),
+        candidatesList: document.createElement('ul')
+      };
+      var webIME = new JSZhuyinWebIME(elements, mockJSZhuyin);
+      var events = [];
 
-    // Firefox
-    events.push(
-      getMockKeyEvent('keydown', keyCode, 0, false, input));
-    events.push(
-      getMockKeyEvent('keypress', 0, charCode, true, input));
+      // WebKit/Blink
+      events.push(
+        getMockKeyEvent('keydown', keyCode, 0, false, input));
+      events.push(
+        getMockKeyEvent(
+          'keypress', charCode, charCode, true, input));
+
+      // Firefox
+      events.push(
+        getMockKeyEvent('keydown', keyCode, 0, false, input));
+      events.push(
+        getMockKeyEvent('keypress', 0, charCode, true, input));
+
+      events.forEach(function(mockKeyEvent) {
+        webIME.handleEvent(mockKeyEvent);
+      });
+      webIME.unload();
+    });
+
+    test('handleEvent(Shift + ' + upperCaseChars.charAt(i) + ')', function() {
+      expect(4);
+
+      var charCode = upperCaseChars.charCodeAt(i);
+
+      var mockJSZhuyin = {
+        unload: function() {},
+        handleKey: function(key) {
+          var expectedCode = D3EKeyboardEventHelper.getCodePropFromEvent({
+            charCode: charCode,
+            shiftKey: true
+          });
+          var expectedKey =
+            JSZhuyinLayoutMapper.getSymbolFromDOM3Code(expectedCode, true) ||
+            chars.charAt(i);
+          equal(key, expectedKey, 'handleKey called.');
+          return true;
+        }
+      };
+      var input =  document.createElement('input');
+      var elements = {
+        composition: document.createElement('p'),
+        candidatesList: document.createElement('ul')
+      };
+      var webIME = new JSZhuyinWebIME(elements, mockJSZhuyin);
+      var events = [];
+
+      // WebKit/Blink
+      events.push(
+        getMockKeyEvent('keydown', keyCode, 0, false, input,
+                        { shiftKey: true }));
+      events.push(
+        getMockKeyEvent('keypress', charCode, charCode, true, input,
+                        { shiftKey: true }));
+
+      // Firefox
+      events.push(
+        getMockKeyEvent('keydown', keyCode, 0, false, input,
+                        { shiftKey: true }));
+      events.push(
+        getMockKeyEvent('keypress', 0, charCode, true, input,
+                        { shiftKey: true }));
+
+      events.forEach(function(mockKeyEvent) {
+        webIME.handleEvent(mockKeyEvent);
+      });
+      webIME.unload();
+    });
   });
+}());
 
-  events.forEach(function(mockKeyEvent) {
-    webIME.handleEvent(mockKeyEvent);
-  });
-  webIME.unload();
-});
+test('handleEvent(Tab)', function() {
+  expect(0);
 
-test('handleEvent(Shift + keys)', function() {
-  expect(4 * (26 + 11 + 10));
   var mockJSZhuyin = {
     unload: function() {},
-    handleKeyEvent: function(code) {
-      ok(true, 'Passed!');
-      return true;
+    handleKey: function(key) {
+      ok(false, 'handleKey called.');
+      return false;
     }
   };
   var input =  document.createElement('input');
@@ -546,47 +820,16 @@ test('handleEvent(Shift + keys)', function() {
     candidatesList: document.createElement('ul')
   };
   var webIME = new JSZhuyinWebIME(elements, mockJSZhuyin);
-  webIME.candidatesList.selectCandidate = function(index) {
-    return false;
-  };
   var events = [];
 
-  var chars = (function getUpperCaseAtoZ() {
-    var chars = '';
-    for (var i = 0; i < 26; i++) {
-      chars += String.fromCharCode(65 + i);
-    }
-    return chars;
-  })() +
-  '_+{}|:"<>?~' +
-  '!@#$%^&*()';
+  events.push(
+    getMockKeyEvent('keydown', 0x9, 0, false, input));
 
-  var keys = (function getUpperCaseAtoZ() {
-    var chars = '';
-    for (var i = 0; i < 26; i++) {
-      chars += String.fromCharCode(65 + i);
-    }
-    return chars;
-  })() +
-  String.fromCharCode(45, 61, 91, 93, 92, 59, 39, 44, 46, 47, 96) +
-  '1234567890';
-
-  keys.split('').forEach(function(keyCode, i) {
-    var charCode = chars.charCodeAt(i);
-
-    // WebKit/Blink
-    events.push(
-      getMockKeyEvent('keydown', keyCode, 0, false, input, { shiftKey: true }));
-    events.push(
-      getMockKeyEvent(
-        'keypress', charCode, charCode, true, input, { shiftKey: true }));
-
-    // Firefox
-    events.push(
-      getMockKeyEvent('keydown', keyCode, 0, false, input, { shiftKey: true }));
-    events.push(
-      getMockKeyEvent('keypress', 0, charCode, true, input,
-                      { shiftKey: true }));
+  events.push({
+    type: 'keydown',
+    keyCode: 0x9, charCode: 0,
+    key: 'Tab', code: 'Tab',
+    target: input
   });
 
   events.forEach(function(mockKeyEvent) {
