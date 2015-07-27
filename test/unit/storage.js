@@ -1,6 +1,6 @@
 'use strict';
 
-/* global BinStorage, JSZhuyinDataPackStorage, JSZhuyinDataPack,
+/* global BinStorage, CacheStore, JSZhuyinDataPackStorage, JSZhuyinDataPack,
           arrayBufferToStringArray, numberArrayToStringArray,
           arrayToUint16LEArrayBuffer */
 
@@ -86,6 +86,33 @@ test('getRange() (not found)', function() {
   deepEqual(value, [], 'Passed!');
 });
 
+module('CacheStore');
+
+test('add()', function() {
+  var store = new CacheStore();
+  store.add('Key1', ['value1', 'value2']);
+  deepEqual(store.data.Key1, ['value1', 'value2'], 'Passed!');
+});
+
+test('get()', function() {
+  var store = new CacheStore();
+  store.add('Key1', ['value1', 'value2']);
+  deepEqual(store.get('Key1'), ['value1', 'value2'], 'Passed!');
+});
+
+test('cleanup()', function() {
+  var store = new CacheStore();
+  store.add('Key1', ['value1', 'value2']);
+  store.add('Key2', ['value3', 'value4']);
+  store.add('Key3', ['value5', 'value6']);
+
+  store.cleanup('Key1Key3');
+
+  deepEqual(store.get('Key1'), ['value1', 'value2'], 'Passed!');
+  deepEqual(store.get('Key2'), undefined, 'Passed!');
+  deepEqual(store.get('Key3'), ['value5', 'value6'], 'Passed!');
+});
+
 module('JSZhuyinDataPackStorage', {
   beforeEach: function() {
     this.realJSZhuyinDataPack = JSZhuyinDataPack;
@@ -128,6 +155,30 @@ test('get()', function() {
     new JSZhuyinDataPack(binStorageData,
       0x2c + 4, /* start address of Table3 content */
       4 /* length of Table3 content */));
+});
+
+test('get() should utilize cache', function() {
+  var storage = new JSZhuyinDataPackStorage();
+  storage.load(binStorageData);
+
+  var value = storage.get(String.fromCharCode(0x41, 0x42, 0x43));
+  deepEqual(value,
+    new JSZhuyinDataPack(binStorageData,
+      0x2c + 4, /* start address of Table3 content */
+      4 /* length of Table3 content */));
+
+  var realGet = BinStorage.prototype.get;
+  BinStorage.prototype.get = function() {
+    ok(false, 'Should not reach BinStorage#get() again.');
+  };
+
+  var value2 = storage.get(String.fromCharCode(0x41, 0x42, 0x43));
+  deepEqual(value2,
+    new JSZhuyinDataPack(binStorageData,
+      0x2c + 4, /* start address of Table3 content */
+      4 /* length of Table3 content */));
+
+  BinStorage.prototype.get = realGet;
 });
 
 test('get() (not found)', function() {

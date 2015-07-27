@@ -1,33 +1,6 @@
 'use strict';
 
-/* global CacheStore, ActionQueue, JSZhuyin, BopomofoEncoder */
-
-module('CacheStore');
-
-test('add()', function() {
-  var store = new CacheStore();
-  store.add('Key1', ['value1', 'value2']);
-  deepEqual(store.data.Key1, ['value1', 'value2'], 'Passed!');
-});
-
-test('get()', function() {
-  var store = new CacheStore();
-  store.add('Key1', ['value1', 'value2']);
-  deepEqual(store.get('Key1'), ['value1', 'value2'], 'Passed!');
-});
-
-test('cleanup()', function() {
-  var store = new CacheStore();
-  store.add('Key1', ['value1', 'value2']);
-  store.add('Key2', ['value3', 'value4']);
-  store.add('Key3', ['value5', 'value6']);
-
-  store.cleanup('Key1Key3');
-
-  deepEqual(store.get('Key1'), ['value1', 'value2'], 'Passed!');
-  deepEqual(store.get('Key2'), undefined, 'Passed!');
-  deepEqual(store.get('Key3'), ['value5', 'value6'], 'Passed!');
-});
+/* global ActionQueue, JSZhuyin */
 
 module('ActionQueue');
 
@@ -153,43 +126,6 @@ test('query() a word', function() {
       ime.unload();
 
       start();
-    };
-    ime.query();
-  };
-
-  stop();
-  ime.load();
-});
-
-test('query() the same word twice', function() {
-  var ime = new JSZhuyin();
-  ime.dataURL = './resources/testdata.data';
-  ime.onloadend = function() {
-    ime.syllables = 'ㄊㄞˊ';
-    expect(4);
-    ime.updateCandidates = function(results) {
-      deepEqual(results,
-        [['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
-         ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
-         ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']],
-        'Passed!');
-    };
-    ime.cache.cleanup = function mockCleanup(supersetKey) {
-      equal(supersetKey,
-        BopomofoEncoder.encode('ㄊㄞˊ'), 'Passed!');
-    };
-    ime.queue.done = function() {
-      var originalGet = ime.storage.get;
-      ime.storage.get = function mockGet() {
-        ok(false, 'storage.get() was called twice.');
-
-        originalGet.apply(this, arguments);
-      };
-      ime.queue.done = function() {
-        ime.unload();
-        start();
-      };
-      ime.query();
     };
     ime.query();
   };
