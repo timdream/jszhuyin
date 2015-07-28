@@ -184,6 +184,11 @@
       <ul class="pagination" id="candidates"></ul>
     </div>
     <p><span id="status">...</span></p>
+    <div class="pull-right checkbox">
+      <label title="當輸入的注音順序對調時，盡量將符號排進同一個字，而不是推到下一個。開啟此功能可輔助硬體鍵盤輸入，關閉則符合螢幕虛擬鍵盤的行為。">
+        <input type="checkbox" id="reorder" disabled> 重排注音符號順序
+      </label>
+    </div>
   </div>
   <script type="text/javascript" src="lib/client.js"></script>
   <script type="text/javascript" src="lib/web.js"></script>
@@ -193,7 +198,8 @@
     var T = {
       LOADING: '載入中...',
       LOADED: '載入完成。',
-      ERROR: '載入失敗，無法使用。'
+      ERROR: '載入失敗，無法使用。',
+      RELOAD_TO_APPLY: '設定完成，重新載入網頁啟用此設定。'
     };
 
     window.onload = function() {
@@ -215,11 +221,29 @@
       var composition = document.getElementById('composition');
       var candidatesList = document.getElementById('candidates');
 
+      var reorderEl = document.getElementById('reorder');
+      reorderEl.disabled = false;
+      reorderEl.checked =
+        (window.location.hash.indexOf('reorder=0') === -1);
+
+      reorderEl.addEventListener('click', function() {
+        if (this.checked) {
+          window.location.hash = '';
+        } else {
+          window.location.hash = '#reorder=0';
+        }
+        if (inputarea.textContent) {
+          window.alert(T.RELOAD_TO_APPLY);
+        } else {
+          window.location.reload();
+        }
+      });
+
       var client = new JSZhuyinClient();
       client.load(
         new JSZhuyinServerWorkerLoader(),
         {
-          'REORDER_SYMBOLS': true
+          'REORDER_SYMBOLS': reorderEl.checked
         });
       client.onload = function() {
         inputarea.setAttribute('contenteditable', true);
