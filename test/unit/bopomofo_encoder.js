@@ -111,3 +111,113 @@ function() {
 
   equal(flag, false, 'Passed!');
 });
+
+test('isIncompletionOf() should compare ㄉ with ㄉㄧㄢˋ.',
+function() {
+  var flag = BopomofoEncoder.isIncompletionOf(
+    BopomofoEncoder.encode('ㄉ').charCodeAt(0),
+    BopomofoEncoder.encode('ㄉㄧㄢˋ').charCodeAt(0)
+  );
+
+  equal(flag, true, 'Passed!');
+});
+
+test('isIncompletionOf() should compare ㄉ with ㄉㄧㄢˋ.',
+function() {
+  var flag = BopomofoEncoder.isIncompletionOf(
+    BopomofoEncoder.encode('ㄉ').charCodeAt(0),
+    BopomofoEncoder.encode('ㄉㄧㄢˋ').charCodeAt(0)
+  );
+
+  equal(flag, true, 'Passed!');
+});
+
+test('isIncompletionOf() should compare ㄉㄧ with ㄉㄧㄢˋ.',
+function() {
+  var flag = BopomofoEncoder.isIncompletionOf(
+    BopomofoEncoder.encode('ㄉㄧ').charCodeAt(0),
+    BopomofoEncoder.encode('ㄉㄧㄢˋ').charCodeAt(0)
+  );
+
+  equal(flag, true, 'Passed!');
+});
+
+test('isIncompletionOf() should compare ㄉㄧㄢ with ㄉㄧㄢˋ.',
+function() {
+  var flag = BopomofoEncoder.isIncompletionOf(
+    BopomofoEncoder.encode('ㄉㄧㄢ').charCodeAt(0),
+    BopomofoEncoder.encode('ㄉㄧㄢˋ').charCodeAt(0)
+  );
+
+  equal(flag, true, 'Passed!');
+});
+
+test('isIncompletionOf() should compare ㄓ with ㄓㄨˋ.',
+function() {
+  var flag = BopomofoEncoder.isIncompletionOf(
+    BopomofoEncoder.encode('ㄓ').charCodeAt(0),
+    BopomofoEncoder.encode('ㄓㄨˋ').charCodeAt(0)
+  );
+
+  equal(flag, true, 'Passed!');
+});
+
+test('isIncompletionOf() should compare ㄓㄨ with ㄓㄨˋ.',
+function() {
+  var flag = BopomofoEncoder.isIncompletionOf(
+    BopomofoEncoder.encode('ㄓㄨ').charCodeAt(0),
+    BopomofoEncoder.encode('ㄓㄨˋ').charCodeAt(0)
+  );
+
+  equal(flag, true, 'Passed!');
+});
+
+test('isIncompletionOf() should compare ㄓㄨˋ with ㄉㄧㄢˋ.',
+function() {
+  var flag = BopomofoEncoder.isIncompletionOf(
+    BopomofoEncoder.encode('ㄓㄨˋ').charCodeAt(0),
+    BopomofoEncoder.encode('ㄉㄧㄢˋ').charCodeAt(0)
+  );
+
+  equal(flag, false, 'Passed!');
+});
+
+test('isIncompletionOf() should compare ㄧㄢˋ with ㄉㄧㄢˋ.',
+function() {
+  var flag = BopomofoEncoder.isIncompletionOf(
+    BopomofoEncoder.encode('ㄧㄢˋ').charCodeAt(0),
+    BopomofoEncoder.encode('ㄉㄧㄢˋ').charCodeAt(0)
+  );
+
+  equal(flag, false, 'Passed!');
+});
+
+test('isIncompletionOf() should compare ㄉㄢ with ㄉㄧㄢˋ.',
+function() {
+  var flag = BopomofoEncoder.isIncompletionOf(
+    BopomofoEncoder.encode('ㄉㄢ').charCodeAt(0),
+    BopomofoEncoder.encode('ㄉㄧㄢˋ').charCodeAt(0)
+  );
+
+  equal(flag, false, 'Passed!');
+});
+
+test('isIncompletionOf() should compare ㄢˋ with ㄉㄧㄢˋ.',
+function() {
+  var flag = BopomofoEncoder.isIncompletionOf(
+    BopomofoEncoder.encode('ㄢˋ').charCodeAt(0),
+    BopomofoEncoder.encode('ㄉㄧㄢˋ').charCodeAt(0)
+  );
+
+  equal(flag, false, 'Passed!');
+});
+
+test('isIncompletionOf() should compare ㄨ with ㄓㄨˋ.',
+function() {
+  var flag = BopomofoEncoder.isIncompletionOf(
+    BopomofoEncoder.encode('ㄨ').charCodeAt(0),
+    BopomofoEncoder.encode('ㄓㄨˋ').charCodeAt(0)
+  );
+
+  equal(flag, false, 'Passed!');
+});
