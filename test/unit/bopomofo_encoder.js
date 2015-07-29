@@ -221,3 +221,17 @@ function() {
 
   equal(flag, false, 'Passed!');
 });
+
+test('isCompleted(ㄓㄨˋ)', function() {
+  var flag = BopomofoEncoder.isCompleted(
+    BopomofoEncoder.encode('ㄓㄨˋ').charCodeAt(0));
+
+  equal(flag, true, 'Passed!');
+});
+
+test('isCompleted(ㄨ)', function() {
+  var flag = BopomofoEncoder.isCompleted(
+    BopomofoEncoder.encode('ㄨ').charCodeAt(0));
+
+  equal(flag, false, 'Passed!');
+});

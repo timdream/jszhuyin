@@ -194,17 +194,9 @@ test('get() should utilize cache', function() {
     'score': -3.2719614505767822,
     'str': '台北' } ]);
 
-  var realGet = BinStorage.prototype.get;
-  BinStorage.prototype.get = function() {
-    ok(false, 'Should not reach BinStorage#get() again.');
-  };
-
   var value2 = storage.get(BopomofoEncoder.encode('ㄊㄞˊㄅㄟˇ'));
-  deepEqual(value2.getResults(), [ {
-    'score': -3.2719614505767822,
-    'str': '台北' } ]);
 
-  BinStorage.prototype.get = realGet;
+  ok(value === value2, 'Same JSZhuyinDataPack');
 });
 
 test('get() (not found)', function() {
@@ -223,7 +215,7 @@ test('getRange()', function() {
   equal(value.length, 1, 'Passed!');
   deepEqual(value[0].getResults(), [
     { 'score': -3.330096483230591, 'str': '台北市' },
-    { "score": -3.6398773193359375, 'str': '臺北市' } ]);
+    { 'score': -3.6398773193359375, 'str': '臺北市' } ]);
 });
 
 test('getRange() (not found)', function() {
@@ -233,3 +225,60 @@ test('getRange() (not found)', function() {
   var value = storage.getRange(BopomofoEncoder.encode('ㄊㄞˊㄅㄟˇㄅㄟˇ'));
   deepEqual(value, [], 'Passed!');
 });
+
+test('getIncompleteMatched(ㄊㄞˊㄅ)', function() {
+  var storage = new JSZhuyinDataPackStorage();
+  storage.load(testdataData);
+
+  var value = storage.getIncompleteMatched(BopomofoEncoder.encode('ㄊㄞˊㄅ'));
+  deepEqual(value.getResults(), [
+    { 'score': -3.2719614505767822, 'str': '台北', 'symbols': 'పȳ' } ]);
+});
+
+test('getIncompleteMatched(ㄊㄞˊㄅ) should utilize cache', function() {
+  var storage = new JSZhuyinDataPackStorage();
+  storage.load(testdataData);
+
+  var value = storage.getIncompleteMatched(BopomofoEncoder.encode('ㄊㄞˊㄅ'));
+  deepEqual(value.getResults(), [
+    { 'score': -3.2719614505767822, 'str': '台北', 'symbols': 'పȳ' } ]);
+
+  var value2 = storage.getIncompleteMatched(BopomofoEncoder.encode('ㄊㄞˊㄅ'));
+
+  ok(value === value2, 'Same JSZhuyinDataPackCollection');
+});
+
+test('getIncompleteMatched(ㄊㄅㄕ)', function() {
+  var storage = new JSZhuyinDataPackStorage();
+  storage.load(testdataData);
+
+  var value = storage.getIncompleteMatched(BopomofoEncoder.encode('ㄊㄅㄕ'));
+  deepEqual(value.getResults(), [
+    { 'score': -3.330096483230591, 'str': '台北市', 'symbols': 'పȳ∄' },
+    { 'score': -3.6398773193359375, 'str': '臺北市', 'symbols': 'పȳ∄' } ]);
+});
+
+test('getIncompleteMatched(ㄌ) (not found)', function() {
+  var storage = new JSZhuyinDataPackStorage();
+  storage.load(testdataData);
+
+  var value = storage.getIncompleteMatched(BopomofoEncoder.encode('ㄌ'));
+  equal(value, undefined, 'Passed!');
+});
+
+test('getIncompleteMatched(ㄊㄞˊㄌ) (not found)', function() {
+  var storage = new JSZhuyinDataPackStorage();
+  storage.load(testdataData);
+
+  var value = storage.getIncompleteMatched(BopomofoEncoder.encode('ㄌ'));
+  equal(value, undefined, 'Passed!');
+});
+
+test('getIncompleteMatched(ㄌㄟˇㄌㄟˇ) (not found)', function() {
+  var storage = new JSZhuyinDataPackStorage();
+  storage.load(testdataData);
+
+  var value = storage.getIncompleteMatched(BopomofoEncoder.encode('ㄌㄟˇㄌㄟˇ'));
+  equal(value, undefined, 'Passed!');
+});
+
