@@ -215,6 +215,19 @@ test('getFirstResultScore()', function() {
     -3.1415927410125732, 'Passed!');
 });
 
+test('Correctly figure out the boundry of the last entry', function() {
+  var data = new JSZhuyinDataPack(
+    [{ str: '無尾熊', score: -5.622366428375244 },
+     { str: '\ud83d\udc28', score: -8 }]);
+  var buf = data.getPacked();
+
+  var data2 = new JSZhuyinDataPack(buf);
+  deepEqual(data2.getResults(),
+    [{ str: '無尾熊', score: -5.622366428375244 },
+     { str: '\ud83d\udc28', score: -8 }],
+    'Passed!');
+});
+
 module('JSZhuyinDataPackCollection');
 
 test('getFirstResultScore()', function() {
