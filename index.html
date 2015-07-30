@@ -240,14 +240,14 @@
       });
 
       var client = new JSZhuyinClient();
-      client.load(
-        new JSZhuyinServerWorkerLoader(),
-        {
-          'REORDER_SYMBOLS': reorderEl.checked
-        });
+      client.load(new JSZhuyinServerWorkerLoader());
       client.onload = function() {
         inputarea.setAttribute('contenteditable', true);
         inputarea.focus();
+
+        client.setConfig({
+          'REORDER_SYMBOLS': reorderEl.checked
+        });
 
         status.textContent = T.LOADED;
       };
