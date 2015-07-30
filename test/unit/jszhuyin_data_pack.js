@@ -291,7 +291,6 @@ test('getResults()', function() {
     [
       { str: '台灣', score: -3.1415927410125732, symbols: 'పŉ' },
       { str: '台北', score: -4.71238899230957, symbols: 'పȳ' },
-      { str: '台', score: -6.2831854820251465, symbols: 'పȳ' },
-      { str: '台', score: -6.2831854820251465, symbols: 'పŉ' }
+      { str: '台', score: -6.2831854820251465, symbols: 'పȳ' }
     ], 'Passed!');
 });
