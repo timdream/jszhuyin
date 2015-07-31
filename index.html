@@ -239,7 +239,7 @@
         }
       });
 
-      var client = new JSZhuyinClient();
+      var client = window.client = new JSZhuyinClient();
       client.load(new JSZhuyinServerWorkerLoader());
       client.onload = function() {
         inputarea.setAttribute('contenteditable', true);
