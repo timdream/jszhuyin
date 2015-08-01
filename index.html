@@ -270,6 +270,7 @@
       webIME.oncompositionupdate =
       webIME.oncandidateschange = function updatePanelStyle() {
         document.body.className = 'distraction-free';
+        status.textContent = '';
         window.addEventListener('mousemove', leaveDistractionFree);
         inputarea.addEventListener('blur', leaveDistractionFree);
 
