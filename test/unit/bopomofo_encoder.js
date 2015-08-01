@@ -235,3 +235,48 @@ test('isCompleted(ㄨ)', function() {
 
   equal(flag, false, 'Passed!');
 });
+
+test('replace(ㄖㄤˊ,ㄤ,ㄢ)', function() {
+  var code = BopomofoEncoder.replace(
+      BopomofoEncoder.encode('ㄖㄤˊ').charCodeAt(0),
+      BopomofoEncoder.encode('ㄤ').charCodeAt(0),
+      BopomofoEncoder.encode('ㄢ').charCodeAt(0)
+    );
+  equal(code, BopomofoEncoder.encode('ㄖㄢˊ').charCodeAt(0), 'Passed!');
+});
+
+test('replace(ㄖㄣˊ,ㄤ,ㄢ)', function() {
+  var code = BopomofoEncoder.replace(
+      BopomofoEncoder.encode('ㄖㄣˊ').charCodeAt(0),
+      BopomofoEncoder.encode('ㄤ').charCodeAt(0),
+      BopomofoEncoder.encode('ㄢ').charCodeAt(0)
+    );
+  equal(code, BopomofoEncoder.encode('ㄖㄣˊ').charCodeAt(0), 'Passed!');
+});
+
+test('replace(ㄏㄡˇ,ㄡ,ㄨㄛ)', function() {
+  var code = BopomofoEncoder.replace(
+      BopomofoEncoder.encode('ㄏㄡˇ').charCodeAt(0),
+      BopomofoEncoder.encode('ㄡ').charCodeAt(0),
+      BopomofoEncoder.encode('ㄨㄛ').charCodeAt(0)
+    );
+  equal(code, BopomofoEncoder.encode('ㄏㄨㄛˇ').charCodeAt(0), 'Passed!');
+});
+
+test('replace(ㄏㄨㄛˇ,ㄨㄛ,ㄡ)', function() {
+  var code = BopomofoEncoder.replace(
+      BopomofoEncoder.encode('ㄏㄨㄛˇ').charCodeAt(0),
+      BopomofoEncoder.encode('ㄨㄛ').charCodeAt(0),
+      BopomofoEncoder.encode('ㄡ').charCodeAt(0)
+    );
+  equal(code, BopomofoEncoder.encode('ㄏㄡˇ').charCodeAt(0), 'Passed!');
+});
+
+test('replace(ㄏㄨˇ,ㄨㄛ,ㄡ)', function() {
+  var code = BopomofoEncoder.replace(
+      BopomofoEncoder.encode('ㄏㄨˇ').charCodeAt(0),
+      BopomofoEncoder.encode('ㄨㄛ').charCodeAt(0),
+      BopomofoEncoder.encode('ㄡ').charCodeAt(0)
+    );
+  equal(code, BopomofoEncoder.encode('ㄏㄨˇ').charCodeAt(0), 'Passed!');
+});

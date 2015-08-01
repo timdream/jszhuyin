@@ -507,6 +507,67 @@ test('Run a simple interactive query.', function() {
   ime.load();
 });
 
+test('Run a simple interactive query (set ㄞ and ㄚ interchangable).',
+function() {
+  var ime = new JSZhuyin();
+  ime.dataURL = './resources/testdata.data';
+  expect(9);
+
+  ime.onloadend = function() {
+    var expectedCompositions = ['ㄊ', 'ㄊㄚ', 'ㄊㄚˊ'];
+    ime.oncompositionupdate = function(composition) {
+      equal(composition, expectedCompositions.shift(), 'Passed!');
+    };
+
+    var expectedCandidates = [
+      /* 'ㄊ' */
+      [['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
+       ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
+       ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']],
+      /* 'ㄊㄞ' */
+      [['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
+       ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
+       ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']],
+      /* 'ㄊㄞˊ' */
+      [['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
+       ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
+       ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']]];
+    ime.oncandidateschange = function(candidates) {
+      deepEqual(candidates, expectedCandidates.shift(), 'Passed!');
+    };
+
+    var nextActions = [
+      function() {
+        ok(ime.handleKeyEvent('ㄊ'.charCodeAt(0)), 'Passed!');
+      },
+      function() {
+        ok(ime.handleKeyEvent('ㄚ'.charCodeAt(0)), 'Passed!');
+      },
+      function() {
+        ok(ime.handleKeyEvent('ˊ'.charCodeAt(0)), 'Passed!');
+      }
+    ];
+    ime.onactionhandled = function() {
+      if (!nextActions.length) {
+        setTimeout(function() {
+          ime.unload();
+          start();
+        });
+
+        return;
+      }
+
+      (nextActions.shift())();
+    };
+
+    ime.setConfig({ INTERCHANGABLE_PAIRS: 'ㄚㄞ' });
+    (nextActions.shift())();
+  };
+
+  stop();
+  ime.load();
+});
+
 test('Confirm text with Enter key.', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
@@ -569,6 +630,76 @@ test('Confirm text with Enter key.', function() {
 
       (nextActions.shift())();
     };
+    (nextActions.shift())();
+  };
+
+  stop();
+  ime.load();
+});
+
+test('Confirm text with Enter key (set ㄞ and ㄚ interchangable).', function() {
+  var ime = new JSZhuyin();
+  ime.dataURL = './resources/testdata.data';
+  expect(14);
+
+  ime.onloadend = function() {
+    ime.oncompositionend = function(str) {
+      equal(str, '台', 'Passed!');
+    };
+
+    var expectedCompositions = ['ㄊ', 'ㄊㄚ', 'ㄊㄚˊ', ''];
+    ime.oncompositionupdate = function(composition) {
+      equal(composition, expectedCompositions.shift(), 'Passed!');
+    };
+
+    var expectedCandidates = [
+      /* 'ㄊ' */
+      [['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
+       ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
+       ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']],
+      /* 'ㄊㄞ' */
+      [['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
+       ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
+       ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']],
+      /* 'ㄊㄞˊ' */
+      [['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
+       ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
+       ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']],
+      /* Confirm */
+      [],
+      /* Suggestions */
+      [['北',''],['北市','']]];
+    ime.oncandidateschange = function(candidates) {
+      deepEqual(candidates, expectedCandidates.shift(), 'Passed!');
+    };
+
+    var nextActions = [
+      function() {
+        ok(ime.handleKeyEvent('ㄊ'.charCodeAt(0)), 'Passed!');
+      },
+      function() {
+        ok(ime.handleKeyEvent('ㄚ'.charCodeAt(0)), 'Passed!');
+      },
+      function() {
+        ok(ime.handleKeyEvent('ˊ'.charCodeAt(0)), 'Passed!');
+      },
+      function() {
+        ok(ime.handleKeyEvent(0x0d), 'Passed!');
+      }
+    ];
+    ime.onactionhandled = function() {
+      if (!nextActions.length) {
+        setTimeout(function() {
+          ime.unload();
+          start();
+        });
+
+        return;
+      }
+
+      (nextActions.shift())();
+    };
+    ime.setConfig({ INTERCHANGABLE_PAIRS: 'ㄚㄞ' });
     (nextActions.shift())();
   };
 
