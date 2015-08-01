@@ -198,8 +198,7 @@
     var T = {
       LOADING: '載入中...',
       LOADED: '載入完成。',
-      ERROR: '載入失敗，無法使用。',
-      RELOAD_TO_APPLY: '設定完成，重新載入網頁啟用此設定。'
+      ERROR: '載入失敗，無法使用。'
     };
 
     window.onload = function() {
@@ -232,11 +231,9 @@
         } else {
           window.location.hash = '#reorder=0';
         }
-        if (inputarea.textContent) {
-          window.alert(T.RELOAD_TO_APPLY);
-        } else {
-          window.location.reload();
-        }
+        client.setConfig({
+          'REORDER_SYMBOLS': this.checked
+        });
       });
 
       var client = window.client = new JSZhuyinClient();
