@@ -142,7 +142,6 @@
       float: right;
     }
 
-
     #candidates li span::before {
       content: counter(candidates);
       counter-increment: candidates 1;
@@ -151,6 +150,42 @@
       margin-top: 3px;
       width: 1.5em;
     }
+
+    /* Config */
+
+    .modal-dialog {
+      height: 100%;
+    }
+
+    .modal-content {
+      height: 100%;
+
+      display: -webkit-flex;
+      display: flex;
+      -webkit-flex-flow: column nowrap;
+      flex-flow: column nowrap;
+    }
+
+    .modal-body {
+      /* Workaround iOS scrolling perfromance issue */
+      overflow-y: scroll; /* has to be scroll, not auto */
+      -webkit-overflow-scrolling: touch;
+      -webkit-flex: 1 0 auto;
+      flex: 1 0 auto;
+    }
+
+    .modal-footer {
+      margin-top: 0;
+
+      -webkit-flex: 0 0 70px;
+      flex: 0 0 70px;
+    }
+
+    .checkbox label {
+      display: inline-block;
+      width: 100%;
+    }
+
   </style>
 </head>
 <body>
@@ -176,7 +211,9 @@
     </div>
   </div>
   <div class="container">
-    <p class="lead"><strong>JS 注音</strong>為使用 Web 技術開發的自動選字注音輸入法。</p>
+    <p class="lead">
+      <button id="config-btn" class="pull-right btn btn-default disabled"><span class="glyphicon glyphicon-wrench"></span></button>
+      <strong>JS 注音</strong>為使用 Web 技術開發的自動選字注音輸入法。</p>
     <p>您可以在此處線上輸入中文，不需安裝任何程式。</p>
     <div id="inputarea" class="well well-sm"></div>
     <div class="panel panel-primary" id="panel" hidden>
@@ -184,12 +221,33 @@
       <ul class="pagination" id="candidates"></ul>
     </div>
     <p><span id="status">...</span></p>
-    <div class="pull-right checkbox">
-      <label title="當輸入的注音順序對調時，盡量將符號排進同一個字，而不是推到下一個。開啟此功能可輔助硬體鍵盤輸入，關閉則符合螢幕虛擬鍵盤的行為。">
-        <input type="checkbox" id="reorder" disabled> 重排注音符號順序
-      </label>
-    </div>
   </div>
+  <div id="config-dialog-dialog" class="modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+          <h4>JS 注音設定</h4>
+          <p>已經輸入的注音符號不一定會適用。</p>
+          <form role="form">
+            <div class="form-group">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" id="reorder-symbols">
+                  重排注音符號順序（例如，將 <code>ㄨㄇ</code> 修正為 <code>ㄇㄨ</code>）
+                </label>
+                <span class="help-block">
+                當輸入的注音順序對調時，盡量將符號排進同一個字，而不是推到下一個。
+                開啟此功能可輔助硬體鍵盤輸入，關閉則符合螢幕虛擬鍵盤的行為。</span>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="config-dialog-close" class="btn btn-primary">關閉</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
   <script type="text/javascript" src="lib/client.js"></script>
   <script type="text/javascript" src="lib/web.js"></script>
   <script type="text/javascript">
@@ -199,6 +257,75 @@
       LOADING: '載入中...',
       LOADED: '載入完成。',
       ERROR: '載入失敗，無法使用。'
+    };
+
+    function ConfigDialog() {
+    }
+    ConfigDialog.prototype.CLOSE_BTN_ID = 'config-dialog-close';
+    ConfigDialog.prototype.OPEN_BTN_ID = 'config-btn';
+    ConfigDialog.prototype.DIALOG_ID = 'config-dialog-dialog';
+    ConfigDialog.prototype.start = function() {
+      this.dialogEl = document.getElementById(this.DIALOG_ID);
+      this.closeEl = document.getElementById(this.CLOSE_BTN_ID);
+      this.openEl = document.getElementById(this.OPEN_BTN_ID);
+
+      this.closeEl.addEventListener('click', this);
+      this.openEl.addEventListener('click', this);
+      this.openEl.classList.remove('disabled');
+    };
+    ConfigDialog.prototype.handleEvent = function(evt) {
+      var target = evt.target;
+      switch (target) {
+        case this.openEl:
+          this.dialogEl.classList.add('show');
+          break;
+        case this.closeEl:
+          this.dialogEl.classList.remove('show');
+          break;
+      }
+    };
+
+    function ConfigHandler() {
+    }
+    ConfigHandler.prototype.REORDER_SYMBOLS_ID = 'reorder-symbols';
+    ConfigHandler.prototype.onconfigupdate = null;
+    ConfigHandler.prototype.start = function() {
+      this.reorderEl = document.getElementById(this.REORDER_SYMBOLS_ID);
+      this.reorderEl.addEventListener('click', this);
+
+      this.getConfigFromHash();
+    };
+    ConfigHandler.prototype.handleEvent = function(evt) {
+      var target = evt.target;
+      switch (target) {
+        case this.reorderEl:
+          this.reorderSymbols = target.checked;
+          break;
+      }
+
+      this.setConfigToHash();
+
+      if (typeof this.onconfigupdate === 'function') {
+        this.onconfigupdate();
+      }
+    };
+    ConfigHandler.prototype.getConfigFromHash = function() {
+      var hash = window.location.hash;
+
+      this.reorderEl.checked = this.reorderSymbols =
+        (hash.indexOf('reorder=0') === -1);
+    };
+    ConfigHandler.prototype.setConfigToHash = function() {
+      var hash = '';
+      if (!this.reorderEl.checked) {
+        hash += 'reorder=0';
+      }
+      window.location.hash = '#' + hash;
+    };
+    ConfigHandler.prototype.getConfigObject = function() {
+      return {
+        'REORDER_SYMBOLS': this.reorderSymbols
+      };
     };
 
     window.onload = function() {
@@ -220,21 +347,16 @@
       var composition = document.getElementById('composition');
       var candidatesList = document.getElementById('candidates');
 
-      var reorderEl = document.getElementById('reorder');
-      reorderEl.disabled = false;
-      reorderEl.checked =
-        (window.location.hash.indexOf('reorder=0') === -1);
+      var configDialog = new ConfigDialog();
+      configDialog.start();
 
-      reorderEl.addEventListener('click', function() {
-        if (this.checked) {
-          window.location.hash = '';
-        } else {
-          window.location.hash = '#reorder=0';
+      var configHandler = new ConfigHandler();
+      configHandler.start();
+      configHandler.onconfigupdate = function() {
+        if (client.loaded) {
+          client.setConfig(configHandler.getConfigObject());
         }
-        client.setConfig({
-          'REORDER_SYMBOLS': this.checked
-        });
-      });
+      };
 
       var client = window.client = new JSZhuyinClient();
       client.load(new JSZhuyinServerWorkerLoader());
@@ -242,10 +364,7 @@
         inputarea.setAttribute('contenteditable', true);
         inputarea.focus();
 
-        client.setConfig({
-          'REORDER_SYMBOLS': reorderEl.checked
-        });
-
+        client.setConfig(configHandler.getConfigObject());
         status.textContent = T.LOADED;
       };
       client.onerror = function() {
