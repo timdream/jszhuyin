@@ -226,7 +226,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-body">
-          <h4>JS 注音設定</h4>
+          <h4>一般設定</h4>
           <p>已經輸入的注音符號不一定會適用。</p>
           <form role="form">
             <div class="form-group">
@@ -239,6 +239,76 @@
                 當輸入的注音順序對調時，盡量將符號排進同一個字，而不是推到下一個。
                 開啟此功能可輔助硬體鍵盤輸入，關閉則符合螢幕虛擬鍵盤的行為。</span>
               </div>
+            </div>
+          </form>
+          <h4>容錯搜尋</h4>
+          <p>找字時考慮下列拼音錯誤。</p>
+          <form role="form" id="interchangable-pairs-config">
+            <div class="form-group">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" data-pair="ㄣㄥ">
+                  <code>ㄣ</code>/<code>ㄥ</code>，例如「<strong>新</strong>」與「<strong>星</strong>」。
+                </label>
+              </div>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" data-pair="ㄢㄤ">
+                  <code>ㄢ</code>/<code>ㄤ</code>，例如「<strong>觀</strong>」與「<strong>光</strong>」。
+                </label>
+              </div>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" data-pair="ㄡㄨㄛ">
+                  <code>ㄡ</code>/<code>ㄨㄛ</code>，例如「<strong>後</strong>」與「<strong>或</strong>」。
+                </label>
+              </div>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" data-pair="ㄜㄦ">
+                  <code>ㄜ</code>/<code>ㄦ</code>，例如「<strong>噁</strong>」與「<strong>耳</strong>」。
+                </label>
+              </div>
+
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" data-pair="ㄈㄏ">
+                  <code>ㄈ</code>/<code>ㄏ</code>，例如「<strong>發</strong>」與「<strong>哈</strong>」。
+                </label>
+              </div>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" data-pair="ㄋㄌ">
+                  <code>ㄋ</code>/<code>ㄌ</code>，例如「<strong>年</strong>」與「<strong>連</strong>」。
+                </label>
+              </div>
+
+              <!-- 捲舌音 -->
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" data-pair="ㄓㄗ">
+                  <code>ㄓ</code>/<code>ㄗ</code>，例如「<strong>債</strong>」與「<strong>在</strong>」。
+                </label>
+              </div>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" data-pair="ㄔㄘ">
+                  <code>ㄔ</code>/<code>ㄘ</code>，例如「<strong>重</strong>」與「<strong>從</strong>」。
+                </label>
+              </div>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" data-pair="ㄕㄙ">
+                  <code>ㄕ</code>/<code>ㄙ</code>，例如「<strong>師</strong>」與「<strong>司</strong>」。
+                </label>
+              </div>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" data-pair="ㄖㄌ">
+                  <code>ㄖ</code>/<code>ㄌ</code>，例如「<strong>熱</strong>」與「<strong>樂</strong>」。
+                </label>
+              </div>
+
             </div>
           </form>
         </div>
@@ -288,10 +358,20 @@
     function ConfigHandler() {
     }
     ConfigHandler.prototype.REORDER_SYMBOLS_ID = 'reorder-symbols';
+    ConfigHandler.prototype.INTERCHANGABLE_PAIRS_FORM_ID =
+      'interchangable-pairs-config';
     ConfigHandler.prototype.onconfigupdate = null;
     ConfigHandler.prototype.start = function() {
       this.reorderEl = document.getElementById(this.REORDER_SYMBOLS_ID);
       this.reorderEl.addEventListener('click', this);
+
+      this.interchangagblePairsEls =
+        Array.prototype.slice.call(
+          document.getElementById(this.INTERCHANGABLE_PAIRS_FORM_ID)
+            .querySelectorAll('[data-pair]'));
+      this.interchangagblePairsEls.forEach(function(el) {
+        el.addEventListener('click', this);
+      }, this);
 
       this.getConfigFromHash();
     };
@@ -301,6 +381,12 @@
         case this.reorderEl:
           this.reorderSymbols = target.checked;
           break;
+        default:
+          if (target.dataset.pair) {
+            this.updateInterchangablePair();
+          }
+
+          break;
       }
 
       this.setConfigToHash();
@@ -309,22 +395,46 @@
         this.onconfigupdate();
       }
     };
+    ConfigHandler.prototype.updateInterchangablePair = function() {
+      var pairs = '';
+
+      this.interchangagblePairsEls.forEach(function(el) {
+        if (el.checked) {
+          pairs += el.dataset.pair;
+        }
+      });
+
+      this.interchangagblePairs = pairs;
+    };
     ConfigHandler.prototype.getConfigFromHash = function() {
       var hash = window.location.hash;
 
       this.reorderEl.checked = this.reorderSymbols =
         (hash.indexOf('reorder=0') === -1);
+
+      var interchangagblePairs = this.interchangagblePairs =
+        (hash.match(/fuzzy=([^&]*)/) || ['',''])[1];
+
+      this.interchangagblePairsEls.forEach(function(el) {
+        el.checked = (interchangagblePairs.indexOf(el.dataset.pair) !== -1);
+      });
     };
     ConfigHandler.prototype.setConfigToHash = function() {
-      var hash = '';
+      var hash = [];
       if (!this.reorderEl.checked) {
-        hash += 'reorder=0';
+        hash.push('reorder=0');
       }
-      window.location.hash = '#' + hash;
+
+      if (this.interchangagblePairs) {
+        hash.push('fuzzy=' + this.interchangagblePairs);
+      }
+
+      window.location.replace('#' + hash.join('&'));
     };
     ConfigHandler.prototype.getConfigObject = function() {
       return {
-        'REORDER_SYMBOLS': this.reorderSymbols
+        'REORDER_SYMBOLS': this.reorderSymbols,
+        'INTERCHANGABLE_PAIRS': this.interchangagblePairs
       };
     };
 
