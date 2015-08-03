@@ -166,6 +166,38 @@ test('getResults()', function() {
   ], 'Passed!');
 });
 
+test('getResultsBeginsWith(台)', function() {
+  var buf = arrayToUint16LEArrayBuffer(
+      [0x42 /* B */,
+       0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
+       0x53f0, 0x5317, /* 台北 */
+       0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
+       0x53f0, 0x0000, /* 台NUL */
+       0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
+       0x53f0, 0x7063, /* 台灣 */
+       0x0 /* pad */]);
+  var data = new JSZhuyinDataPack(buf);
+  deepEqual(data.getResultsBeginsWith('台'), [
+    { str: '台北', score: -3.1415927410125732 },
+    { str: '台', score: -3.1415927410125732 },
+    { str: '台灣', score: -3.1415927410125732 }
+  ], 'Passed!');
+});
+
+test('getResultsBeginsWith(北)', function() {
+  var buf = arrayToUint16LEArrayBuffer(
+      [0x42 /* B */,
+       0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
+       0x53f0, 0x5317, /* 台北 */
+       0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
+       0x53f0, 0x0000, /* 台NUL */
+       0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
+       0x53f0, 0x7063, /* 台灣 */
+       0x0 /* pad */]);
+  var data = new JSZhuyinDataPack(buf);
+  deepEqual(data.getResultsBeginsWith('北'), [], 'Passed!');
+});
+
 test('getPacked()', function() {
   var buf = arrayToUint16LEArrayBuffer(
       [0x42 /* B */,
