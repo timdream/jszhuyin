@@ -47,7 +47,7 @@ test('Escape', function() {
 
 test('Space', function() {
   var events = [
-    { key: 'Space', code: 'Space' },
+    { key: ' ', code: 'Space' },
     { keyIdentifier: 'U+0020' },
     { keyCode: 0x20, charCode: 0x20 },
     { keyCode: 0x20, charCode: 0 }
@@ -55,7 +55,7 @@ test('Space', function() {
 
   events.forEach(function(evt) {
     equal(D3EKeyboardEventHelper.getCodePropFromEvent(evt), 'Space');
-    equal(D3EKeyboardEventHelper.getKeyPropFromEvent(evt), 'Space');
+    equal(D3EKeyboardEventHelper.getKeyPropFromEvent(evt), ' ');
   });
 });
 
@@ -86,7 +86,7 @@ test('ArrowRight', function() {
 });
 
 (function() {
-    // key, code, shiftKey, keyCode
+  // key, code, shiftKey, keyCode
   var testData = [
     ['~', 'Backquote', true, 0xc0 ],
     ['`', 'Backquote', false, 0xc0 ],
@@ -100,6 +100,8 @@ test('ArrowRight', function() {
     ['[', 'BracketLeft', false, 0xdb ],
     ['}', 'BracketRight', true, 0xdd ],
     [']', 'BracketRight', false, 0xdd ],
+    ['|', 'Backslash', true, 0xdc ],
+    ['\\', 'Backslash', false, 0xdc ],
     [':', 'Semicolon', true, 0xba ],
     [';', 'Semicolon', false, 0xba ],
     ['"', 'Quote', true, 0xde ],
@@ -153,7 +155,7 @@ test('ArrowRight', function() {
         { type: 'keypress', keyCode: data[0].charCodeAt(0),
           charCode: data[0].charCodeAt(0), shiftKey: data[2] },
 
-        // Old DOM3
+        // Old DOM3 on Mac
         { type: 'keydown', keyCode: data[3], codeCode: 0, shiftKey: data[2],
           keyIdentifier: 'U+' + codepoint },
         { type: 'keypress', keyCode: data[0].charCodeAt(0),
@@ -176,6 +178,34 @@ test('ArrowRight', function() {
       });
     });
   });
+
+  // key, code, shiftKey, keyCode, keyIdentifier
+  var windowsTestData = [
+    ['>', 'Period', true, 0xbe, 'U+007F' ],
+    ['.', 'Period', false, 0xbe, 'U+007F' ]
+  ];
+
+  windowsTestData.forEach(function(data) {
+    test(data[0] + ' (' + data[1] + ') (Windows)', function() {
+
+      var events = [
+        // Old DOM3 on Windows
+        { type: 'keydown', keyCode: data[3], codeCode: 0, shiftKey: data[2],
+          keyIdentifier: data[4] },
+        { type: 'keypress', keyCode: data[0].charCodeAt(0),
+          charCode: data[0].charCodeAt(0), shiftKey: data[2],
+          keyIdentifier: data[4] }
+      ];
+
+      events.forEach(function(evt) {
+        equal(D3EKeyboardEventHelper.getCodePropFromEvent(evt), data[1],
+          'Code for ' + JSON.stringify(evt));
+        equal(D3EKeyboardEventHelper.getKeyPropFromEvent(evt), data[0],
+          'Key for ' + JSON.stringify(evt));
+      });
+    });
+  });
+
 })();
 
 module('JSZhuyinLayoutMapper');
