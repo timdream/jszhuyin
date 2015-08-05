@@ -101,14 +101,6 @@ DatabaseBuilder.prototype.getBlob = function bsb_getBlob() {
       blobLength += keyView.byteLength;
     }
 
-    // TODO: DataView does not require the data to align.
-    // Should we remove the padding here?
-    if (blobLength % 4) {
-      var padBuf = new ArrayBuffer(2);
-      blobParts.push(padBuf);
-      blobLength += padBuf.byteLength;
-    }
-
     if (ptrTable.length) {
       var ptrView = new DataView(new ArrayBuffer(ptrTable.length << 2));
       blobParts.push(ptrView);

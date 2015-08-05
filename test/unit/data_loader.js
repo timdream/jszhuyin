@@ -12,18 +12,16 @@ test('create instance', function() {
 var resStringArray = numberArrayToStringArray([
   0x0001, 0x0000, // Table0 header
   0x0041,         // Table0 key table
-  0x0000,         // pad
-  0x000c, 0x0000, // Table0 ptr table, ptr to table1 (32bit LE)
+  0x000a, 0x0000, // Table0 ptr table, ptr to table1 (32bit LE)
 
   0x0001, 0x0000, // Table1 header
   0x0042,         // Table1 key table
-  0x0000,         // pad
-  0x0018, 0x0000, // Table1 ptr table, ptr to table2 (32bit LE)
+  0x0014, 0x0000, // Table1 ptr table, ptr to table2 (32bit LE)
 
   0x0001, 0x0005, // Table2 header
   0x1111, 0x2222, 0x3333, 0x4444, 0x5555, // Table2 content
   0x0043,         // Table2 key table
-  0x002c, 0x0000, // Table2 ptr table, ptr to table3 (32bit LE)
+  0x0028, 0x0000, // Table2 ptr table, ptr to table3 (32bit LE)
 
   0x0000, 0x0004, // Table3 header
   0x6666, 0x7777, 0x8888, 0x9999 // Table3 content

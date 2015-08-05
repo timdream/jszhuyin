@@ -38,13 +38,12 @@ test('construct with packed array buffer.', function() {
        0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
        0x53f0, 0x0000, /* 台NUL */
        0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
-       0x53f0, 0x7063, /* 台灣 */
-       0x0 /* pad */]);
+       0x53f0, 0x7063 /* 台灣 */ ]);
   var data = new JSZhuyinDataPack(buf, undefined, undefined, 'పȳ');
   deepEqual(
     arrayBufferToString(data.packed), arrayBufferToString(buf), 'Passed!');
   equal(data.byteOffset, 0, 'Passed!');
-  equal(data.length, 14, 'Passed!');
+  equal(data.length, 13, 'Passed!');
   equal(data.symbols, 'పȳ', 'Passed!');
 });
 
@@ -57,13 +56,12 @@ test('construct with packed array buffer (byteOffset !== 0).', function() {
        0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
        0x53f0, 0x0000, /* 台NUL */
        0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
-       0x53f0, 0x7063, /* 台灣 */
-       0x0 /* pad */]);
-  var data = new JSZhuyinDataPack(buf, 8, 14, 'పȳ');
+       0x53f0, 0x7063 /* 台灣 */ ]);
+  var data = new JSZhuyinDataPack(buf, 8, 13, 'పȳ');
   deepEqual(
     arrayBufferToString(data.packed), arrayBufferToString(buf), 'Passed!');
   equal(data.byteOffset, 8, 'Passed!');
-  equal(data.length, 14, 'Passed!');
+  equal(data.length, 13, 'Passed!');
   equal(data.symbols, 'పȳ', 'Passed!');
 });
 
@@ -89,8 +87,7 @@ test('unpack()', function() {
        0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
        0x53f0, 0x0000, /* 台NUL */
        0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
-       0x53f0, 0x7063, /* 台灣 */
-       0x0 /* pad */]);
+       0x53f0, 0x7063 /* 台灣 */ ]);
 
   var data = new JSZhuyinDataPack(buf);
   data.unpack();
@@ -111,10 +108,9 @@ test('unpack() (byteOffset !== 0)', function() {
        0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
        0x53f0, 0x0000, /* 台NUL */
        0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
-       0x53f0, 0x7063, /* 台灣 */
-       0x0 /* pad */]);
+       0x53f0, 0x7063 /* 台灣 */ ]);
 
-  var data = new JSZhuyinDataPack(buf, 8, 14);
+  var data = new JSZhuyinDataPack(buf, 8, 13);
   data.unpack();
 
   deepEqual(data.unpacked, [
@@ -132,8 +128,7 @@ test('pack()', function() {
        0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
        0x53f0, 0x0000, /* 台NUL */
        0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
-       0x53f0, 0x7063, /* 台灣 */
-       0x0 /* pad */]);
+       0x53f0, 0x7063 /* 台灣 */ ]);
 
   var data = new JSZhuyinDataPack([
     { str: '台北', score: -3.1415927410125732 },
@@ -145,7 +140,7 @@ test('pack()', function() {
   deepEqual(
     arrayBufferToString(data.packed), arrayBufferToString(buf), 'Passed!');
   equal(data.byteOffset, 0, 'Passed!');
-  equal(data.length, 14, 'Passed!');
+  equal(data.length, 13, 'Passed!');
 });
 
 test('getResults()', function() {
@@ -156,8 +151,7 @@ test('getResults()', function() {
        0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
        0x53f0, 0x0000, /* 台NUL */
        0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
-       0x53f0, 0x7063, /* 台灣 */
-       0x0 /* pad */]);
+       0x53f0, 0x7063 /* 台灣 */ ]);
   var data = new JSZhuyinDataPack(buf);
   deepEqual(data.getResults(), [
     { str: '台北', score: -3.1415927410125732 },
@@ -174,8 +168,7 @@ test('getResultsBeginsWith(台)', function() {
        0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
        0x53f0, 0x0000, /* 台NUL */
        0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
-       0x53f0, 0x7063, /* 台灣 */
-       0x0 /* pad */]);
+       0x53f0, 0x7063 /* 台灣 */ ]);
   var data = new JSZhuyinDataPack(buf);
   deepEqual(data.getResultsBeginsWith('台'), [
     { str: '台北', score: -3.1415927410125732 },
@@ -192,8 +185,7 @@ test('getResultsBeginsWith(北)', function() {
        0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
        0x53f0, 0x0000, /* 台NUL */
        0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
-       0x53f0, 0x7063, /* 台灣 */
-       0x0 /* pad */]);
+       0x53f0, 0x7063 /* 台灣 */ ]);
   var data = new JSZhuyinDataPack(buf);
   deepEqual(data.getResultsBeginsWith('北'), [], 'Passed!');
 });
@@ -206,8 +198,7 @@ test('getPacked()', function() {
        0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
        0x53f0, 0x0000, /* 台NUL */
        0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
-       0x53f0, 0x7063, /* 台灣 */
-       0x0 /* pad */]);
+       0x53f0, 0x7063 /* 台灣 */ ]);
   var data = new JSZhuyinDataPack([
     { str: '台北', score: -3.1415927410125732 },
     { str: '台', score: -3.1415927410125732 },
@@ -224,8 +215,7 @@ test('getFirstResult()', function() {
        0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
        0x53f0, 0x0000, /* 台NUL */
        0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
-       0x53f0, 0x7063, /* 台灣 */
-       0x0 /* pad */]);
+       0x53f0, 0x7063 /* 台灣 */ ]);
   var data = new JSZhuyinDataPack(buf);
   deepEqual(data.getFirstResult(),
     { str: '台北', score: -3.1415927410125732 },
@@ -240,8 +230,7 @@ test('getFirstResultScore()', function() {
        0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
        0x53f0, 0x0000, /* 台NUL */
        0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
-       0x53f0, 0x7063, /* 台灣 */
-       0x0 /* pad */]);
+       0x53f0, 0x7063 /* 台灣 */ ]);
   var data = new JSZhuyinDataPack(buf);
   equal(data.getFirstResultScore(),
     -3.1415927410125732, 'Passed!');
@@ -268,16 +257,14 @@ test('getFirstResultScore()', function() {
        0xcbe4, 0xc096 /* (new Float32Array([-4.71238899230957])) */,
        0x53f0, 0x5317, /* 台北 */
        0x0fdb, 0xc0c9 /* (new Float32Array([-6.2831854820251465])) */,
-       0x53f0, 0x0000, /* 台NUL */
-       0x0 /* pad */]);
+       0x53f0, 0x0000 /* 台NUL */ ]);
 
   var buf2 = arrayToUint16LEArrayBuffer(
       [0x42 /* B */,
        0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
        0x53f0, 0x7063, /* 台灣 */
        0x0fdb, 0xc0c9 /* (new Float32Array([-6.2831854820251465])) */,
-       0x53f0, 0x0000, /* 台NUL */
-       0x0 /* pad */]);
+       0x53f0, 0x0000 /* 台NUL */ ]);
 
 
   var collection = new JSZhuyinDataPackCollection(
@@ -293,16 +280,14 @@ test('getFirstResult()', function() {
        0xcbe4, 0xc096 /* (new Float32Array([-4.71238899230957])) */,
        0x53f0, 0x5317, /* 台北 */
        0x0fdb, 0xc0c9 /* (new Float32Array([-6.2831854820251465])) */,
-       0x53f0, 0x0000, /* 台NUL */
-       0x0 /* pad */]);
+       0x53f0, 0x0000 /* 台NUL */ ]);
 
   var buf2 = arrayToUint16LEArrayBuffer(
       [0x42 /* B */,
        0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
        0x53f0, 0x7063, /* 台灣 */
        0x0fdb, 0xc0c9 /* (new Float32Array([-6.2831854820251465])) */,
-       0x53f0, 0x0000, /* 台NUL */
-       0x0 /* pad */]);
+       0x53f0, 0x0000 /* 台NUL */ ]);
 
   var collection = new JSZhuyinDataPackCollection(
     [ new JSZhuyinDataPack(buf, undefined, undefined, 'పȳ'),
@@ -318,16 +303,14 @@ test('getResults()', function() {
        0xcbe4, 0xc096 /* (new Float32Array([-4.71238899230957])) */,
        0x53f0, 0x5317, /* 台北 */
        0x0fdb, 0xc0c9 /* (new Float32Array([-6.2831854820251465])) */,
-       0x53f0, 0x0000, /* 台NUL */
-       0x0 /* pad */]);
+       0x53f0, 0x0000 /* 台NUL */ ]);
 
   var buf2 = arrayToUint16LEArrayBuffer(
       [0x42 /* B */,
        0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
        0x53f0, 0x7063, /* 台灣 */
        0x0fdb, 0xc0c9 /* (new Float32Array([-6.2831854820251465])) */,
-       0x53f0, 0x0000, /* 台NUL */
-       0x0 /* pad */]);
+       0x53f0, 0x0000 /* 台NUL */ ]);
 
   var collection = new JSZhuyinDataPackCollection(
     [ new JSZhuyinDataPack(buf, undefined, undefined, 'పȳ'),
