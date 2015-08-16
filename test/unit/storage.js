@@ -89,7 +89,7 @@ module('CacheStore');
 test('add()', function() {
   var store = new CacheStore();
   store.add('Key1', ['value1', 'value2']);
-  deepEqual(store.data.Key1, ['value1', 'value2'], 'Passed!');
+  deepEqual(store.dataMap.get('Key1'), ['value1', 'value2'], 'Passed!');
 });
 
 test('get()', function() {
