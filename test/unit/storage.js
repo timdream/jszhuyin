@@ -279,3 +279,18 @@ test('getIncompleteMatched(ㄌㄟˇㄌㄟˇ) (not found)', function() {
   equal(value, undefined, 'Passed!');
 });
 
+test('reverseGet(台北)', function() {
+  var storage = new JSZhuyinDataPackStorage();
+  storage.load(testdataData);
+
+  var value = storage.reverseGet('台北');
+  equal(value, BopomofoEncoder.encode('ㄊㄞˊㄅㄟˇ'), 'Passed!');
+});
+
+test('reverseGet(高雄)', function() {
+  var storage = new JSZhuyinDataPackStorage();
+  storage.load(testdataData);
+
+  var value = storage.reverseGet('高雄');
+  equal(value, '\u0000\u0000', 'Passed!');
+});
