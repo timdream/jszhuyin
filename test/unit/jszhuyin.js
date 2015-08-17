@@ -115,11 +115,15 @@ test('query() a word', function() {
   ime.onloadend = function() {
     ime.syllables = 'ㄊㄞˊ';
     expect(1);
+    var candidateId = 42;
     ime.updateCandidates = function(results) {
       deepEqual(results,
-        [['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
-         ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
-         ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']],
+        [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+         ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+         ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+         ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+         ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+         ['籉', candidateId++],['秮', candidateId++]],
         'Passed!');
     };
     ime.queue.done = function() {
@@ -140,12 +144,16 @@ test('query() a two-word phrase', function() {
   ime.onloadend = function() {
     ime.syllables = 'ㄊㄞˊㄅㄟˇ';
     expect(1);
+    var candidateId = 42;
     ime.updateCandidates = function(results) {
       deepEqual(results,
-        [['台北','పȳ'],
-         ['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
-         ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
-         ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']],
+        [['台北', candidateId++],
+         ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+         ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+         ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+         ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+         ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+         ['籉', candidateId++],['秮', candidateId++]],
         'Passed!');
     };
     ime.queue.done = function() {
@@ -166,13 +174,18 @@ test('query() a three-word phrase', function() {
   ime.onloadend = function() {
     ime.syllables = 'ㄊㄞˊㄅㄟˇㄕˋ';
     expect(1);
+    var candidateId = 42;
     ime.updateCandidates = function(results) {
       deepEqual(results,
-        [['台北市','పȳ∄'],['臺北市','పȳ∄'],['台北是','పȳ∄'],
-         ['台北','పȳ'],
-         ['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
-         ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
-         ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']],
+        [['台北市', candidateId++],['臺北市', candidateId++],
+         ['台北是', candidateId++],
+         ['台北', candidateId++],
+         ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+         ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+         ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+         ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+         ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+         ['籉', candidateId++],['秮', candidateId++]],
         'Passed!');
     };
     ime.queue.done = function() {
@@ -194,6 +207,7 @@ test('query() with syllables exceeds MAX_SYLLABLES_LENGTH.', function() {
   ime.onloadend = function() {
     ime.syllables = 'ㄊㄞˊㄅㄟˇ';
     expect(4);
+    var candidateId = 42;
     ime.updateComposition = function() {
       equal(ime.syllables, 'ㄊㄞˊㄕˋ', 'Passed!');
     };
@@ -202,20 +216,26 @@ test('query() with syllables exceeds MAX_SYLLABLES_LENGTH.', function() {
     };
     ime.updateCandidates = function(results) {
       deepEqual(results,
-        [['台北','పȳ'],
-         ['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
-         ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
-         ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']],
+        [['台北', candidateId++],
+         ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+         ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+         ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+         ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+         ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+         ['籉', candidateId++],['秮', candidateId++]],
         'Passed!');
     };
     ime.queue.done = function() {
       ime.syllables = 'ㄊㄞˊㄅㄟˇㄊㄞˊㄕˋ';
       ime.updateCandidates = function(results) {
         deepEqual(results,
-          [['台是','ప∄'],
-           ['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
-           ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
-           ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']],
+          [['台是', candidateId++],
+           ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+           ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+           ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+           ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+           ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+           ['籉', candidateId++],['秮', candidateId++]],
           'Passed!');
       };
       ime.queue.done = function() {
@@ -239,9 +259,10 @@ test('query() two words which don\'t made up a phrase', function() {
   ime.onloadend = function() {
     ime.syllables = 'ㄅㄟˇㄕˋ';
     expect(1);
+    var candidateId = 42;
     ime.updateCandidates = function(results) {
       deepEqual(results,
-        [['北是','ȳ∄'],['北','ȳ']],
+        [['北是', candidateId++],['北', candidateId++]],
         'Passed!');
     };
     ime.queue.done = function() {
@@ -264,7 +285,7 @@ test('query() non-exist word', function() {
     expect(1);
     ime.updateCandidates = function(results) {
       deepEqual(results,
-        [['ㄅㄟˊ','Ȳ']],
+        [['ㄅㄟˊ', 42]],
         'Passed!');
     };
     ime.queue.done = function() {
@@ -285,12 +306,16 @@ test('query() non-exist phrase', function() {
   ime.onloadend = function() {
     ime.syllables = 'ㄊㄞˊㄅㄟˊ';
     expect(1);
+    var candidateId = 42;
     ime.updateCandidates = function(results) {
       deepEqual(results,
-        [['台ㄅㄟˊ','పȲ'],
-         ['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
-         ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
-         ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']],
+        [['台ㄅㄟˊ', candidateId++],
+         ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+         ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+         ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+         ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+         ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+         ['籉', candidateId++],['秮', candidateId++]],
         'Passed!');
     };
     ime.queue.done = function() {
@@ -323,80 +348,13 @@ test('updateComposition()', function() {
   ime.load();
 });
 
-test('updateCandidates()', function() {
-  var ime = new JSZhuyin();
-  ime.dataURL = './resources/testdata.data';
-  expect(2);
-  ime.oncandidateschange = function(results) {
-    deepEqual(results,
-      [['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
-       ['跆','ప'],['邰','ప'],['鮐','ప'],['薹','ప'],['嬯','ప'],['旲','ప'],
-       ['炱','ప'],['儓','ప'],['駘','ప'],['籉','ప'],['秮','ప']],
-      'Passed!');
-    deepEqual(ime.defaultCandidate, ['台','ప'], 'Passed!');
-
-    ime.unload();
-    start();
-  };
-  ime.onloadend = function() {
-    ime.updateCandidates([
-       ['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
-       ['跆','ప'],['邰','ప'],['鮐','ప'],['薹','ప'],['嬯','ప'],['旲','ప'],
-       ['炱','ప'],['儓','ప'],['駘','ప'],['籉','ప'],['秮','ప']]);
-  };
-
-  stop();
-  ime.load();
-});
-
-test('confirmCandidate()', function() {
-  var ime = new JSZhuyin();
-  ime.dataURL = './resources/testdata.data';
-  expect(3);
-  ime.oncompositionend = function(string) {
-    equal(string, '台', 'Passed!');
-  };
-  ime.oncompositionupdate = function(composition) {
-    equal(composition, 'ㄅㄟˇ', 'Passed!');
-  };
-  ime.query = function() {
-    ok(true, 'Passed!');
-    ime.unload();
-    start();
-  };
-  ime.onloadend = function() {
-    ime.syllables = 'ㄊㄞˊㄅㄟˇ';
-    ime.confirmCandidate(['台','ప']);
-  };
-
-  stop();
-  ime.load();
-});
-
-test('sendActionHandled()', function() {
-  var ime = new JSZhuyin();
-  ime.dataURL = './resources/testdata.data';
-  expect(1);
-
-  ime.onactionhandled = function(reqId) {
-    equal(reqId, 1337, 'Passed!');
-    ime.unload();
-
-    start();
-  };
-
-  ime.onloadend = function() {
-    ime.sendActionHandled(1337);
-  };
-
-  stop();
-  ime.load();
-});
+module('JSZhuyin (interactive/integration)');
 
 test('Simple interactive query (send all keys in one action).', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
   expect(9);
+  var candidateId = 42;
 
   ime.onloadend = function() {
     var expectedCompositions = ['ㄊ', 'ㄊㄞ', 'ㄊㄞˊ'];
@@ -406,17 +364,26 @@ test('Simple interactive query (send all keys in one action).', function() {
 
     var expectedCandidates = [
       /* 'ㄊ' */
-      [['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
-       ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
-       ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']],
+      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+       ['籉', candidateId++],['秮', candidateId++]],
       /* 'ㄊㄞ' */
-      [['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
-       ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
-       ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']],
+      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+       ['籉', candidateId++],['秮', candidateId++]],
       /* 'ㄊㄞˊ' */
-      [['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
-       ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
-       ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']]];
+      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+       ['籉', candidateId++],['秮', candidateId++]]];
     ime.oncandidateschange = function(candidates) {
       deepEqual(candidates, expectedCandidates.shift(), 'Passed!');
     };
@@ -453,6 +420,7 @@ test('Run a simple interactive query.', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
   expect(9);
+  var candidateId = 42;
 
   ime.onloadend = function() {
     var expectedCompositions = ['ㄊ', 'ㄊㄞ', 'ㄊㄞˊ'];
@@ -462,17 +430,26 @@ test('Run a simple interactive query.', function() {
 
     var expectedCandidates = [
       /* 'ㄊ' */
-      [['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
-       ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
-       ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']],
+      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+       ['籉', candidateId++],['秮', candidateId++]],
       /* 'ㄊㄞ' */
-      [['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
-       ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
-       ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']],
+      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+       ['籉', candidateId++],['秮', candidateId++]],
       /* 'ㄊㄞˊ' */
-      [['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
-       ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
-       ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']]];
+      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+       ['籉', candidateId++],['秮', candidateId++]]];
     ime.oncandidateschange = function(candidates) {
       deepEqual(candidates, expectedCandidates.shift(), 'Passed!');
     };
@@ -512,6 +489,7 @@ function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
   expect(9);
+  var candidateId = 42;
 
   ime.onloadend = function() {
     var expectedCompositions = ['ㄊ', 'ㄊㄚ', 'ㄊㄚˊ'];
@@ -521,17 +499,26 @@ function() {
 
     var expectedCandidates = [
       /* 'ㄊ' */
-      [['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
-       ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
-       ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']],
+      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+       ['籉', candidateId++],['秮', candidateId++]],
       /* 'ㄊㄞ' */
-      [['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
-       ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
-       ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']],
+      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+       ['籉', candidateId++],['秮', candidateId++]],
       /* 'ㄊㄞˊ' */
-      [['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
-       ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
-       ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']]];
+      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+       ['籉', candidateId++],['秮', candidateId++]]];
     ime.oncandidateschange = function(candidates) {
       deepEqual(candidates, expectedCandidates.shift(), 'Passed!');
     };
@@ -571,7 +558,8 @@ function() {
 test('Confirm text with Enter key.', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
-  expect(14);
+  expect(13);
+  var candidateId = 42;
 
   ime.onloadend = function() {
     ime.oncompositionend = function(str) {
@@ -585,21 +573,106 @@ test('Confirm text with Enter key.', function() {
 
     var expectedCandidates = [
       /* 'ㄊ' */
-      [['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
-       ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
-       ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']],
+      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+       ['籉', candidateId++],['秮', candidateId++]],
       /* 'ㄊㄞ' */
-      [['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
-       ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
-       ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']],
+      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+       ['籉', candidateId++],['秮', candidateId++]],
       /* 'ㄊㄞˊ' */
-      [['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
-       ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
-       ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']],
-      /* Confirm */
-      [],
+      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+       ['籉', candidateId++],['秮', candidateId++]],
       /* Suggestions */
-      [['北',''],['北市','']]];
+      [['北', 0],['北市', 0]]];
+    ime.oncandidateschange = function(candidates) {
+      deepEqual(candidates, expectedCandidates.shift(), 'Passed!');
+    };
+
+    var nextActions = [
+      function() {
+        ok(ime.handleKeyEvent('ㄊ'.charCodeAt(0)), 'Passed!');
+      },
+      function() {
+        ok(ime.handleKeyEvent('ㄞ'.charCodeAt(0)), 'Passed!');
+      },
+      function() {
+        ok(ime.handleKeyEvent('ˊ'.charCodeAt(0)), 'Passed!');
+      },
+      function() {
+        ok(ime.handleKeyEvent(0x0d), 'Passed!');
+      }
+    ];
+    ime.onactionhandled = function() {
+      if (!nextActions.length) {
+        setTimeout(function() {
+          ime.unload();
+          start();
+        });
+
+        return;
+      }
+
+      (nextActions.shift())();
+    };
+    (nextActions.shift())();
+  };
+
+  stop();
+  ime.load();
+});
+
+test('Confirm text with Enter key (SUGGEST_PHRASES = false).', function() {
+  var ime = new JSZhuyin();
+  ime.SUGGEST_PHRASES = false;
+  ime.dataURL = './resources/testdata.data';
+  expect(13);
+  var candidateId = 42;
+
+  ime.onloadend = function() {
+    ime.oncompositionend = function(str) {
+      equal(str, '台', 'Passed!');
+    };
+
+    var expectedCompositions = ['ㄊ', 'ㄊㄞ', 'ㄊㄞˊ', ''];
+    ime.oncompositionupdate = function(composition) {
+      equal(composition, expectedCompositions.shift(), 'Passed!');
+    };
+
+    var expectedCandidates = [
+      /* 'ㄊ' */
+      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+       ['籉', candidateId++],['秮', candidateId++]],
+      /* 'ㄊㄞ' */
+      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+       ['籉', candidateId++],['秮', candidateId++]],
+      /* 'ㄊㄞˊ' */
+      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+       ['籉', candidateId++],['秮', candidateId++]],
+      /* Confirm */
+      []];
     ime.oncandidateschange = function(candidates) {
       deepEqual(candidates, expectedCandidates.shift(), 'Passed!');
     };
@@ -640,7 +713,8 @@ test('Confirm text with Enter key.', function() {
 test('Confirm text with Enter key (set ㄞ and ㄚ interchangable).', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
-  expect(14);
+  expect(13);
+  var candidateId = 42;
 
   ime.onloadend = function() {
     ime.oncompositionend = function(str) {
@@ -654,21 +728,28 @@ test('Confirm text with Enter key (set ㄞ and ㄚ interchangable).', function()
 
     var expectedCandidates = [
       /* 'ㄊ' */
-      [['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
-       ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
-       ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']],
+      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+       ['籉', candidateId++],['秮', candidateId++]],
       /* 'ㄊㄞ' */
-      [['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
-       ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
-       ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']],
+      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+       ['籉', candidateId++],['秮', candidateId++]],
       /* 'ㄊㄞˊ' */
-      [['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
-       ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
-       ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']],
-      /* Confirm */
-      [],
+      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+       ['籉', candidateId++],['秮', candidateId++]],
       /* Suggestions */
-      [['北',''],['北市','']]];
+      [['北', 0],['北市', 0]]];
     ime.oncandidateschange = function(candidates) {
       deepEqual(candidates, expectedCandidates.shift(), 'Passed!');
     };
@@ -710,7 +791,8 @@ test('Confirm text with Enter key (set ㄞ and ㄚ interchangable).', function()
 test('Confirm text with a non-Bopomofo key.', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
-  expect(14);
+  expect(13);
+  var candidateId = 42;
 
   ime.onloadend = function() {
     ime.oncompositionend = function(str) {
@@ -724,20 +806,27 @@ test('Confirm text with a non-Bopomofo key.', function() {
 
     var expectedCandidates = [
       /* 'ㄊ' */
-      [['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
-       ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
-       ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']],
+      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+       ['籉', candidateId++],['秮', candidateId++]],
       /* 'ㄊㄞ' */
-      [['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
-       ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
-       ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']],
+      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+       ['籉', candidateId++],['秮', candidateId++]],
       /* 'ㄊㄞˊ' */
-      [['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
-       ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
-       ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']],
+      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+       ['籉', candidateId++],['秮', candidateId++]],
       /* Confirm */
-      [],
-      /* Suggestions */
       []];
     ime.oncandidateschange = function(candidates) {
       deepEqual(candidates, expectedCandidates.shift(), 'Passed!');
@@ -797,7 +886,9 @@ test('Confirm text with candidate selection.', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
 
-  expect(13);
+  expect(12);
+  var candidateId = 42;
+
   ime.onloadend = function() {
     ime.oncompositionend = function(str) {
       equal(str, '颱', 'Passed!');
@@ -810,19 +901,26 @@ test('Confirm text with candidate selection.', function() {
 
     var expectedCandidates = [
       /* 'ㄊ' */
-      [['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
-       ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
-       ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']],
+      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+       ['籉', candidateId++],['秮', candidateId++]],
       /* 'ㄊㄞ' */
-      [['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
-       ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
-       ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']],
+      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+       ['籉', candidateId++],['秮', candidateId++]],
       /* 'ㄊㄞˊ' */
-      [['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
-       ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
-       ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']],
-      /* Confirm */
-      [],
+      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+       ['籉', candidateId++],['秮', candidateId++]],
       /* Suggestions */
       []];
     ime.oncandidateschange = function(candidates) {
@@ -840,7 +938,7 @@ test('Confirm text with candidate selection.', function() {
         ok(ime.handleKeyEvent('ˊ'.charCodeAt(0)), 'Passed!');
       },
       function() {
-        ime.selectCandidate(['颱','ప']);
+        ime.selectCandidate(['颱',79]);
       }
     ];
     ime.onactionhandled = function() {
@@ -862,11 +960,12 @@ test('Confirm text with candidate selection.', function() {
   ime.load();
 });
 
-test('Backspace key cancels the last symbol.', function() {
+test('Backspace key removes the last symbol.', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
 
   expect(15);
+  var candidateId = 42;
   ime.onloadend = function() {
     var expectedCompositions = ['ㄊ', 'ㄊㄞ', 'ㄊㄞˊ', 'ㄊㄞˊˊ', 'ㄊㄞˊ'];
     ime.oncompositionupdate = function(composition) {
@@ -875,26 +974,41 @@ test('Backspace key cancels the last symbol.', function() {
 
     var expectedCandidates = [
       /* 'ㄊ' */
-      [['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
-       ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
-       ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']],
+      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+       ['籉', candidateId++],['秮', candidateId++]],
       /* 'ㄊㄞ' */
-      [['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
-       ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
-       ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']],
+      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+       ['籉', candidateId++],['秮', candidateId++]],
       /* 'ㄊㄞˊ' */
-      [['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
-       ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
-       ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']],
+      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+       ['籉', candidateId++],['秮', candidateId++]],
       /* 'ㄊㄞˊˊ' */
-      [['台ˊ','ప\u0002'],
-       ['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
-       ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
-       ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']],
+      [['台ˊ', candidateId++],
+       ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+       ['籉', candidateId++],['秮', candidateId++]],
       /* 'ㄊㄞˊ' */
-      [['台','ప'],['臺','ప'],['抬','ప'],['颱','ప'],['檯','ప'],['苔','ప'],
-       ['跆','ప'],['邰','ప'],['鮐','ప'],['旲','ప'],['炱','ప'],['嬯','ప'],
-       ['儓','ప'],['薹','ప'],['駘','ప'],['籉','ప'],['秮','ప']]];
+      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+       ['籉', candidateId++],['秮', candidateId++]]];
     ime.oncandidateschange = function(candidates) {
       deepEqual(candidates, expectedCandidates.shift(), 'Passed!');
     };

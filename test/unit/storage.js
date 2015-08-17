@@ -178,8 +178,9 @@ test('get()', function() {
 
   var value = storage.get(BopomofoEncoder.encode('ㄊㄞˊㄅㄟˇ'));
   deepEqual(value.getResults(), [ {
-    'score': -3.2719614505767822,
-    'str': '台北' } ]);
+    score: -3.2719614505767822,
+    str: '台北',
+    index: 148 } ]);
 });
 
 test('get() should utilize cache', function() {
@@ -188,8 +189,9 @@ test('get() should utilize cache', function() {
 
   var value = storage.get(BopomofoEncoder.encode('ㄊㄞˊㄅㄟˇ'));
   deepEqual(value.getResults(), [ {
-    'score': -3.2719614505767822,
-    'str': '台北' } ]);
+    score: -3.2719614505767822,
+    str: '台北',
+    index: 148 } ]);
 
   var value2 = storage.get(BopomofoEncoder.encode('ㄊㄞˊㄅㄟˇ'));
 
@@ -211,8 +213,8 @@ test('getRange()', function() {
   var value = storage.getRange(BopomofoEncoder.encode('ㄊㄞˊㄅㄟˇ'));
   equal(value.length, 1, 'Passed!');
   deepEqual(value[0].getResults(), [
-    { 'score': -3.330096483230591, 'str': '台北市' },
-    { 'score': -3.6398773193359375, 'str': '臺北市' } ]);
+    { score: -3.330096483230591, str: '台北市', index: 168 },
+    { score: -3.6398773193359375, str: '臺北市', index: 168 } ]);
 });
 
 test('getRange() (not found)', function() {
@@ -229,7 +231,7 @@ test('getIncompleteMatched(ㄊㄞˊㄅ)', function() {
 
   var value = storage.getIncompleteMatched(BopomofoEncoder.encode('ㄊㄞˊㄅ'));
   deepEqual(value.getResults(), [
-    { 'score': -3.2719614505767822, 'str': '台北', 'symbols': 'పȳ' } ]);
+    { score: -3.2719614505767822, str: '台北', index: 148 } ]);
 });
 
 test('getIncompleteMatched(ㄊㄞˊㄅ) should utilize cache', function() {
@@ -238,7 +240,7 @@ test('getIncompleteMatched(ㄊㄞˊㄅ) should utilize cache', function() {
 
   var value = storage.getIncompleteMatched(BopomofoEncoder.encode('ㄊㄞˊㄅ'));
   deepEqual(value.getResults(), [
-    { 'score': -3.2719614505767822, 'str': '台北', 'symbols': 'పȳ' } ]);
+    { score: -3.2719614505767822, str: '台北', index: 148 } ]);
 
   var value2 = storage.getIncompleteMatched(BopomofoEncoder.encode('ㄊㄞˊㄅ'));
 
@@ -251,8 +253,8 @@ test('getIncompleteMatched(ㄊㄅㄕ)', function() {
 
   var value = storage.getIncompleteMatched(BopomofoEncoder.encode('ㄊㄅㄕ'));
   deepEqual(value.getResults(), [
-    { 'score': -3.330096483230591, 'str': '台北市', 'symbols': 'పȳ∄' },
-    { 'score': -3.6398773193359375, 'str': '臺北市', 'symbols': 'పȳ∄' } ]);
+    { score: -3.330096483230591, str: '台北市', index: 168 },
+    { score: -3.6398773193359375, str: '臺北市', index: 168 } ]);
 });
 
 test('getIncompleteMatched(ㄌ) (not found)', function() {
