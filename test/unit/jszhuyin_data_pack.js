@@ -39,12 +39,12 @@ test('construct with packed array buffer.', function() {
        0x53f0, 0x0000, /* 台NUL */
        0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
        0x53f0, 0x7063 /* 台灣 */ ]);
-  var data = new JSZhuyinDataPack(buf, undefined, undefined, 'పȳ');
+  var data = new JSZhuyinDataPack(buf, undefined, undefined, 3048232);
   deepEqual(
     arrayBufferToString(data.packed), arrayBufferToString(buf), 'Passed!');
   equal(data.byteOffset, 0, 'Passed!');
   equal(data.length, 13, 'Passed!');
-  equal(data.symbols, 'పȳ', 'Passed!');
+  equal(data.index, 3048232, 'Passed!');
 });
 
 test('construct with packed array buffer (byteOffset !== 0).', function() {
@@ -57,12 +57,12 @@ test('construct with packed array buffer (byteOffset !== 0).', function() {
        0x53f0, 0x0000, /* 台NUL */
        0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
        0x53f0, 0x7063 /* 台灣 */ ]);
-  var data = new JSZhuyinDataPack(buf, 8, 13, 'పȳ');
+  var data = new JSZhuyinDataPack(buf, 8, 13, 3048232);
   deepEqual(
     arrayBufferToString(data.packed), arrayBufferToString(buf), 'Passed!');
   equal(data.byteOffset, 8, 'Passed!');
   equal(data.length, 13, 'Passed!');
-  equal(data.symbols, 'పȳ', 'Passed!');
+  equal(data.index, 3048232, 'Passed!');
 });
 
 test('construct with structured data.', function() {
@@ -89,13 +89,13 @@ test('unpack()', function() {
        0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
        0x53f0, 0x7063 /* 台灣 */ ]);
 
-  var data = new JSZhuyinDataPack(buf);
+  var data = new JSZhuyinDataPack(buf, undefined, undefined, 3048232);
   data.unpack();
 
   deepEqual(data.unpacked, [
-    { str: '台北', score: -3.1415927410125732 },
-    { str: '台', score: -3.1415927410125732 },
-    { str: '台灣', score: -3.1415927410125732 }
+    { str: '台北', score: -3.1415927410125732, index: 3048232 },
+    { str: '台', score: -3.1415927410125732, index: 3048232 },
+    { str: '台灣', score: -3.1415927410125732, index: 3048232 }
   ], 'Passed!');
 });
 
@@ -110,13 +110,13 @@ test('unpack() (byteOffset !== 0)', function() {
        0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
        0x53f0, 0x7063 /* 台灣 */ ]);
 
-  var data = new JSZhuyinDataPack(buf, 8, 13);
+  var data = new JSZhuyinDataPack(buf, 8, 13, 3048232);
   data.unpack();
 
   deepEqual(data.unpacked, [
-    { str: '台北', score: -3.1415927410125732 },
-    { str: '台', score: -3.1415927410125732 },
-    { str: '台灣', score: -3.1415927410125732 }
+    { str: '台北', score: -3.1415927410125732, index: 3048232 },
+    { str: '台', score: -3.1415927410125732, index: 3048232 },
+    { str: '台灣', score: -3.1415927410125732, index: 3048232 }
   ], 'Passed!');
 });
 
@@ -152,11 +152,11 @@ test('getResults()', function() {
        0x53f0, 0x0000, /* 台NUL */
        0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
        0x53f0, 0x7063 /* 台灣 */ ]);
-  var data = new JSZhuyinDataPack(buf);
+  var data = new JSZhuyinDataPack(buf, undefined, undefined, 3048232);
   deepEqual(data.getResults(), [
-    { str: '台北', score: -3.1415927410125732 },
-    { str: '台', score: -3.1415927410125732 },
-    { str: '台灣', score: -3.1415927410125732 }
+    { str: '台北', score: -3.1415927410125732, index: 3048232 },
+    { str: '台', score: -3.1415927410125732, index: 3048232 },
+    { str: '台灣', score: -3.1415927410125732, index: 3048232 }
   ], 'Passed!');
 });
 
@@ -169,11 +169,11 @@ test('getResultsBeginsWith(台)', function() {
        0x53f0, 0x0000, /* 台NUL */
        0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
        0x53f0, 0x7063 /* 台灣 */ ]);
-  var data = new JSZhuyinDataPack(buf);
+  var data = new JSZhuyinDataPack(buf, undefined, undefined, 3048232);
   deepEqual(data.getResultsBeginsWith('台'), [
-    { str: '台北', score: -3.1415927410125732 },
-    { str: '台', score: -3.1415927410125732 },
-    { str: '台灣', score: -3.1415927410125732 }
+    { str: '台北', score: -3.1415927410125732, index: 3048232 },
+    { str: '台', score: -3.1415927410125732, index: 3048232 },
+    { str: '台灣', score: -3.1415927410125732, index: 3048232 }
   ], 'Passed!');
 });
 
@@ -216,9 +216,9 @@ test('getFirstResult()', function() {
        0x53f0, 0x0000, /* 台NUL */
        0x0fdb, 0xc049 /* (new Float32Array([-3.1415927410125732])) */,
        0x53f0, 0x7063 /* 台灣 */ ]);
-  var data = new JSZhuyinDataPack(buf);
+  var data = new JSZhuyinDataPack(buf, undefined, undefined, 3048232);
   deepEqual(data.getFirstResult(),
-    { str: '台北', score: -3.1415927410125732 },
+    { str: '台北', score: -3.1415927410125732, index: 3048232 },
     'Passed!');
 });
 
@@ -242,10 +242,10 @@ test('Correctly figure out the boundry of the last entry', function() {
      { str: '\ud83d\udc28', score: -8 }]);
   var buf = data.getPacked();
 
-  var data2 = new JSZhuyinDataPack(buf);
+  var data2 = new JSZhuyinDataPack(buf, undefined, undefined, 3048232);
   deepEqual(data2.getResults(),
-    [{ str: '無尾熊', score: -5.622366428375244 },
-     { str: '\ud83d\udc28', score: -8 }],
+    [{ str: '無尾熊', score: -5.622366428375244, index: 3048232 },
+     { str: '\ud83d\udc28', score: -8, index: 3048232 }],
     'Passed!');
 });
 
@@ -268,8 +268,8 @@ test('getFirstResultScore()', function() {
 
 
   var collection = new JSZhuyinDataPackCollection(
-    [ new JSZhuyinDataPack(buf, undefined, undefined, 'పȳ'),
-      new JSZhuyinDataPack(buf2, undefined, undefined, 'పŉ') ]);
+    [ new JSZhuyinDataPack(buf, undefined, undefined, 3048232),
+      new JSZhuyinDataPack(buf2, undefined, undefined, 3041233) ]);
   equal(collection.getFirstResultScore(),
     -3.1415927410125732, 'Passed!');
 });
@@ -290,10 +290,10 @@ test('getFirstResult()', function() {
        0x53f0, 0x0000 /* 台NUL */ ]);
 
   var collection = new JSZhuyinDataPackCollection(
-    [ new JSZhuyinDataPack(buf, undefined, undefined, 'పȳ'),
-      new JSZhuyinDataPack(buf2, undefined, undefined, 'పŉ') ]);
+    [ new JSZhuyinDataPack(buf, undefined, undefined, 3048232),
+      new JSZhuyinDataPack(buf2, undefined, undefined, 3041233) ]);
   deepEqual(collection.getFirstResult(),
-    { str: '台灣', score: -3.1415927410125732, symbols: 'పŉ' },
+    { str: '台灣', score: -3.1415927410125732, index: 3041233 },
     'Passed!');
 });
 
@@ -313,12 +313,12 @@ test('getResults()', function() {
        0x53f0, 0x0000 /* 台NUL */ ]);
 
   var collection = new JSZhuyinDataPackCollection(
-    [ new JSZhuyinDataPack(buf, undefined, undefined, 'పȳ'),
-      new JSZhuyinDataPack(buf2, undefined, undefined, 'పŉ') ]);
+    [ new JSZhuyinDataPack(buf, undefined, undefined, 3048232),
+      new JSZhuyinDataPack(buf2, undefined, undefined, 3041233) ]);
   deepEqual(collection.getResults(),
     [
-      { str: '台灣', score: -3.1415927410125732, symbols: 'పŉ' },
-      { str: '台北', score: -4.71238899230957, symbols: 'పȳ' },
-      { str: '台', score: -6.2831854820251465, symbols: 'పȳ' }
+      { str: '台灣', score: -3.1415927410125732, index: 3041233 },
+      { str: '台北', score: -4.71238899230957, index: 3048232 },
+      { str: '台', score: -6.2831854820251465, index: 3048232 }
     ], 'Passed!');
 });
