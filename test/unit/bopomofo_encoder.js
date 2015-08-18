@@ -280,3 +280,64 @@ test('replace(ㄏㄨˇ,ㄨㄛ,ㄡ)', function() {
     );
   equal(code, BopomofoEncoder.encode('ㄏㄨˇ').charCodeAt(0), 'Passed!');
 });
+
+test('split(ㄏㄨㄛˇ)', function() {
+  var codes = BopomofoEncoder.split(
+    BopomofoEncoder.encode('ㄏㄨㄛˇ').charCodeAt(0));
+  deepEqual(codes, [
+    [ BopomofoEncoder.encode('ㄏㄨㄛˇ').charCodeAt(0) ]
+  ], 'Don\'t split completed code.');
+});
+
+test('split(ㄏㄨㄛ)', function() {
+  var codes = BopomofoEncoder.split(
+    BopomofoEncoder.encode('ㄏㄨㄛ').charCodeAt(0));
+  deepEqual(codes, [
+    [ BopomofoEncoder.encode('ㄏㄨㄛ').charCodeAt(0) ],
+    [ BopomofoEncoder.encode('ㄏ').charCodeAt(0),
+      BopomofoEncoder.encode('ㄨㄛ').charCodeAt(0) ],
+    [ BopomofoEncoder.encode('ㄏㄨ').charCodeAt(0),
+      BopomofoEncoder.encode('ㄛ').charCodeAt(0) ],
+    [ BopomofoEncoder.encode('ㄏ').charCodeAt(0),
+      BopomofoEncoder.encode('ㄨ').charCodeAt(0),
+      BopomofoEncoder.encode('ㄛ').charCodeAt(0) ] ], 'Split 3-symbol code.');
+});
+
+test('split(ㄏㄨ)', function() {
+  var codes = BopomofoEncoder.split(
+    BopomofoEncoder.encode('ㄏㄨ').charCodeAt(0));
+  deepEqual(codes, [
+    [ BopomofoEncoder.encode('ㄏㄨ').charCodeAt(0) ],
+    [ BopomofoEncoder.encode('ㄏ').charCodeAt(0),
+      BopomofoEncoder.encode('ㄨ').charCodeAt(0) ] ], 'Split 2-symbol code.');
+});
+
+test('split(ㄨㄛ)', function() {
+  var codes = BopomofoEncoder.split(
+    BopomofoEncoder.encode('ㄨㄛ').charCodeAt(0));
+  deepEqual(codes, [
+    [ BopomofoEncoder.encode('ㄨㄛ').charCodeAt(0) ],
+    [ BopomofoEncoder.encode('ㄨ').charCodeAt(0),
+      BopomofoEncoder.encode('ㄛ').charCodeAt(0) ] ], 'Split 2-symbol code.');
+});
+
+test('split(ㄏ)', function() {
+  var codes = BopomofoEncoder.split(
+    BopomofoEncoder.encode('ㄏ').charCodeAt(0));
+  deepEqual(codes, [
+    [ BopomofoEncoder.encode('ㄏ').charCodeAt(0) ] ], 'Split 1-symbol code.');
+});
+
+test('split(ㄨ)', function() {
+  var codes = BopomofoEncoder.split(
+    BopomofoEncoder.encode('ㄨ').charCodeAt(0));
+  deepEqual(codes, [
+    [ BopomofoEncoder.encode('ㄨ').charCodeAt(0) ] ], 'Split 1-symbol code.');
+});
+
+test('split(ㄛ)', function() {
+  var codes = BopomofoEncoder.split(
+    BopomofoEncoder.encode('ㄛ').charCodeAt(0));
+  deepEqual(codes, [
+    [ BopomofoEncoder.encode('ㄛ').charCodeAt(0) ] ], 'Split 1-symbol code.');
+});
