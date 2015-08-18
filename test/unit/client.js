@@ -83,7 +83,8 @@ test('load()', function() {
 
   stop();
   ime.load(new JSZhuyinServerIframeLoader('../lib/frame.html'), {
-    dataURL: '../test/resources/testdata.data'
+    dataURL: '../test/resources/testdata.data',
+    SPLIT_SOUND_TO_MATCH_PHRASES: false
   });
 });
 
@@ -130,7 +131,8 @@ test('load()', function() {
 
   stop();
   ime.load(new JSZhuyinServerWorkerLoader('../lib/worker.js'), {
-    dataURL: '../test/resources/testdata.data'
+    dataURL: '../test/resources/testdata.data',
+    SPLIT_SOUND_TO_MATCH_PHRASES: false
   });
 });
 
@@ -226,7 +228,8 @@ test('Run a simple interactive query.', function() {
 
   stop();
   ime.load(new JSZhuyinServerWorkerLoader('../lib/worker.js'), {
-    dataURL: '../test/resources/testdata.data'
+    dataURL: '../test/resources/testdata.data',
+    SPLIT_SOUND_TO_MATCH_PHRASES: false
   });
 });
 
@@ -304,7 +307,8 @@ test('Confirm text with Enter key.', function() {
 
   stop();
   ime.load(new JSZhuyinServerWorkerLoader('../lib/worker.js'), {
-    dataURL: '../test/resources/testdata.data'
+    dataURL: '../test/resources/testdata.data',
+    SPLIT_SOUND_TO_MATCH_PHRASES: false
   });
 });
 
@@ -383,6 +387,7 @@ test('Confirm text with Enter key (SUGGEST_PHRASES = false).', function() {
   stop();
   ime.load(new JSZhuyinServerWorkerLoader('../lib/worker.js'), {
     dataURL: '../test/resources/testdata.data',
+    SPLIT_SOUND_TO_MATCH_PHRASES: false,
     SUGGEST_PHRASES: false
   });
 });
@@ -461,7 +466,8 @@ test('Confirm text with a non-Bopomofo key.', function() {
 
   stop();
   ime.load(new JSZhuyinServerWorkerLoader('../lib/worker.js'), {
-    dataURL: '../test/resources/testdata.data'
+    dataURL: '../test/resources/testdata.data',
+    SPLIT_SOUND_TO_MATCH_PHRASES: false
   });
 });
 
@@ -479,7 +485,8 @@ test('Don\'t handle Enter key if there is no candidates.', function() {
 
   stop();
   ime.load(new JSZhuyinServerWorkerLoader('../lib/worker.js'), {
-    dataURL: '../test/resources/testdata.data'
+    dataURL: '../test/resources/testdata.data',
+    SPLIT_SOUND_TO_MATCH_PHRASES: false
   });
 });
 
@@ -557,7 +564,8 @@ test('Confirm text with candidate selection.', function() {
 
   stop();
   ime.load(new JSZhuyinServerWorkerLoader('../lib/worker.js'), {
-    dataURL: '../test/resources/testdata.data'
+    dataURL: '../test/resources/testdata.data',
+    SPLIT_SOUND_TO_MATCH_PHRASES: false
   });
 });
 
@@ -647,7 +655,8 @@ test('Backspace key removes the last symbol.', function() {
 
   stop();
   ime.load(new JSZhuyinServerWorkerLoader('../lib/worker.js'), {
-    dataURL: '../test/resources/testdata.data'
+    dataURL: '../test/resources/testdata.data',
+    SPLIT_SOUND_TO_MATCH_PHRASES: false
   });
 });
 
@@ -665,6 +674,7 @@ test('Don\'t handle Backspace key if there is no compositions.', function() {
 
   stop();
   ime.load(new JSZhuyinServerWorkerLoader('../lib/worker.js'), {
-    dataURL: '../test/resources/testdata.data'
+    dataURL: '../test/resources/testdata.data',
+    SPLIT_SOUND_TO_MATCH_PHRASES: false
   });
 });

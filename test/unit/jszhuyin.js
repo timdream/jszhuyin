@@ -112,6 +112,7 @@ test('load() non-exist files', function() {
 test('query() a word', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
+  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   ime.onloadend = function() {
     ime.syllables = 'ㄊㄞˊ';
     expect(1);
@@ -141,6 +142,7 @@ test('query() a word', function() {
 test('query() a two-word phrase', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
+  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   ime.onloadend = function() {
     ime.syllables = 'ㄊㄞˊㄅㄟˇ';
     expect(1);
@@ -171,6 +173,7 @@ test('query() a two-word phrase', function() {
 test('query() a three-word phrase', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
+  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   ime.onloadend = function() {
     ime.syllables = 'ㄊㄞˊㄅㄟˇㄕˋ';
     expect(1);
@@ -203,6 +206,7 @@ test('query() a three-word phrase', function() {
 test('query() with syllables exceeds MAX_SYLLABLES_LENGTH.', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
+  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   ime.MAX_SYLLABLES_LENGTH = 3;
   ime.onloadend = function() {
     ime.syllables = 'ㄊㄞˊㄅㄟˇ';
@@ -256,6 +260,7 @@ test('query() with syllables exceeds MAX_SYLLABLES_LENGTH.', function() {
 test('query() two words which don\'t made up a phrase', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
+  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   ime.onloadend = function() {
     ime.syllables = 'ㄅㄟˇㄕˋ';
     expect(1);
@@ -303,6 +308,7 @@ test('query() non-exist word', function() {
 test('query() non-exist phrase', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
+  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   ime.onloadend = function() {
     ime.syllables = 'ㄊㄞˊㄅㄟˊ';
     expect(1);
@@ -333,6 +339,7 @@ test('query() non-exist phrase', function() {
 test('updateComposition()', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
+  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   expect(1);
   ime.oncompositionupdate = function(composition) {
     equal(composition, 'ㄊㄞˊㄅㄟˇ', 'Passed!');
@@ -353,13 +360,14 @@ module('JSZhuyin (interactive/integration)');
 test('Simple interactive query (send all keys in one action).', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
+  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   expect(9);
   var candidateId = 42;
 
   ime.onloadend = function() {
     var expectedCompositions = ['ㄊ', 'ㄊㄞ', 'ㄊㄞˊ'];
     ime.oncompositionupdate = function(composition) {
-      equal(composition, expectedCompositions.shift(), 'Passed!');
+      equal(composition, expectedCompositions.shift(), 'Composition updates.');
     };
 
     var expectedCandidates = [
@@ -385,14 +393,15 @@ test('Simple interactive query (send all keys in one action).', function() {
        ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
        ['籉', candidateId++],['秮', candidateId++]]];
     ime.oncandidateschange = function(candidates) {
-      deepEqual(candidates, expectedCandidates.shift(), 'Passed!');
+      deepEqual(candidates, expectedCandidates.shift(),
+        'Candidates equals to expected list.');
     };
 
     var nextActions = [
       function() {
-        ok(ime.handleKeyEvent('ㄊ'.charCodeAt(0)), 'Passed!');
-        ok(ime.handleKeyEvent('ㄞ'.charCodeAt(0)), 'Passed!');
-        ok(ime.handleKeyEvent('ˊ'.charCodeAt(0)), 'Passed!');
+        ok(ime.handleKeyEvent('ㄊ'.charCodeAt(0)), 'Handles ㄊ');
+        ok(ime.handleKeyEvent('ㄞ'.charCodeAt(0)), 'Handles ㄞ');
+        ok(ime.handleKeyEvent('ˊ'.charCodeAt(0)), 'Handles ˊ');
       },
       function() { },
       function() { }
@@ -419,13 +428,14 @@ test('Simple interactive query (send all keys in one action).', function() {
 test('Run a simple interactive query.', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
+  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   expect(9);
   var candidateId = 42;
 
   ime.onloadend = function() {
     var expectedCompositions = ['ㄊ', 'ㄊㄞ', 'ㄊㄞˊ'];
     ime.oncompositionupdate = function(composition) {
-      equal(composition, expectedCompositions.shift(), 'Passed!');
+      equal(composition, expectedCompositions.shift(), 'Composition updates.');
     };
 
     var expectedCandidates = [
@@ -451,18 +461,19 @@ test('Run a simple interactive query.', function() {
        ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
        ['籉', candidateId++],['秮', candidateId++]]];
     ime.oncandidateschange = function(candidates) {
-      deepEqual(candidates, expectedCandidates.shift(), 'Passed!');
+      deepEqual(candidates, expectedCandidates.shift(),
+        'Candidates equals to expected list.');
     };
 
     var nextActions = [
       function() {
-        ok(ime.handleKeyEvent('ㄊ'.charCodeAt(0)), 'Passed!');
+        ok(ime.handleKeyEvent('ㄊ'.charCodeAt(0)), 'Handles ㄊ');
       },
       function() {
-        ok(ime.handleKeyEvent('ㄞ'.charCodeAt(0)), 'Passed!');
+        ok(ime.handleKeyEvent('ㄞ'.charCodeAt(0)), 'Handles ㄞ');
       },
       function() {
-        ok(ime.handleKeyEvent('ˊ'.charCodeAt(0)), 'Passed!');
+        ok(ime.handleKeyEvent('ˊ'.charCodeAt(0)), 'Handles ˊ');
       }
     ];
     ime.onactionhandled = function() {
@@ -488,13 +499,14 @@ test('Run a simple interactive query (set ㄞ and ㄚ interchangable).',
 function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
+  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   expect(9);
   var candidateId = 42;
 
   ime.onloadend = function() {
     var expectedCompositions = ['ㄊ', 'ㄊㄚ', 'ㄊㄚˊ'];
     ime.oncompositionupdate = function(composition) {
-      equal(composition, expectedCompositions.shift(), 'Passed!');
+      equal(composition, expectedCompositions.shift(), 'Composition updates.');
     };
 
     var expectedCandidates = [
@@ -520,18 +532,19 @@ function() {
        ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
        ['籉', candidateId++],['秮', candidateId++]]];
     ime.oncandidateschange = function(candidates) {
-      deepEqual(candidates, expectedCandidates.shift(), 'Passed!');
+      deepEqual(candidates, expectedCandidates.shift(),
+        'Candidates equals to expected list.');
     };
 
     var nextActions = [
       function() {
-        ok(ime.handleKeyEvent('ㄊ'.charCodeAt(0)), 'Passed!');
+        ok(ime.handleKeyEvent('ㄊ'.charCodeAt(0)), 'Handles ㄊ');
       },
       function() {
-        ok(ime.handleKeyEvent('ㄚ'.charCodeAt(0)), 'Passed!');
+        ok(ime.handleKeyEvent('ㄚ'.charCodeAt(0)), 'Handles ㄚ');
       },
       function() {
-        ok(ime.handleKeyEvent('ˊ'.charCodeAt(0)), 'Passed!');
+        ok(ime.handleKeyEvent('ˊ'.charCodeAt(0)), 'Handles ˊ');
       }
     ];
     ime.onactionhandled = function() {
@@ -555,9 +568,82 @@ function() {
   ime.load();
 });
 
+test('Run a simple interactive query (set SPLIT_SOUND_TO_MATCH_PHRASES=true).',
+function() {
+  var ime = new JSZhuyin();
+  ime.dataURL = './resources/testdata.data';
+  ime.SPLIT_SOUND_TO_MATCH_PHRASES = true;
+  expect(9);
+  var candidateId = 42;
+
+  ime.onloadend = function() {
+    var expectedCompositions = ['ㄊ', 'ㄊㄞ', 'ㄊㄞˊ'];
+    ime.oncompositionupdate = function(composition) {
+      equal(composition, expectedCompositions.shift(), 'Composition updates.');
+    };
+
+    var expectedCandidates = [
+      /* 'ㄊ' */
+      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+       ['籉', candidateId++],['秮', candidateId++]],
+      /* 'ㄊㄞ' */
+      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+       ['颱', candidateId++],['檯', candidateId++],['疼愛', candidateId++],
+       ['苔', candidateId++],['跆', candidateId++],['邰', candidateId++],
+       ['抬愛', candidateId++],['鮐', candidateId++],['旲', candidateId++],
+       ['炱', candidateId++],['嬯', candidateId++],['儓', candidateId++],
+       ['薹', candidateId++],['駘', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++]],
+      /* 'ㄊㄞˊ' */
+      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+       ['籉', candidateId++],['秮', candidateId++]]];
+    ime.oncandidateschange = function(candidates) {
+      deepEqual(candidates, expectedCandidates.shift(),
+        'Candidates equals to expected list.');
+    };
+
+    var nextActions = [
+      function() {
+        ok(ime.handleKeyEvent('ㄊ'.charCodeAt(0)), 'Handles ㄊ');
+      },
+      function() {
+        ok(ime.handleKeyEvent('ㄞ'.charCodeAt(0)), 'Handles ㄞ');
+      },
+      function() {
+        ok(ime.handleKeyEvent('ˊ'.charCodeAt(0)), 'Handles ˊ');
+      }
+    ];
+    ime.onactionhandled = function() {
+      if (!nextActions.length) {
+        setTimeout(function() {
+          ime.unload();
+          start();
+        });
+
+        return;
+      }
+
+      (nextActions.shift())();
+    };
+    (nextActions.shift())();
+  };
+
+  stop();
+  ime.load();
+});
+
 test('Confirm text with Enter key.', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
+  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   expect(13);
   var candidateId = 42;
 
@@ -568,7 +654,7 @@ test('Confirm text with Enter key.', function() {
 
     var expectedCompositions = ['ㄊ', 'ㄊㄞ', 'ㄊㄞˊ', ''];
     ime.oncompositionupdate = function(composition) {
-      equal(composition, expectedCompositions.shift(), 'Passed!');
+      equal(composition, expectedCompositions.shift(), 'Composition updates.');
     };
 
     var expectedCandidates = [
@@ -596,18 +682,19 @@ test('Confirm text with Enter key.', function() {
       /* Suggestions */
       [['北', 0],['北市', 0]]];
     ime.oncandidateschange = function(candidates) {
-      deepEqual(candidates, expectedCandidates.shift(), 'Passed!');
+      deepEqual(candidates, expectedCandidates.shift(),
+        'Candidates equals to expected list.');
     };
 
     var nextActions = [
       function() {
-        ok(ime.handleKeyEvent('ㄊ'.charCodeAt(0)), 'Passed!');
+        ok(ime.handleKeyEvent('ㄊ'.charCodeAt(0)), 'Handles ㄊ');
       },
       function() {
-        ok(ime.handleKeyEvent('ㄞ'.charCodeAt(0)), 'Passed!');
+        ok(ime.handleKeyEvent('ㄞ'.charCodeAt(0)), 'Handles ㄞ');
       },
       function() {
-        ok(ime.handleKeyEvent('ˊ'.charCodeAt(0)), 'Passed!');
+        ok(ime.handleKeyEvent('ˊ'.charCodeAt(0)), 'Handles ˊ');
       },
       function() {
         ok(ime.handleKeyEvent(0x0d), 'Passed!');
@@ -636,6 +723,7 @@ test('Confirm text with Enter key (SUGGEST_PHRASES = false).', function() {
   var ime = new JSZhuyin();
   ime.SUGGEST_PHRASES = false;
   ime.dataURL = './resources/testdata.data';
+  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   expect(13);
   var candidateId = 42;
 
@@ -646,7 +734,7 @@ test('Confirm text with Enter key (SUGGEST_PHRASES = false).', function() {
 
     var expectedCompositions = ['ㄊ', 'ㄊㄞ', 'ㄊㄞˊ', ''];
     ime.oncompositionupdate = function(composition) {
-      equal(composition, expectedCompositions.shift(), 'Passed!');
+      equal(composition, expectedCompositions.shift(), 'Composition updates.');
     };
 
     var expectedCandidates = [
@@ -674,18 +762,19 @@ test('Confirm text with Enter key (SUGGEST_PHRASES = false).', function() {
       /* Confirm */
       []];
     ime.oncandidateschange = function(candidates) {
-      deepEqual(candidates, expectedCandidates.shift(), 'Passed!');
+      deepEqual(candidates, expectedCandidates.shift(),
+        'Candidates equals to expected list.');
     };
 
     var nextActions = [
       function() {
-        ok(ime.handleKeyEvent('ㄊ'.charCodeAt(0)), 'Passed!');
+        ok(ime.handleKeyEvent('ㄊ'.charCodeAt(0)), 'Handles ㄊ');
       },
       function() {
-        ok(ime.handleKeyEvent('ㄞ'.charCodeAt(0)), 'Passed!');
+        ok(ime.handleKeyEvent('ㄞ'.charCodeAt(0)), 'Handles ㄞ');
       },
       function() {
-        ok(ime.handleKeyEvent('ˊ'.charCodeAt(0)), 'Passed!');
+        ok(ime.handleKeyEvent('ˊ'.charCodeAt(0)), 'Handles ˊ');
       },
       function() {
         ok(ime.handleKeyEvent(0x0d), 'Passed!');
@@ -713,6 +802,7 @@ test('Confirm text with Enter key (SUGGEST_PHRASES = false).', function() {
 test('Confirm text with Enter key (set ㄞ and ㄚ interchangable).', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
+  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   expect(13);
   var candidateId = 42;
 
@@ -723,7 +813,7 @@ test('Confirm text with Enter key (set ㄞ and ㄚ interchangable).', function()
 
     var expectedCompositions = ['ㄊ', 'ㄊㄚ', 'ㄊㄚˊ', ''];
     ime.oncompositionupdate = function(composition) {
-      equal(composition, expectedCompositions.shift(), 'Passed!');
+      equal(composition, expectedCompositions.shift(), 'Composition updates.');
     };
 
     var expectedCandidates = [
@@ -751,21 +841,22 @@ test('Confirm text with Enter key (set ㄞ and ㄚ interchangable).', function()
       /* Suggestions */
       [['北', 0],['北市', 0]]];
     ime.oncandidateschange = function(candidates) {
-      deepEqual(candidates, expectedCandidates.shift(), 'Passed!');
+      deepEqual(candidates, expectedCandidates.shift(),
+        'Candidates equals to expected list.');
     };
 
     var nextActions = [
       function() {
-        ok(ime.handleKeyEvent('ㄊ'.charCodeAt(0)), 'Passed!');
+        ok(ime.handleKeyEvent('ㄊ'.charCodeAt(0)), 'Handles ㄊ');
       },
       function() {
-        ok(ime.handleKeyEvent('ㄚ'.charCodeAt(0)), 'Passed!');
+        ok(ime.handleKeyEvent('ㄚ'.charCodeAt(0)), 'Handles ㄚ');
       },
       function() {
-        ok(ime.handleKeyEvent('ˊ'.charCodeAt(0)), 'Passed!');
+        ok(ime.handleKeyEvent('ˊ'.charCodeAt(0)), 'Handles ˊ');
       },
       function() {
-        ok(ime.handleKeyEvent(0x0d), 'Passed!');
+        ok(ime.handleKeyEvent(0x0d), 'Handles Enter');
       }
     ];
     ime.onactionhandled = function() {
@@ -791,17 +882,18 @@ test('Confirm text with Enter key (set ㄞ and ㄚ interchangable).', function()
 test('Confirm text with a non-Bopomofo key.', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
+  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   expect(13);
   var candidateId = 42;
 
   ime.onloadend = function() {
     ime.oncompositionend = function(str) {
-      equal(str, '台。', 'Passed!');
+      equal(str, '台。', 'Composition ends with expected string.');
     };
 
     var expectedCompositions = ['ㄊ', 'ㄊㄞ', 'ㄊㄞˊ', ''];
     ime.oncompositionupdate = function(composition) {
-      equal(composition, expectedCompositions.shift(), 'Passed!');
+      equal(composition, expectedCompositions.shift(), 'Composition updates.');
     };
 
     var expectedCandidates = [
@@ -829,21 +921,22 @@ test('Confirm text with a non-Bopomofo key.', function() {
       /* Confirm */
       []];
     ime.oncandidateschange = function(candidates) {
-      deepEqual(candidates, expectedCandidates.shift(), 'Passed!');
+      deepEqual(candidates, expectedCandidates.shift(),
+        'Candidates equals to expected list.');
     };
 
     var nextActions = [
       function() {
-        ok(ime.handleKeyEvent('ㄊ'.charCodeAt(0)), 'Passed!');
+        ok(ime.handleKeyEvent('ㄊ'.charCodeAt(0)), 'Handles ㄊ');
       },
       function() {
-        ok(ime.handleKeyEvent('ㄞ'.charCodeAt(0)), 'Passed!');
+        ok(ime.handleKeyEvent('ㄞ'.charCodeAt(0)), 'Handles ㄞ');
       },
       function() {
-        ok(ime.handleKeyEvent('ˊ'.charCodeAt(0)), 'Passed!');
+        ok(ime.handleKeyEvent('ˊ'.charCodeAt(0)), 'Handles ˊ');
       },
       function() {
-        ok(ime.handleKeyEvent('。'.charCodeAt(0)), 'Passed!');
+        ok(ime.handleKeyEvent('。'.charCodeAt(0)), 'Handles 。');
       }
     ];
     ime.onactionhandled = function() {
@@ -868,10 +961,11 @@ test('Confirm text with a non-Bopomofo key.', function() {
 test('Don\'t handle Enter key if there is no candidates.', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
+  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   expect(1);
 
   ime.onloadend = function() {
-    ok(!ime.handleKeyEvent(0x13), 'Passed!');
+    ok(!ime.handleKeyEvent(0x13), 'Not handling enter.');
     setTimeout(function() {
       ime.unload();
       start();
@@ -885,6 +979,7 @@ test('Don\'t handle Enter key if there is no candidates.', function() {
 test('Confirm text with candidate selection.', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
+  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
 
   expect(12);
   var candidateId = 42;
@@ -896,7 +991,7 @@ test('Confirm text with candidate selection.', function() {
 
     var expectedCompositions = ['ㄊ', 'ㄊㄞ', 'ㄊㄞˊ', ''];
     ime.oncompositionupdate = function(composition) {
-      equal(composition, expectedCompositions.shift(), 'Passed!');
+      equal(composition, expectedCompositions.shift(), 'Composition updates.');
     };
 
     var expectedCandidates = [
@@ -924,18 +1019,19 @@ test('Confirm text with candidate selection.', function() {
       /* Suggestions */
       []];
     ime.oncandidateschange = function(candidates) {
-      deepEqual(candidates, expectedCandidates.shift(), 'Passed!');
+      deepEqual(candidates, expectedCandidates.shift(),
+        'Candidates equals to expected list.');
     };
 
     var nextActions = [
       function() {
-        ok(ime.handleKeyEvent('ㄊ'.charCodeAt(0)), 'Passed!');
+        ok(ime.handleKeyEvent('ㄊ'.charCodeAt(0)), 'Handles ㄊ');
       },
       function() {
-        ok(ime.handleKeyEvent('ㄞ'.charCodeAt(0)), 'Passed!');
+        ok(ime.handleKeyEvent('ㄞ'.charCodeAt(0)), 'Handles ㄞ');
       },
       function() {
-        ok(ime.handleKeyEvent('ˊ'.charCodeAt(0)), 'Passed!');
+        ok(ime.handleKeyEvent('ˊ'.charCodeAt(0)), 'Handles ˊ');
       },
       function() {
         ime.selectCandidate(['颱',79]);
@@ -963,13 +1059,14 @@ test('Confirm text with candidate selection.', function() {
 test('Backspace key removes the last symbol.', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
+  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
 
   expect(15);
   var candidateId = 42;
   ime.onloadend = function() {
     var expectedCompositions = ['ㄊ', 'ㄊㄞ', 'ㄊㄞˊ', 'ㄊㄞˊˊ', 'ㄊㄞˊ'];
     ime.oncompositionupdate = function(composition) {
-      equal(composition, expectedCompositions.shift(), 'Passed!');
+      equal(composition, expectedCompositions.shift(), 'Composition updates.');
     };
 
     var expectedCandidates = [
@@ -1010,24 +1107,25 @@ test('Backspace key removes the last symbol.', function() {
        ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
        ['籉', candidateId++],['秮', candidateId++]]];
     ime.oncandidateschange = function(candidates) {
-      deepEqual(candidates, expectedCandidates.shift(), 'Passed!');
+      deepEqual(candidates, expectedCandidates.shift(),
+        'Candidates equals to expected list.');
     };
 
     var nextActions = [
       function() {
-        ok(ime.handleKeyEvent('ㄊ'.charCodeAt(0)), 'Passed!');
+        ok(ime.handleKeyEvent('ㄊ'.charCodeAt(0)), 'Handles ㄊ');
       },
       function() {
-        ok(ime.handleKeyEvent('ㄞ'.charCodeAt(0)), 'Passed!');
+        ok(ime.handleKeyEvent('ㄞ'.charCodeAt(0)), 'Handles ㄞ');
       },
       function() {
-        ok(ime.handleKeyEvent('ˊ'.charCodeAt(0)), 'Passed!');
+        ok(ime.handleKeyEvent('ˊ'.charCodeAt(0)), 'Handles ˊ');
       },
       function() {
-        ok(ime.handleKeyEvent('ˊ'.charCodeAt(0)), 'Passed!');
+        ok(ime.handleKeyEvent('ˊ'.charCodeAt(0)), 'Handles ˊ');
       },
       function() {
-        ok(ime.handleKeyEvent(0x08), 'Passed!');
+        ok(ime.handleKeyEvent(0x08), 'Handles Backspace');
       }
     ];
     ime.onactionhandled = function() {
@@ -1052,10 +1150,11 @@ test('Backspace key removes the last symbol.', function() {
 test('Don\'t handle Backspace key if there is no compositions.', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
+  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
 
   expect(1);
   ime.onloadend = function() {
-    ok(!ime.handleKeyEvent(0x08), 'Passed!');
+    ok(!ime.handleKeyEvent(0x08), 'Not handling backspace');
     setTimeout(function() {
       ime.unload();
       start();
