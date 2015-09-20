@@ -114,7 +114,7 @@ test('query() a word', function() {
   ime.dataURL = './resources/testdata.data';
   ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   ime.onloadend = function() {
-    ime.syllables = 'ㄊㄞˊ';
+    ime.symbols = 'ㄊㄞˊ';
     expect(1);
     var candidateId = 42;
     ime.updateCandidates = function(results) {
@@ -144,7 +144,7 @@ test('query() a two-word phrase', function() {
   ime.dataURL = './resources/testdata.data';
   ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   ime.onloadend = function() {
-    ime.syllables = 'ㄊㄞˊㄅㄟˇ';
+    ime.symbols = 'ㄊㄞˊㄅㄟˇ';
     expect(1);
     var candidateId = 42;
     ime.updateCandidates = function(results) {
@@ -175,7 +175,7 @@ test('query() a three-word phrase', function() {
   ime.dataURL = './resources/testdata.data';
   ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   ime.onloadend = function() {
-    ime.syllables = 'ㄊㄞˊㄅㄟˇㄕˋ';
+    ime.symbols = 'ㄊㄞˊㄅㄟˇㄕˋ';
     expect(1);
     var candidateId = 42;
     ime.updateCandidates = function(results) {
@@ -203,17 +203,17 @@ test('query() a three-word phrase', function() {
   ime.load();
 });
 
-test('query() with syllables exceeds MAX_SYLLABLES_LENGTH.', function() {
+test('query() with symbols exceeds MAX_ENCODED_SOUNDS_LENGTH.', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
   ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
-  ime.MAX_SYLLABLES_LENGTH = 3;
+  ime.MAX_ENCODED_SOUNDS_LENGTH = 3;
   ime.onloadend = function() {
-    ime.syllables = 'ㄊㄞˊㄅㄟˇ';
+    ime.symbols = 'ㄊㄞˊㄅㄟˇ';
     expect(4);
     var candidateId = 42;
     ime.updateComposition = function() {
-      equal(ime.syllables, 'ㄊㄞˊㄕˋ', 'Passed!');
+      equal(ime.symbols, 'ㄊㄞˊㄕˋ', 'Passed!');
     };
     ime.oncompositionend = function(composition) {
       equal(composition, '台北', 'Passed!');
@@ -230,7 +230,7 @@ test('query() with syllables exceeds MAX_SYLLABLES_LENGTH.', function() {
         'Passed!');
     };
     ime.queue.done = function() {
-      ime.syllables = 'ㄊㄞˊㄅㄟˇㄊㄞˊㄕˋ';
+      ime.symbols = 'ㄊㄞˊㄅㄟˇㄊㄞˊㄕˋ';
       ime.updateCandidates = function(results) {
         deepEqual(results,
           [['台是', candidateId++],
@@ -262,7 +262,7 @@ test('query() two words which don\'t made up a phrase', function() {
   ime.dataURL = './resources/testdata.data';
   ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   ime.onloadend = function() {
-    ime.syllables = 'ㄅㄟˇㄕˋ';
+    ime.symbols = 'ㄅㄟˇㄕˋ';
     expect(1);
     var candidateId = 42;
     ime.updateCandidates = function(results) {
@@ -286,7 +286,7 @@ test('query() non-exist word', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
   ime.onloadend = function() {
-    ime.syllables = 'ㄅㄟˊ';
+    ime.symbols = 'ㄅㄟˊ';
     expect(1);
     ime.updateCandidates = function(results) {
       deepEqual(results,
@@ -310,7 +310,7 @@ test('query() non-exist phrase', function() {
   ime.dataURL = './resources/testdata.data';
   ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   ime.onloadend = function() {
-    ime.syllables = 'ㄊㄞˊㄅㄟˊ';
+    ime.symbols = 'ㄊㄞˊㄅㄟˊ';
     expect(1);
     var candidateId = 42;
     ime.updateCandidates = function(results) {
@@ -347,7 +347,7 @@ test('updateComposition()', function() {
     start();
   };
   ime.onloadend = function() {
-    ime.syllables = 'ㄊㄞˊㄅㄟˇ';
+    ime.symbols = 'ㄊㄞˊㄅㄟˇ';
     ime.updateComposition();
   };
 

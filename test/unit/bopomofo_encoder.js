@@ -11,55 +11,35 @@ test('encode() should follow the original spec.', function() {
 });
 
 test('encode() should encode multiple symbols.', function() {
-  var syllablesStr = 'ㄓㄨˋㄧㄣˉㄕㄨˉㄖㄨˋㄈㄚˇ';
-  var str = BopomofoEncoder.encode(syllablesStr);
+  var symbols = 'ㄓㄨˋㄧㄣˉㄕㄨˉㄖㄨˋㄈㄚˇ';
+  var str = BopomofoEncoder.encode(symbols);
 
   // ㄓㄨˋㄧㄣˉㄕㄨˉㄖㄨˋㄈㄚˇ
   equal(str, 'ἄÑ⌁┄ࠋ', 'Passed!');
 });
 
 test('encode() should encode multiple partial symbols.', function() {
-  var syllablesStr = 'ㄓㄨˋㄧㄣㄕㄖㄈ';
-  var str = BopomofoEncoder.encode(syllablesStr);
+  var symbols = 'ㄓㄨˋㄧㄣㄕㄖㄈ';
+  var str = BopomofoEncoder.encode(symbols);
 
   // ㄓㄨˋㄧㄣㄕㄖㄈ
   equal(str, 'ἄÐ∀␀ࠀ', 'Passed!');
 });
 
 test('encode() should encode multiple partial symbols ' +
-    'with \'tone\' set to \'all\'.', function() {
-  var syllablesStr = 'ㄓㄨˋㄧㄣㄕㄖㄈ';
-  var str = BopomofoEncoder.encode(syllablesStr, { tone: 'all' });
-
-  // ㄓㄨˋㄧㄣˉㄕˉㄖˉㄈˉ
-  equal(str, 'ἄÑ∁␁ࠁ', 'Passed!');
-});
-
-test('encode() should encode multiple partial symbols ' +
-    'with \'tone\' set to \'more-than-one-symbol\'.', function() {
-  var syllablesStr = 'ㄓㄨˋㄧㄣㄕㄖㄈ';
-  var str =
-    BopomofoEncoder.encode(syllablesStr, { tone: 'more-than-one-symbol' });
-
-  // ㄓㄨˋㄧㄣˉㄕㄖㄈ
-  equal(str, 'ἄÑ∀␀ࠀ', 'Passed!');
-});
-
-
-test('encode() should encode multiple partial symbols ' +
     'with correct order if \'reorder\' is set to \'true\'.', function() {
-  var syllablesStr = 'ㄨㄓˋㄧㄣㄕㄖㄈ';
-  var str = BopomofoEncoder.encode(syllablesStr, { reorder: true });
+  var symbols = 'ㄨㄓˋㄧㄣㄕㄖㄈ';
+  var str = BopomofoEncoder.encode(symbols, { reorder: true });
 
   // ㄓㄨˋㄕㄧㄣㄖㄈ
   equal(str, 'ἄ⋐␀ࠀ', 'Passed!');
 });
 
-test('encode() should throw if syllablesStr contains illegal symbol.',
+test('encode() should throw if symbols contains illegal symbol.',
 function() {
-  var syllablesStr = 'Hello world!';
+  var symbols = 'Hello world!';
   try {
-    BopomofoEncoder.encode(syllablesStr);
+    BopomofoEncoder.encode(symbols);
   } catch (e) {
     ok(true, 'Passed!');
     return;
@@ -110,6 +90,21 @@ function() {
   var flag = BopomofoEncoder.isBopomofoSymbol(('x').charCodeAt(0));
 
   equal(flag, false, 'Passed!');
+});
+
+test('appendToSymbols()', function() {
+  var symbols =
+    BopomofoEncoder.appendToSymbols('ㄓㄨˋㄧㄣˉㄕㄨˉㄖㄨˋㄈ', 'ㄚ');
+
+  equal(symbols, 'ㄓㄨˋㄧㄣˉㄕㄨˉㄖㄨˋㄈㄚ', 'Passed!');
+});
+
+test('appendToSymbols() with APPEND_MODE_REORDER', function() {
+  var symbols =
+    BopomofoEncoder.appendToSymbols('ㄓㄨˋㄧㄣˉㄕㄨˉㄖㄨˋㄚ', 'ㄈ',
+      BopomofoEncoder.APPEND_MODE_REORDER);
+
+  equal(symbols, 'ㄓㄨˋㄧㄣˉㄕㄨˉㄖㄨˋㄈㄚ', 'Passed!');
 });
 
 test('isIncompletionOf() should compare ㄉ with ㄉㄧㄢˋ.',
