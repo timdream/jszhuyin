@@ -200,10 +200,10 @@ test('query() a three-word phrase with completed sounds', function() {
   ime.load();
 });
 
-test('query() with symbols exceeds MAX_ENCODED_SOUNDS_LENGTH.', function() {
+test('query() with symbols exceeds MAX_SOUNDS_LENGTH.', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
-  ime.MAX_ENCODED_SOUNDS_LENGTH = 3;
+  ime.MAX_SOUNDS_LENGTH = 3;
   ime.onloadend = function() {
     ime.symbols = 'ㄊㄞˊㄅㄟˇ';
     expect(4);

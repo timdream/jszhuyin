@@ -198,8 +198,12 @@ test('getSymbolsCompositions()', function() {
   ];
 
   tests.forEach(function(test) {
-    deepEqual(
-      BopomofoEncoder.getSymbolsCompositions(test[0]), test[1], test[0]);
+    var expendedEncodedSounds = BopomofoEncoder.encodeExpended(test[0]);
+    deepEqual(BopomofoEncoder.getSymbolsCompositions(expendedEncodedSounds),
+      test[1], test[0]);
+
+    deepEqual(BopomofoEncoder.getSymbolsCompositions(test[0]),
+      test[1], test[0]);
   });
 });
 
