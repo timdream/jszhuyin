@@ -109,10 +109,9 @@ test('load() non-exist files', function() {
 });
 
 
-test('query() a word', function() {
+test('query() a word with a completed sound', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
-  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   ime.onloadend = function() {
     ime.symbols = 'ㄊㄞˊ';
     expect(1);
@@ -139,10 +138,9 @@ test('query() a word', function() {
   ime.load();
 });
 
-test('query() a two-word phrase', function() {
+test('query() a two-word phrase with completed sounds', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
-  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   ime.onloadend = function() {
     ime.symbols = 'ㄊㄞˊㄅㄟˇ';
     expect(1);
@@ -170,10 +168,9 @@ test('query() a two-word phrase', function() {
   ime.load();
 });
 
-test('query() a three-word phrase', function() {
+test('query() a three-word phrase with completed sounds', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
-  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   ime.onloadend = function() {
     ime.symbols = 'ㄊㄞˊㄅㄟˇㄕˋ';
     expect(1);
@@ -206,7 +203,6 @@ test('query() a three-word phrase', function() {
 test('query() with symbols exceeds MAX_ENCODED_SOUNDS_LENGTH.', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
-  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   ime.MAX_ENCODED_SOUNDS_LENGTH = 3;
   ime.onloadend = function() {
     ime.symbols = 'ㄊㄞˊㄅㄟˇ';
@@ -260,7 +256,6 @@ test('query() with symbols exceeds MAX_ENCODED_SOUNDS_LENGTH.', function() {
 test('query() two words which don\'t made up a phrase', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
-  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   ime.onloadend = function() {
     ime.symbols = 'ㄅㄟˇㄕˋ';
     expect(1);
@@ -308,7 +303,6 @@ test('query() non-exist word', function() {
 test('query() non-exist phrase', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
-  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   ime.onloadend = function() {
     ime.symbols = 'ㄊㄞˊㄅㄟˊ';
     expect(1);
@@ -339,7 +333,6 @@ test('query() non-exist phrase', function() {
 test('updateComposition()', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
-  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   expect(1);
   ime.oncompositionupdate = function(composition) {
     equal(composition, 'ㄊㄞˊㄅㄟˇ', 'Passed!');
@@ -360,7 +353,6 @@ module('JSZhuyin (interactive/integration)');
 test('Simple interactive query (send all keys in one action).', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
-  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   expect(9);
   var candidateId = 42;
 
@@ -380,11 +372,12 @@ test('Simple interactive query (send all keys in one action).', function() {
        ['籉', candidateId++],['秮', candidateId++]],
       /* 'ㄊㄞ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
-       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
-       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
+       ['颱', candidateId++],['檯', candidateId++],['疼愛', candidateId++],
+       ['苔', candidateId++],['跆', candidateId++],['邰', candidateId++],
+       ['抬愛', candidateId++],['鮐', candidateId++],['旲', candidateId++],
+       ['炱', candidateId++],['嬯', candidateId++],['儓', candidateId++],
+       ['薹', candidateId++],['駘', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++]],
       /* 'ㄊㄞˊ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
@@ -428,151 +421,6 @@ test('Simple interactive query (send all keys in one action).', function() {
 test('Run a simple interactive query.', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
-  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
-  expect(9);
-  var candidateId = 42;
-
-  ime.onloadend = function() {
-    var expectedCompositions = ['ㄊ', 'ㄊㄞ', 'ㄊㄞˊ'];
-    ime.oncompositionupdate = function(composition) {
-      equal(composition, expectedCompositions.shift(), 'Composition updates.');
-    };
-
-    var expectedCandidates = [
-      /* 'ㄊ' */
-      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
-       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
-       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
-      /* 'ㄊㄞ' */
-      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
-       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
-       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
-      /* 'ㄊㄞˊ' */
-      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
-       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
-       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]]];
-    ime.oncandidateschange = function(candidates) {
-      deepEqual(candidates, expectedCandidates.shift(),
-        'Candidates equals to expected list.');
-    };
-
-    var nextActions = [
-      function() {
-        ok(ime.handleKeyEvent('ㄊ'.charCodeAt(0)), 'Handles ㄊ');
-      },
-      function() {
-        ok(ime.handleKeyEvent('ㄞ'.charCodeAt(0)), 'Handles ㄞ');
-      },
-      function() {
-        ok(ime.handleKeyEvent('ˊ'.charCodeAt(0)), 'Handles ˊ');
-      }
-    ];
-    ime.onactionhandled = function() {
-      if (!nextActions.length) {
-        setTimeout(function() {
-          ime.unload();
-          start();
-        });
-
-        return;
-      }
-
-      (nextActions.shift())();
-    };
-    (nextActions.shift())();
-  };
-
-  stop();
-  ime.load();
-});
-
-test('Run a simple interactive query (set ㄞ and ㄚ interchangable).',
-function() {
-  var ime = new JSZhuyin();
-  ime.dataURL = './resources/testdata.data';
-  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
-  expect(9);
-  var candidateId = 42;
-
-  ime.onloadend = function() {
-    var expectedCompositions = ['ㄊ', 'ㄊㄚ', 'ㄊㄚˊ'];
-    ime.oncompositionupdate = function(composition) {
-      equal(composition, expectedCompositions.shift(), 'Composition updates.');
-    };
-
-    var expectedCandidates = [
-      /* 'ㄊ' */
-      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
-       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
-       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
-      /* 'ㄊㄞ' */
-      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
-       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
-       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
-      /* 'ㄊㄞˊ' */
-      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
-       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
-       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]]];
-    ime.oncandidateschange = function(candidates) {
-      deepEqual(candidates, expectedCandidates.shift(),
-        'Candidates equals to expected list.');
-    };
-
-    var nextActions = [
-      function() {
-        ok(ime.handleKeyEvent('ㄊ'.charCodeAt(0)), 'Handles ㄊ');
-      },
-      function() {
-        ok(ime.handleKeyEvent('ㄚ'.charCodeAt(0)), 'Handles ㄚ');
-      },
-      function() {
-        ok(ime.handleKeyEvent('ˊ'.charCodeAt(0)), 'Handles ˊ');
-      }
-    ];
-    ime.onactionhandled = function() {
-      if (!nextActions.length) {
-        setTimeout(function() {
-          ime.unload();
-          start();
-        });
-
-        return;
-      }
-
-      (nextActions.shift())();
-    };
-
-    ime.setConfig({ INTERCHANGABLE_PAIRS: 'ㄚㄞ' });
-    (nextActions.shift())();
-  };
-
-  stop();
-  ime.load();
-});
-
-test('Run a simple interactive query (set SPLIT_SOUND_TO_MATCH_PHRASES=true).',
-function() {
-  var ime = new JSZhuyin();
-  ime.dataURL = './resources/testdata.data';
-  ime.SPLIT_SOUND_TO_MATCH_PHRASES = true;
   expect(9);
   var candidateId = 42;
 
@@ -640,10 +488,82 @@ function() {
   ime.load();
 });
 
+test('Run a simple interactive query (set ㄞ and ㄚ interchangable).',
+function() {
+  var ime = new JSZhuyin();
+  ime.dataURL = './resources/testdata.data';
+  expect(9);
+  var candidateId = 42;
+
+  ime.onloadend = function() {
+    var expectedCompositions = ['ㄊ', 'ㄊㄚ', 'ㄊㄚˊ'];
+    ime.oncompositionupdate = function(composition) {
+      equal(composition, expectedCompositions.shift(), 'Composition updates.');
+    };
+
+    var expectedCandidates = [
+      /* 'ㄊ' */
+      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+       ['籉', candidateId++],['秮', candidateId++]],
+      /* 'ㄊㄞ' */
+      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+       ['颱', candidateId++],['檯', candidateId++],['疼愛', candidateId++],
+       ['苔', candidateId++],['跆', candidateId++],['邰', candidateId++],
+       ['抬愛', candidateId++],['鮐', candidateId++],['旲', candidateId++],
+       ['炱', candidateId++],['嬯', candidateId++],['儓', candidateId++],
+       ['薹', candidateId++],['駘', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++]],
+      /* 'ㄊㄞˊ' */
+      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+       ['籉', candidateId++],['秮', candidateId++]]];
+    ime.oncandidateschange = function(candidates) {
+      deepEqual(candidates, expectedCandidates.shift(),
+        'Candidates equals to expected list.');
+    };
+
+    var nextActions = [
+      function() {
+        ok(ime.handleKeyEvent('ㄊ'.charCodeAt(0)), 'Handles ㄊ');
+      },
+      function() {
+        ok(ime.handleKeyEvent('ㄚ'.charCodeAt(0)), 'Handles ㄚ');
+      },
+      function() {
+        ok(ime.handleKeyEvent('ˊ'.charCodeAt(0)), 'Handles ˊ');
+      }
+    ];
+    ime.onactionhandled = function() {
+      if (!nextActions.length) {
+        setTimeout(function() {
+          ime.unload();
+          start();
+        });
+
+        return;
+      }
+
+      (nextActions.shift())();
+    };
+
+    ime.setConfig({ INTERCHANGABLE_PAIRS: 'ㄚㄞ' });
+    (nextActions.shift())();
+  };
+
+  stop();
+  ime.load();
+});
+
 test('Confirm text with Enter key.', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
-  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   expect(13);
   var candidateId = 42;
 
@@ -667,11 +587,12 @@ test('Confirm text with Enter key.', function() {
        ['籉', candidateId++],['秮', candidateId++]],
       /* 'ㄊㄞ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
-       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
-       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
+       ['颱', candidateId++],['檯', candidateId++],['疼愛', candidateId++],
+       ['苔', candidateId++],['跆', candidateId++],['邰', candidateId++],
+       ['抬愛', candidateId++],['鮐', candidateId++],['旲', candidateId++],
+       ['炱', candidateId++],['嬯', candidateId++],['儓', candidateId++],
+       ['薹', candidateId++],['駘', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++]],
       /* 'ㄊㄞˊ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
@@ -723,7 +644,6 @@ test('Confirm text with Enter key (SUGGEST_PHRASES = false).', function() {
   var ime = new JSZhuyin();
   ime.SUGGEST_PHRASES = false;
   ime.dataURL = './resources/testdata.data';
-  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   expect(13);
   var candidateId = 42;
 
@@ -747,11 +667,12 @@ test('Confirm text with Enter key (SUGGEST_PHRASES = false).', function() {
        ['籉', candidateId++],['秮', candidateId++]],
       /* 'ㄊㄞ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
-       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
-       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
+       ['颱', candidateId++],['檯', candidateId++],['疼愛', candidateId++],
+       ['苔', candidateId++],['跆', candidateId++],['邰', candidateId++],
+       ['抬愛', candidateId++],['鮐', candidateId++],['旲', candidateId++],
+       ['炱', candidateId++],['嬯', candidateId++],['儓', candidateId++],
+       ['薹', candidateId++],['駘', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++]],
       /* 'ㄊㄞˊ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
@@ -802,7 +723,6 @@ test('Confirm text with Enter key (SUGGEST_PHRASES = false).', function() {
 test('Confirm text with Enter key (set ㄞ and ㄚ interchangable).', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
-  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   expect(13);
   var candidateId = 42;
 
@@ -826,11 +746,12 @@ test('Confirm text with Enter key (set ㄞ and ㄚ interchangable).', function()
        ['籉', candidateId++],['秮', candidateId++]],
       /* 'ㄊㄞ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
-       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
-       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
+       ['颱', candidateId++],['檯', candidateId++],['疼愛', candidateId++],
+       ['苔', candidateId++],['跆', candidateId++],['邰', candidateId++],
+       ['抬愛', candidateId++],['鮐', candidateId++],['旲', candidateId++],
+       ['炱', candidateId++],['嬯', candidateId++],['儓', candidateId++],
+       ['薹', candidateId++],['駘', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++]],
       /* 'ㄊㄞˊ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
@@ -882,7 +803,6 @@ test('Confirm text with Enter key (set ㄞ and ㄚ interchangable).', function()
 test('Confirm text with a non-Bopomofo key.', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
-  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   expect(13);
   var candidateId = 42;
 
@@ -906,11 +826,12 @@ test('Confirm text with a non-Bopomofo key.', function() {
        ['籉', candidateId++],['秮', candidateId++]],
       /* 'ㄊㄞ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
-       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
-       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
+       ['颱', candidateId++],['檯', candidateId++],['疼愛', candidateId++],
+       ['苔', candidateId++],['跆', candidateId++],['邰', candidateId++],
+       ['抬愛', candidateId++],['鮐', candidateId++],['旲', candidateId++],
+       ['炱', candidateId++],['嬯', candidateId++],['儓', candidateId++],
+       ['薹', candidateId++],['駘', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++]],
       /* 'ㄊㄞˊ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
@@ -961,7 +882,6 @@ test('Confirm text with a non-Bopomofo key.', function() {
 test('Don\'t handle Enter key if there is no candidates.', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
-  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   expect(1);
 
   ime.onloadend = function() {
@@ -979,7 +899,6 @@ test('Don\'t handle Enter key if there is no candidates.', function() {
 test('Confirm text with candidate selection.', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
-  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
 
   expect(12);
   var candidateId = 42;
@@ -1004,11 +923,12 @@ test('Confirm text with candidate selection.', function() {
        ['籉', candidateId++],['秮', candidateId++]],
       /* 'ㄊㄞ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
-       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
-       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
+       ['颱', candidateId++],['檯', candidateId++],['疼愛', candidateId++],
+       ['苔', candidateId++],['跆', candidateId++],['邰', candidateId++],
+       ['抬愛', candidateId++],['鮐', candidateId++],['旲', candidateId++],
+       ['炱', candidateId++],['嬯', candidateId++],['儓', candidateId++],
+       ['薹', candidateId++],['駘', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++]],
       /* 'ㄊㄞˊ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
@@ -1059,7 +979,6 @@ test('Confirm text with candidate selection.', function() {
 test('Backspace key removes the last symbol.', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
-  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
 
   expect(15);
   var candidateId = 42;
@@ -1079,11 +998,12 @@ test('Backspace key removes the last symbol.', function() {
        ['籉', candidateId++],['秮', candidateId++]],
       /* 'ㄊㄞ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
-       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
-       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
+       ['颱', candidateId++],['檯', candidateId++],['疼愛', candidateId++],
+       ['苔', candidateId++],['跆', candidateId++],['邰', candidateId++],
+       ['抬愛', candidateId++],['鮐', candidateId++],['旲', candidateId++],
+       ['炱', candidateId++],['嬯', candidateId++],['儓', candidateId++],
+       ['薹', candidateId++],['駘', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++]],
       /* 'ㄊㄞˊ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
@@ -1150,7 +1070,6 @@ test('Backspace key removes the last symbol.', function() {
 test('Don\'t handle Backspace key if there is no compositions.', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
-  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
 
   expect(1);
   ime.onloadend = function() {
