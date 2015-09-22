@@ -284,7 +284,8 @@ test('getIncompleteMatched(ㄌㄟˇㄌㄟˇ) (not found)', function() {
   equal(value, undefined, 'Passed!');
 });
 
-test('getIncompleteMatched(ㄊㄞ)', function() {
+test('getIncompleteMatched(ㄊㄞ)',
+function() {
   var storage = new JSZhuyinDataPackStorage();
   storage.load(testdataData);
 
@@ -295,11 +296,9 @@ test('getIncompleteMatched(ㄊㄞ)', function() {
     { index: 40, score: -4.771779537200928, str: '抬' },
     { index: 40, score: -4.80982780456543, str: '颱' },
     { index: 40, score: -5.267881393432617, str: '檯' },
-    { index: 230, score: -5.541846752166748, str: '疼愛' },
     { index: 40, score: -5.749503135681152, str: '苔' },
     { index: 40, score: -6.093285083770752, str: '跆' },
     { index: 40, score: -6.300410747528076, str: '邰' },
-    { index: 160, score: -6.655789852142334, str: '抬愛' },
     { index: 40, score: -7.555683135986328, str: '鮐' },
     { index: 40, score: -7.85671329498291, str: '旲' },
     { index: 40, score: -7.85671329498291, str: '炱' },
@@ -311,31 +310,16 @@ test('getIncompleteMatched(ㄊㄞ)', function() {
     { index: 40, score: -7.85671329498291, str: '秮' } ]);
 });
 
-test('getIncompleteMatched(ㄊㄞ) (matchPhrasesFromSingleKey=false)',
-function() {
+test('getIncompleteMatched(ㄊ,ㄞ)', function() {
   var storage = new JSZhuyinDataPackStorage();
-  storage.setMatchPhrasesFromSingleKey(false);
   storage.load(testdataData);
 
-  var value = storage.getIncompleteMatched(BopomofoEncoder.encode('ㄊㄞ'));
+  var key = BopomofoEncoder.encode('ㄊ') + BopomofoEncoder.encode('ㄞ');
+
+  var value = storage.getIncompleteMatched(key);
   deepEqual(value.getResults(), [
-    { index: 40, score: -2.946078062057495, str: '台' },
-    { index: 40, score: -3.5012617111206055, str: '臺' },
-    { index: 40, score: -4.771779537200928, str: '抬' },
-    { index: 40, score: -4.80982780456543, str: '颱' },
-    { index: 40, score: -5.267881393432617, str: '檯' },
-    { index: 40, score: -5.749503135681152, str: '苔' },
-    { index: 40, score: -6.093285083770752, str: '跆' },
-    { index: 40, score: -6.300410747528076, str: '邰' },
-    { index: 40, score: -7.555683135986328, str: '鮐' },
-    { index: 40, score: -7.85671329498291, str: '旲' },
-    { index: 40, score: -7.85671329498291, str: '炱' },
-    { index: 40, score: -7.85671329498291, str: '嬯' },
-    { index: 40, score: -7.85671329498291, str: '儓' },
-    { index: 40, score: -7.85671329498291, str: '薹' },
-    { index: 40, score: -7.85671329498291, str: '駘' },
-    { index: 40, score: -7.85671329498291, str: '籉' },
-    { index: 40, score: -7.85671329498291, str: '秮' } ]);
+    { index: 230, score: -5.541846752166748, str: '疼愛' },
+    { index: 160, score: -6.655789852142334, str: '抬愛' } ]);
 });
 
 test('reverseGet(台北)', function() {
