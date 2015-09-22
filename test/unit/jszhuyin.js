@@ -116,7 +116,7 @@ test('query() a word with a completed sound', function() {
     ime.symbols = 'ㄊㄞˊ';
     expect(1);
     var candidateId = 42;
-    ime.updateCandidates = function(results) {
+    ime.oncandidateschange = function(results) {
       deepEqual(results,
         [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
          ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
@@ -145,7 +145,7 @@ test('query() a two-word phrase with completed sounds', function() {
     ime.symbols = 'ㄊㄞˊㄅㄟˇ';
     expect(1);
     var candidateId = 42;
-    ime.updateCandidates = function(results) {
+    ime.oncandidateschange = function(results) {
       deepEqual(results,
         [['台北', candidateId++],
          ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
@@ -175,7 +175,7 @@ test('query() a three-word phrase with completed sounds', function() {
     ime.symbols = 'ㄊㄞˊㄅㄟˇㄕˋ';
     expect(1);
     var candidateId = 42;
-    ime.updateCandidates = function(results) {
+    ime.oncandidateschange = function(results) {
       deepEqual(results,
         [['台北市', candidateId++],['臺北市', candidateId++],
          ['台北是', candidateId++],
@@ -214,7 +214,7 @@ test('query() with symbols exceeds MAX_SOUNDS_LENGTH.', function() {
     ime.oncompositionend = function(composition) {
       equal(composition, '台北', 'Passed!');
     };
-    ime.updateCandidates = function(results) {
+    ime.oncandidateschange = function(results) {
       deepEqual(results,
         [['台北', candidateId++],
          ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
@@ -227,7 +227,7 @@ test('query() with symbols exceeds MAX_SOUNDS_LENGTH.', function() {
     };
     ime.queue.done = function() {
       ime.symbols = 'ㄊㄞˊㄅㄟˇㄊㄞˊㄕˋ';
-      ime.updateCandidates = function(results) {
+      ime.oncandidateschange = function(results) {
         deepEqual(results,
           [['台是', candidateId++],
            ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
@@ -260,7 +260,7 @@ test('query() two words which don\'t made up a phrase', function() {
     ime.symbols = 'ㄅㄟˇㄕˋ';
     expect(1);
     var candidateId = 42;
-    ime.updateCandidates = function(results) {
+    ime.oncandidateschange = function(results) {
       deepEqual(results,
         [['北是', candidateId++],['北', candidateId++]],
         'Passed!');
@@ -283,7 +283,7 @@ test('query() non-exist word', function() {
   ime.onloadend = function() {
     ime.symbols = 'ㄅㄟˊ';
     expect(1);
-    ime.updateCandidates = function(results) {
+    ime.oncandidateschange = function(results) {
       deepEqual(results,
         [['ㄅㄟˊ', 42]],
         'Passed!');
@@ -307,7 +307,7 @@ test('query() non-exist phrase', function() {
     ime.symbols = 'ㄊㄞˊㄅㄟˊ';
     expect(1);
     var candidateId = 42;
-    ime.updateCandidates = function(results) {
+    ime.oncandidateschange = function(results) {
       deepEqual(results,
         [['台ㄅㄟˊ', candidateId++],
          ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
