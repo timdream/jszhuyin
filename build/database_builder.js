@@ -12,7 +12,7 @@ DatabaseBuilder.prototype.onprogress = null;
 DatabaseBuilder.prototype.put = function bsb_put(key, value) {
   var table = this.data;
   for (var i = 0; i < key.length; i++) {
-    var code = key.charCodeAt(i);
+    var code = key[i];
 
     if (!table[code]) {
       table[code] = [];
@@ -26,7 +26,7 @@ DatabaseBuilder.prototype.put = function bsb_put(key, value) {
 DatabaseBuilder.prototype.get = function bsb_get(key) {
   var table = this.data;
   for (var i = 0; i < key.length; i++) {
-    var code = key.charCodeAt(i);
+    var code = key[i];
 
     if (!table[code]) {
       return undefined;

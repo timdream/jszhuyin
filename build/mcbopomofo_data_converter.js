@@ -60,11 +60,12 @@ McBopomofoDataConverter.prototype._categorizeEntries = function(lines) {
 
     this._reportProgress(this.STAGE_CATEGORIZING_ENTRIES, i, length);
 
-    if (!results[lineData.encodedStr]) {
-      results[lineData.encodedStr] = [];
+    var encodedStr = String.fromCharCode.apply(String, lineData.encodedSounds);
+    if (!results[encodedStr]) {
+      results[encodedStr] = [];
     }
 
-    results[lineData.encodedStr].push({
+    results[encodedStr].push({
       'str': lineData.str,
       'score': lineData.score
     });
@@ -88,7 +89,10 @@ function _sortingResultAndInsertIntoDB(results) {
       return (b.score - a.score);
     }.bind(this));
 
-    db.put(encodedStr, (new JSZhuyinDataPack(result)).getPacked());
+    var encodedSounds = Array.prototype.map.call(encodedStr, function(chr) {
+      return chr.charCodeAt(0);
+    });
+    db.put(encodedSounds, (new JSZhuyinDataPack(result)).getPacked());
   }
 
   return db;

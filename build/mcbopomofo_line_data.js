@@ -9,8 +9,7 @@ var McBopomofoLineData = function McBopomofoData() {
 };
 
 McBopomofoLineData.prototype.isValid = false;
-McBopomofoLineData.prototype.encodedStr = '';
-McBopomofoLineData.prototype.shortcutEncodedStr = '';
+McBopomofoLineData.prototype.encodedSounds = null;
 McBopomofoLineData.prototype.str = '';
 McBopomofoLineData.prototype.score = 0;
 
@@ -47,17 +46,12 @@ McBopomofoLineData.prototype.parse = function(lineStr) {
 
   var symbols = row[1].replace(this.ADD_FIRST_TONE_REGEXP,
                                this.ADD_FIRST_TONE_REPLACESTR);
-  var encodedStr = BopomofoEncoder.encode(symbols.replace(/\-/g, ''));
+  var encodedSounds = BopomofoEncoder.encode(symbols.replace(/\-/g, ''));
 
   this.isValid = true;
   this.str = row[0];
   this.score = parseFloat(row[2], 10);
-  this.encodedStr = encodedStr;
-  this.shortcutEncodedStr = BopomofoEncoder.encode((function() {
-    return symbols.split('-').map(function(str) {
-      return str[0];
-    }).join('');
-  }()));
+  this.encodedSounds = encodedSounds;
 };
 
 // Export as a CommonJS module if we are loaded as one.
