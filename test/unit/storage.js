@@ -51,7 +51,7 @@ test('get()', function() {
   var storage = new BinStorage();
   storage.load(binStorageData);
 
-  var value = storage.get(String.fromCharCode(0x41, 0x42, 0x43));
+  var value = storage.get([0x41, 0x42, 0x43]);
   deepEqual(arrayBufferToStringArray(value[0]), binStorageResStringArray);
   equal(value[1], 0x28 + 4 /* start address of Table3 content */);
   equal(value[2], 4 /* length of Table3 content */, 'Passed!');
@@ -61,7 +61,7 @@ test('get() (not found)', function() {
   var storage = new BinStorage();
   storage.load(binStorageData);
 
-  var value = storage.get(String.fromCharCode(0x41, 0x42, 0x45));
+  var value = storage.get([0x41, 0x42, 0x45]);
   equal(value, undefined, 'Passed!');
 });
 
@@ -69,7 +69,7 @@ test('getRange()', function() {
   var storage = new BinStorage();
   storage.load(binStorageData);
 
-  var value = storage.getRange(String.fromCharCode(0x41, 0x42));
+  var value = storage.getRange([0x41, 0x42]);
   equal(value.length, 1, 'Passed!');
   deepEqual(arrayBufferToStringArray(value[0][0]), binStorageResStringArray);
   equal(value[0][1], 0x28 + 4 /* start address of Table3 content */);
@@ -80,35 +80,56 @@ test('getRange() (not found)', function() {
   var storage = new BinStorage();
   storage.load(binStorageData);
 
-  var value = storage.getRange(String.fromCharCode(0x41, 0x42, 0x45));
+  var value = storage.getRange([0x41, 0x42, 0x45]);
   deepEqual(value, [], 'Passed!');
 });
 
 module('CacheStore');
 
-test('add()', function() {
+test('add() and get()', function() {
   var store = new CacheStore();
-  store.add('Key1', ['value1', 'value2']);
-  deepEqual(store.dataMap.get('Key1'), ['value1', 'value2'], 'Passed!');
+  var val = {};
+  store.add([0x41, 0x42], val);
+  equal(store.dataMap.get('\u0041\u0042'), val, 'Passed!');
 });
 
 test('get()', function() {
   var store = new CacheStore();
-  store.add('Key1', ['value1', 'value2']);
-  deepEqual(store.get('Key1'), ['value1', 'value2'], 'Passed!');
+  var val = {};
+  store.add([0x41, 0x42], val);
+  deepEqual(store.get([0x41, 0x42]), val, 'Passed!');
+});
+
+test('cleanup() w/ supersetCodes', function() {
+  var store = new CacheStore();
+  var val = {};
+  var val2 = {};
+  var val3 = {};
+  store.add([0x41, 0x42], val);
+  store.add([0x41, 0x43], val2);
+  store.add([0x41, 0x44], val3);
+
+  store.cleanup([0x41, 0x44, 0x41, 0x42]);
+
+  equal(store.get([0x41, 0x42]), val, 'Passed!');
+  equal(store.get([0x41, 0x43]), undefined, 'Passed!');
+  equal(store.get([0x41, 0x44]), val3, 'Passed!');
 });
 
 test('cleanup()', function() {
   var store = new CacheStore();
-  store.add('Key1', ['value1', 'value2']);
-  store.add('Key2', ['value3', 'value4']);
-  store.add('Key3', ['value5', 'value6']);
+  var val = {};
+  var val2 = {};
+  var val3 = {};
+  store.add([0x41, 0x42], val);
+  store.add([0x41, 0x43], val2);
+  store.add([0x41, 0x44], val3);
 
-  store.cleanup('Key1Key3');
+  store.cleanup();
 
-  deepEqual(store.get('Key1'), ['value1', 'value2'], 'Passed!');
-  deepEqual(store.get('Key2'), undefined, 'Passed!');
-  deepEqual(store.get('Key3'), ['value5', 'value6'], 'Passed!');
+  equal(store.get([0x41, 0x42]), undefined, 'Passed!');
+  equal(store.get([0x41, 0x43]), undefined, 'Passed!');
+  equal(store.get([0x41, 0x44]), undefined, 'Passed!');
 });
 
 // This the simply the number representation of testdata.data
@@ -179,7 +200,10 @@ test('get()', function() {
   var storage = new JSZhuyinDataPackStorage();
   storage.load(testdataData);
 
-  var value = storage.get(BopomofoEncoder.encode('ㄊㄞˊㄅㄟˇ'));
+  var codes = Array.prototype.map.call(BopomofoEncoder.encode('ㄊㄞˊㄅㄟˇ'),
+    function(chr) { return chr.charCodeAt(0); });
+
+  var value = storage.get(codes);
   deepEqual(value.getResults(), [ {
     score: -3.2719614505767822,
     str: '台北',
@@ -190,13 +214,16 @@ test('get() should utilize cache', function() {
   var storage = new JSZhuyinDataPackStorage();
   storage.load(testdataData);
 
-  var value = storage.get(BopomofoEncoder.encode('ㄊㄞˊㄅㄟˇ'));
+  var codes = Array.prototype.map.call(BopomofoEncoder.encode('ㄊㄞˊㄅㄟˇ'),
+    function(chr) { return chr.charCodeAt(0); });
+
+  var value = storage.get(codes);
   deepEqual(value.getResults(), [ {
     score: -3.2719614505767822,
     str: '台北',
     index: 174 } ]);
 
-  var value2 = storage.get(BopomofoEncoder.encode('ㄊㄞˊㄅㄟˇ'));
+  var value2 = storage.get(codes);
 
   ok(value === value2, 'Same JSZhuyinDataPack');
 });
@@ -205,7 +232,11 @@ test('get() (not found)', function() {
   var storage = new JSZhuyinDataPackStorage();
   storage.load(testdataData);
 
-  var value = storage.get(BopomofoEncoder.encode('ㄊㄞˊㄅㄟˇㄅㄟˇ'));
+  var codes =
+    Array.prototype.map.call(BopomofoEncoder.encode('ㄊㄞˊㄅㄟˇㄅㄟˇ'),
+      function(chr) { return chr.charCodeAt(0); });
+
+  var value = storage.get(codes);
   equal(value, undefined, 'Passed!');
 });
 
@@ -213,7 +244,11 @@ test('getRange()', function() {
   var storage = new JSZhuyinDataPackStorage();
   storage.load(testdataData);
 
-  var value = storage.getRange(BopomofoEncoder.encode('ㄊㄞˊㄅㄟˇ'));
+  var codes =
+    Array.prototype.map.call(BopomofoEncoder.encode('ㄊㄞˊㄅㄟˇ'),
+      function(chr) { return chr.charCodeAt(0); });
+
+  var value = storage.getRange(codes);
   equal(value.length, 1, 'Passed!');
   deepEqual(value[0].getResults(), [
     { score: -3.330096483230591, str: '台北市', index: 194 },
@@ -224,7 +259,11 @@ test('getRange() (not found)', function() {
   var storage = new JSZhuyinDataPackStorage();
   storage.load(testdataData);
 
-  var value = storage.getRange(BopomofoEncoder.encode('ㄊㄞˊㄅㄟˇㄅㄟˇ'));
+  var codes =
+    Array.prototype.map.call(BopomofoEncoder.encode('ㄊㄞˊㄅㄟˇㄅㄟˇ'),
+      function(chr) { return chr.charCodeAt(0); });
+
+  var value = storage.getRange(codes);
   deepEqual(value, [], 'Passed!');
 });
 
@@ -232,7 +271,11 @@ test('getIncompleteMatched(ㄊㄞˊㄅ)', function() {
   var storage = new JSZhuyinDataPackStorage();
   storage.load(testdataData);
 
-  var value = storage.getIncompleteMatched(BopomofoEncoder.encode('ㄊㄞˊㄅ'));
+  var codes =
+    Array.prototype.map.call(BopomofoEncoder.encode('ㄊㄞˊㄅ'),
+      function(chr) { return chr.charCodeAt(0); });
+
+  var value = storage.getIncompleteMatched(codes);
   deepEqual(value.getResults(), [
     { score: -3.2719614505767822, str: '台北', index: 174 } ]);
 });
@@ -241,11 +284,17 @@ test('getIncompleteMatched(ㄊㄞˊㄅ) should utilize cache', function() {
   var storage = new JSZhuyinDataPackStorage();
   storage.load(testdataData);
 
-  var value = storage.getIncompleteMatched(BopomofoEncoder.encode('ㄊㄞˊㄅ'));
+  var codes =
+    Array.prototype.map.call(BopomofoEncoder.encode('ㄊㄞˊㄅ'),
+      function(chr) { return chr.charCodeAt(0); });
+
+  var value = storage.getIncompleteMatched(codes);
   deepEqual(value.getResults(), [
     { score: -3.2719614505767822, str: '台北', index: 174 } ]);
 
-  var value2 = storage.getIncompleteMatched(BopomofoEncoder.encode('ㄊㄞˊㄅ'));
+  // Recreate the codes array.
+  codes = [].concat(codes);
+  var value2 = storage.getIncompleteMatched(codes);
 
   ok(value === value2, 'Same JSZhuyinDataPackCollection');
 });
@@ -254,7 +303,11 @@ test('getIncompleteMatched(ㄊㄅㄕ)', function() {
   var storage = new JSZhuyinDataPackStorage();
   storage.load(testdataData);
 
-  var value = storage.getIncompleteMatched(BopomofoEncoder.encode('ㄊㄅㄕ'));
+  var codes =
+    Array.prototype.map.call(BopomofoEncoder.encode('ㄊㄅㄕ'),
+      function(chr) { return chr.charCodeAt(0); });
+
+  var value = storage.getIncompleteMatched(codes);
   deepEqual(value.getResults(), [
     { score: -3.330096483230591, str: '台北市', index: 194 },
     { score: -3.6398773193359375, str: '臺北市', index: 194 } ]);
@@ -264,7 +317,11 @@ test('getIncompleteMatched(ㄌ) (not found)', function() {
   var storage = new JSZhuyinDataPackStorage();
   storage.load(testdataData);
 
-  var value = storage.getIncompleteMatched(BopomofoEncoder.encode('ㄌ'));
+  var codes =
+    Array.prototype.map.call(BopomofoEncoder.encode('ㄌ'),
+      function(chr) { return chr.charCodeAt(0); });
+
+  var value = storage.getIncompleteMatched(codes);
   equal(value, undefined, 'Passed!');
 });
 
@@ -272,7 +329,11 @@ test('getIncompleteMatched(ㄊㄞˊㄌ) (not found)', function() {
   var storage = new JSZhuyinDataPackStorage();
   storage.load(testdataData);
 
-  var value = storage.getIncompleteMatched(BopomofoEncoder.encode('ㄌ'));
+  var codes =
+    Array.prototype.map.call(BopomofoEncoder.encode('ㄊㄞˊㄌ'),
+      function(chr) { return chr.charCodeAt(0); });
+
+  var value = storage.getIncompleteMatched(codes);
   equal(value, undefined, 'Passed!');
 });
 
@@ -280,7 +341,11 @@ test('getIncompleteMatched(ㄌㄟˇㄌㄟˇ) (not found)', function() {
   var storage = new JSZhuyinDataPackStorage();
   storage.load(testdataData);
 
-  var value = storage.getIncompleteMatched(BopomofoEncoder.encode('ㄌㄟˇㄌㄟˇ'));
+  var codes =
+    Array.prototype.map.call(BopomofoEncoder.encode('ㄌㄟˇㄌㄟˇ'),
+      function(chr) { return chr.charCodeAt(0); });
+
+  var value = storage.getIncompleteMatched(codes);
   equal(value, undefined, 'Passed!');
 });
 
@@ -289,7 +354,11 @@ function() {
   var storage = new JSZhuyinDataPackStorage();
   storage.load(testdataData);
 
-  var value = storage.getIncompleteMatched(BopomofoEncoder.encode('ㄊㄞ'));
+  var codes =
+    Array.prototype.map.call(BopomofoEncoder.encode('ㄊㄞ'),
+      function(chr) { return chr.charCodeAt(0); });
+
+  var value = storage.getIncompleteMatched(codes);
   deepEqual(value.getResults(), [
     { index: 40, score: -2.946078062057495, str: '台' },
     { index: 40, score: -3.5012617111206055, str: '臺' },
@@ -314,9 +383,11 @@ test('getIncompleteMatched(ㄊ,ㄞ)', function() {
   var storage = new JSZhuyinDataPackStorage();
   storage.load(testdataData);
 
-  var key = BopomofoEncoder.encode('ㄊ') + BopomofoEncoder.encode('ㄞ');
+  var codes = ['ㄊ', 'ㄞ'].map(function(symbol) {
+    return BopomofoEncoder.encode(symbol).charCodeAt(0);
+  });
 
-  var value = storage.getIncompleteMatched(key);
+  var value = storage.getIncompleteMatched(codes);
   deepEqual(value.getResults(), [
     { index: 230, score: -5.541846752166748, str: '疼愛' },
     { index: 160, score: -6.655789852142334, str: '抬愛' } ]);
