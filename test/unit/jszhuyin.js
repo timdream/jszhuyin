@@ -108,7 +108,6 @@ test('load() non-exist files', function() {
   ime.load();
 });
 
-
 test('query() a word with a completed sound', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
@@ -277,7 +276,7 @@ test('query() two words which don\'t made up a phrase', function() {
   ime.load();
 });
 
-test('query() non-exist word', function() {
+test('query() non-exist word with completed sounds', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
   ime.onloadend = function() {
@@ -300,7 +299,32 @@ test('query() non-exist word', function() {
   ime.load();
 });
 
-test('query() non-exist phrase', function() {
+test('query() non-exist phrase with completed sounds at 0th place', function() {
+  var ime = new JSZhuyin();
+  ime.dataURL = './resources/testdata.data';
+  ime.onloadend = function() {
+    ime.symbols = 'ㄅㄟˊㄊㄞˊ';
+    expect(1);
+    var candidateId = 42;
+    ime.oncandidateschange = function(results) {
+      deepEqual(results,
+        [['ㄅㄟˊ台', candidateId++],
+         ['ㄅㄟˊ', candidateId++]],
+        'Passed!');
+    };
+    ime.queue.done = function() {
+      ime.unload();
+
+      start();
+    };
+    ime.query();
+  };
+
+  stop();
+  ime.load();
+});
+
+test('query() non-exist phrase with completed sounds at 1st place', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
   ime.onloadend = function() {
@@ -310,6 +334,226 @@ test('query() non-exist phrase', function() {
     ime.oncandidateschange = function(results) {
       deepEqual(results,
         [['台ㄅㄟˊ', candidateId++],
+         ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+         ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+         ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+         ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+         ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+         ['籉', candidateId++],['秮', candidateId++]],
+        'Passed!');
+    };
+    ime.queue.done = function() {
+      ime.unload();
+
+      start();
+    };
+    ime.query();
+  };
+
+  stop();
+  ime.load();
+});
+
+test('query() non-exist phrase with completed sounds', function() {
+  var ime = new JSZhuyin();
+  ime.dataURL = './resources/testdata.data';
+  ime.onloadend = function() {
+    ime.symbols = 'ㄅㄟˊㄅㄟˊ';
+    expect(1);
+    var candidateId = 42;
+    ime.oncandidateschange = function(results) {
+      deepEqual(results,
+        [['ㄅㄟˊㄅㄟˊ', candidateId++],
+         ['ㄅㄟˊ', candidateId++]],
+        'Passed!');
+    };
+    ime.queue.done = function() {
+      ime.unload();
+
+      start();
+    };
+    ime.query();
+  };
+
+  stop();
+  ime.load();
+});
+
+test('query() non-exist phrase with completed sound at 0th & incomplete at 1st',
+function() {
+  var ime = new JSZhuyin();
+  ime.dataURL = './resources/testdata.data';
+  ime.onloadend = function() {
+    ime.symbols = 'ㄅㄟˊㄌㄨ';
+    expect(1);
+    var candidateId = 42;
+    ime.oncandidateschange = function(results) {
+      deepEqual(results,
+        [['ㄅㄟˊㄌㄨ', candidateId++],
+         ['ㄅㄟˊ', candidateId++]],
+        'Passed!');
+    };
+    ime.queue.done = function() {
+      ime.unload();
+
+      start();
+    };
+    ime.query();
+  };
+
+  stop();
+  ime.load();
+});
+
+test('query() non-exist phrase with completed sound at 1th & incomplete at 0st',
+function() {
+  var ime = new JSZhuyin();
+  ime.dataURL = './resources/testdata.data';
+  ime.onloadend = function() {
+    ime.symbols = 'ㄌㄨㄅㄟˊ';
+    expect(1);
+    var candidateId = 42;
+    ime.oncandidateschange = function(results) {
+      deepEqual(results,
+        [['ㄌㄨㄅㄟˊ', candidateId++]],
+        'Passed!');
+    };
+    ime.queue.done = function() {
+      ime.unload();
+
+      start();
+    };
+    ime.query();
+  };
+
+  stop();
+  ime.load();
+});
+
+test('query() a word with one symbol', function() {
+  var ime = new JSZhuyin();
+  ime.dataURL = './resources/testdata.data';
+  ime.onloadend = function() {
+    ime.symbols = 'ㄊ';
+    expect(1);
+    var candidateId = 42;
+    ime.oncandidateschange = function(results) {
+      deepEqual(results,
+        [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+         ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+         ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+         ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+         ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+         ['籉', candidateId++],['秮', candidateId++]],
+        'Passed!');
+    };
+    ime.queue.done = function() {
+      ime.unload();
+
+      start();
+    };
+    ime.query();
+  };
+
+  stop();
+  ime.load();
+});
+
+test('query() with one symbol that matches nothing', function() {
+  var ime = new JSZhuyin();
+  ime.dataURL = './resources/testdata.data';
+  ime.onloadend = function() {
+    ime.symbols = 'ㄟ';
+    expect(1);
+    var candidateId = 42;
+    ime.oncandidateschange = function(results) {
+      deepEqual(results,
+        [['ㄟ', candidateId++]],
+        'Passed!');
+    };
+    ime.queue.done = function() {
+      ime.unload();
+
+      start();
+    };
+    ime.query();
+  };
+
+  stop();
+  ime.load();
+});
+
+test('query() with two symbols that matches nothing', function() {
+  var ime = new JSZhuyin();
+  ime.dataURL = './resources/testdata.data';
+  ime.onloadend = function() {
+    ime.symbols = 'ㄟㄟ';
+    expect(1);
+    var candidateId = 42;
+    ime.oncandidateschange = function(results) {
+      deepEqual(results,
+        [['ㄟㄟ', candidateId++]],
+        'Passed!');
+    };
+    ime.queue.done = function() {
+      ime.unload();
+
+      start();
+    };
+    ime.query();
+  };
+
+  stop();
+  ime.load();
+});
+
+test('query() a phrase compose of symbols that could split differently',
+function() {
+  var ime = new JSZhuyin();
+  ime.dataURL = './resources/testdata.data';
+  ime.onloadend = function() {
+    ime.symbols = 'ㄊㄞˊㄅㄟˇㄕㄨ';
+    expect(1);
+    var candidateId = 42;
+    ime.oncandidateschange = function(results) {
+      deepEqual(results,
+        [['台北市ㄨ', candidateId++],
+         ['台北市', candidateId++],
+         ['臺北市', candidateId++],
+         ['台北', candidateId++],
+         ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+         ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+         ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+         ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+         ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+         ['籉', candidateId++],['秮', candidateId++]],
+        'Passed!');
+    };
+    ime.queue.done = function() {
+      ime.unload();
+
+      start();
+    };
+    ime.query();
+  };
+
+  stop();
+  ime.load();
+});
+
+test('query() a phrase compose of symbols that could split differently' +
+  ' (don\'t split a completed sound)',
+function() {
+  var ime = new JSZhuyin();
+  ime.dataURL = './resources/testdata.data';
+  ime.onloadend = function() {
+    ime.symbols = 'ㄊㄞˊㄅㄟˇㄕㄨˇ';
+    expect(1);
+    var candidateId = 42;
+    ime.oncandidateschange = function(results) {
+      deepEqual(results,
+        [['台北ㄕㄨˇ', candidateId++],
+         ['台北', candidateId++],
          ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
          ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
          ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
