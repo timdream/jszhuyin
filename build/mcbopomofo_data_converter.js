@@ -7,6 +7,7 @@ var McBopomofoLineData = require('../build/mcbopomofo_line_data.js');
 
 var McBopomofoDataConverter = function McBopomofoDataConverter() {
   this.stage = this.STAGE_IDLE;
+  this.longestPhraseLength = false;
 };
 
 McBopomofoDataConverter.prototype.onprogress = null;
@@ -21,10 +22,18 @@ McBopomofoDataConverter.prototype.STAGE_SORTING_ENTRIES = 3;
 McBopomofoDataConverter.prototype.STAGE_CREATING_BLOB = 4;
 McBopomofoDataConverter.prototype.STAGE_WRITING_FILE = 5;
 
+McBopomofoDataConverter.prototype.LONGEST_PHRASE_LENGTH = 6;
+
 McBopomofoDataConverter.prototype.convert = function(inputPath, outputPath) {
   var lines = this._readFile(inputPath);
   var results = this._categorizeEntries(lines);
   lines = undefined;
+
+  if (this.longestPhraseLength !== this.LONGEST_PHRASE_LENGTH) {
+    throw new Error('McBopomofoDataConverter: Expect the longest phrase to ' +
+      'be ' + this.LONGEST_PHRASE_LENGTH + ' characters, however ' +
+      'it\'s ' + this.longestPhraseLength + ' in the current dataset.');
+  }
 
   var db = this._sortingResultAndInsertIntoDB(results);
   results = undefined;
@@ -63,6 +72,10 @@ McBopomofoDataConverter.prototype._categorizeEntries = function(lines) {
     var encodedStr = String.fromCharCode.apply(String, lineData.encodedSounds);
     if (!results[encodedStr]) {
       results[encodedStr] = [];
+    }
+
+    if (lineData.str.length > this.longestPhraseLength) {
+      this.longestPhraseLength = lineData.str.length;
     }
 
     results[encodedStr].push({

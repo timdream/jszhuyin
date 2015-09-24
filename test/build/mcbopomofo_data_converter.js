@@ -14,6 +14,7 @@ test('testdata.txt', function() {
     os.tmpdir() + '/' + Math.random().toString(32).substr(2) + '.data';
 
   var converter = new McBopomofoDataConverter();
+  converter.LONGEST_PHRASE_LENGTH = 3;
   converter.convert(__dirname + '/../resources/testdata.txt',
     outputPath);
 
