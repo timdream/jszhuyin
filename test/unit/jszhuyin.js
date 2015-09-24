@@ -199,19 +199,21 @@ test('query() a three-word phrase with completed sounds', function() {
   ime.load();
 });
 
-test('query() with symbols exceeds MAX_SOUNDS_LENGTH.', function() {
+test('query() with symbols exceeds MAX_SOUNDS_LENGTH' +
+    ' (overflow candidate in phrases result)',
+function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
-  ime.MAX_SOUNDS_LENGTH = 3;
+  ime.MAX_SOUNDS_LENGTH = 2;
   ime.onloadend = function() {
     ime.symbols = 'ㄊㄞˊㄅㄟˇ';
     expect(4);
     var candidateId = 42;
     ime.updateComposition = function() {
-      equal(ime.symbols, 'ㄊㄞˊㄕˋ', 'Passed!');
+      equal(ime.symbols, 'ㄊㄞˊㄅㄟˇ', 'Passed!');
     };
     ime.oncompositionend = function(composition) {
-      equal(composition, '台北', 'Passed!');
+      ok(false, 'Should not be called.');
     };
     ime.oncandidateschange = function(results) {
       deepEqual(results,
@@ -225,16 +227,186 @@ test('query() with symbols exceeds MAX_SOUNDS_LENGTH.', function() {
         'Passed!');
     };
     ime.queue.done = function() {
-      ime.symbols = 'ㄊㄞˊㄅㄟˇㄊㄞˊㄕˋ';
+      ime.symbols = 'ㄊㄞˊㄅㄟˇㄊㄞˊ';
+      ime.updateComposition = function() {
+        equal(ime.symbols, 'ㄊㄞˊ', 'Passed!');
+      };
+      ime.oncompositionend = function(composition) {
+        equal(composition, '台北', 'Passed!');
+      };
       ime.oncandidateschange = function(results) {
         deepEqual(results,
-          [['台是', candidateId++],
+          [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+           ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+           ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+           ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+           ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+           ['籉', candidateId++],['秮', candidateId++]],
+          'Passed!');
+      };
+      ime.queue.done = function() {
+        ime.unload();
+
+        start();
+      };
+      ime.query();
+    };
+    ime.query();
+  };
+
+  stop();
+  ime.load();
+});
+
+test('query() with symbols exceeds MAX_SOUNDS_LENGTH' +
+    ' (overflow candidate in composed results)',
+function() {
+  var ime = new JSZhuyin();
+  ime.dataURL = './resources/testdata.data';
+  ime.MAX_SOUNDS_LENGTH = 5;
+  ime.onloadend = function() {
+    ime.symbols = 'ㄊㄞˊㄅㄟˇㄊㄞˊㄅㄟˇ';
+    expect(4);
+    var candidateId = 42;
+    ime.updateComposition = function() {
+      equal(ime.symbols, 'ㄊㄞˊㄅㄟˇㄊㄞˊㄕˋ', 'Passed!');
+    };
+    ime.oncompositionend = function(composition) {
+      ok(false, 'Should not be called.');
+    };
+    ime.oncandidateschange = function(results) {
+      deepEqual(results,
+        [['台北台北', candidateId++],
+         ['台北', candidateId++],
+         ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+         ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+         ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+         ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+         ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+         ['籉', candidateId++],['秮', candidateId++]],
+        'Passed!');
+    };
+    ime.queue.done = function() {
+      ime.symbols = 'ㄊㄞˊㄅㄟˇㄊㄞˊㄊㄞˊㄊㄞˊㄕˋ';
+      ime.updateComposition = function() {
+        equal(ime.symbols, 'ㄊㄞˊㄊㄞˊㄊㄞˊㄕˋ', 'Passed!');
+      };
+      ime.oncompositionend = function(composition) {
+        equal(composition, '台北', 'Passed!');
+      };
+      ime.oncandidateschange = function(results) {
+        deepEqual(results,
+          [['台台台是', candidateId++],
            ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
            ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
            ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
            ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
            ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
            ['籉', candidateId++],['秮', candidateId++]],
+          'Passed!');
+      };
+      ime.queue.done = function() {
+        ime.unload();
+
+        start();
+      };
+      ime.query();
+    };
+    ime.query();
+  };
+
+  stop();
+  ime.load();
+});
+
+test('query() with symbols exceeds MAX_SOUNDS_LENGTH' +
+    ' (overflow candidate in partial results)', function() {
+  var ime = new JSZhuyin();
+  ime.dataURL = './resources/testdata.data';
+  ime.MAX_SOUNDS_LENGTH = 5;
+  ime.onloadend = function() {
+    ime.symbols = 'ㄊㄞˊㄅㄟˇㄅㄟˊㄅㄟˊ';
+    expect(4);
+    var candidateId = 42;
+    ime.updateComposition = function() {
+      equal(ime.symbols, 'ㄊㄞˊㄅㄟˇㄅㄟˊㄅㄟˊ', 'Passed!');
+    };
+    ime.oncompositionend = function(composition) {
+      ok(false, 'Should not be called.');
+    };
+    ime.oncandidateschange = function(results) {
+      deepEqual(results,
+        [['台北ㄅㄟˊㄅㄟˊ', candidateId++],
+         ['台北', candidateId++],
+         ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+         ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+         ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+         ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+         ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+         ['籉', candidateId++],['秮', candidateId++]],
+        'Passed!');
+    };
+    ime.queue.done = function() {
+      ime.symbols = 'ㄊㄞˊㄅㄟˇㄅㄟˊㄅㄟˊㄅㄟˊㄅㄟˊ';
+      ime.updateComposition = function() {
+        equal(ime.symbols, 'ㄅㄟˊㄅㄟˊㄅㄟˊㄅㄟˊ', 'Passed!');
+      };
+      ime.oncompositionend = function(composition) {
+        equal(composition, '台北', 'Passed!');
+      };
+      ime.oncandidateschange = function(results) {
+        deepEqual(results,
+          [['ㄅㄟˊㄅㄟˊㄅㄟˊㄅㄟˊ', candidateId++],
+           ['ㄅㄟˊ', candidateId++]],
+          'Passed!');
+      };
+      ime.queue.done = function() {
+        ime.unload();
+
+        start();
+      };
+      ime.query();
+    };
+    ime.query();
+  };
+
+  stop();
+  ime.load();
+});
+
+test('query() with symbols exceeds MAX_SOUNDS_LENGTH' +
+    ' (overflow candidate in typo results)', function() {
+  var ime = new JSZhuyin();
+  ime.dataURL = './resources/testdata.data';
+  ime.MAX_SOUNDS_LENGTH = 5;
+  ime.onloadend = function() {
+    ime.symbols = 'ㄅㄟˊㄅㄟˊㄅㄟˊㄅㄟˊ';
+    expect(4);
+    var candidateId = 42;
+    ime.updateComposition = function() {
+      equal(ime.symbols, 'ㄅㄟˊㄅㄟˊㄅㄟˊㄅㄟˊ', 'Passed!');
+    };
+    ime.oncompositionend = function(composition) {
+      ok(false, 'Should not be called.');
+    };
+    ime.oncandidateschange = function(results) {
+      deepEqual(results,
+        [['ㄅㄟˊㄅㄟˊㄅㄟˊㄅㄟˊ', candidateId++],
+         ['ㄅㄟˊ', candidateId++]],
+        'Passed!');
+    };
+    ime.queue.done = function() {
+      ime.symbols = 'ㄅㄟˊㄅㄟˊㄅㄟˊㄅㄟˊㄌㄨˊㄌㄨˊ';
+      ime.updateComposition = function() {
+        equal(ime.symbols, 'ㄅㄟˊㄅㄟˊㄅㄟˊㄌㄨˊㄌㄨˊ', 'Passed!');
+      };
+      ime.oncompositionend = function(composition) {
+        equal(composition, 'ㄅㄟˊ', 'Passed!');
+      };
+      ime.oncandidateschange = function(results) {
+        deepEqual(results,
+          [['ㄅㄟˊㄅㄟˊㄅㄟˊㄌㄨˊㄌㄨˊ', candidateId++],
+           ['ㄅㄟˊ', candidateId++]],
           'Passed!');
       };
       ime.queue.done = function() {
