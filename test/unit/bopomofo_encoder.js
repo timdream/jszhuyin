@@ -176,6 +176,13 @@ test('getSymbolsCompositions()', function() {
     ['ㄓㄨˋㄧㄣˉ',
       [ [[7940, 209]],
         [[7940], [209]] ] ],
+    ['ㄓㄨˋㄧㄣ',
+      [ [[7940, 208]],
+        [[7940, 128, 80]],
+        [[7940], [208]],
+        [[7940], [128, 80]],
+        [[7940, 128], [80]],
+        [[7940], [128], [80]] ] ],
     ['ㄓㄨㄧㄣ',
       [ [[7936, 208]],
         [[7680, 256, 208]],
@@ -203,6 +210,57 @@ test('getSymbolsCompositions()', function() {
       test[1], test[0]);
 
     deepEqual(BopomofoEncoder.getSymbolsCompositions(test[0]),
+      test[1], test[0]);
+  });
+});
+
+test('getSymbolsCompositions() with longestLength = 2', function() {
+  var tests = [
+    [ 'ㄉㄧㄢ',
+      [ [[2760]],
+        [[2560, 200]],
+        [[2688, 72]],
+        // [[2560, 128, 72]],         // This should be removed
+        [[2560], [200]],
+        [[2560], [128, 72]],
+        [[2688], [72]],
+        [[2560, 128], [72]],
+        [[2560], [128], [72]] ] ],
+    ['ㄓㄨˋㄧㄣ',
+      [ [[7940, 208]],
+        // [[7940, 128, 80]],         // This should be removed
+        [[7940], [208]],
+        [[7940], [128, 80]],
+        [[7940, 128], [80]],
+        [[7940], [128], [80]] ] ],
+    ['ㄓㄨㄧㄣ',
+      [ [[7936, 208]],
+        // [[7680, 256, 208]],        // This should be removed
+        // [[7936, 128, 80]],         // This should be removed
+        // [[7680, 256, 128, 80]],    // This should be removed
+        [[7680], [256, 208]],
+        // [[7680], [256, 128, 80]],  // This should be removed
+        [[7936], [208]],
+        [[7680, 256], [208]],
+        [[7936], [128, 80]],
+        [[7680, 256], [128, 80]],
+        [[7680], [256], [208]],
+        [[7680], [256], [128, 80]],
+        [[7936, 128], [80]],
+        // [[7680, 256, 128], [80]],  // This should be removed
+        [[7680], [256, 128], [80]],
+        [[7936], [128], [80]],
+        [[7680, 256], [128], [80]],
+        [[7680], [256], [128], [80]] ] ]
+  ];
+
+  tests.forEach(function(test) {
+    var expendedEncodedSounds = BopomofoEncoder.encodeExpended(test[0]);
+    deepEqual(
+      BopomofoEncoder.getSymbolsCompositions(expendedEncodedSounds, 2),
+      test[1], test[0]);
+
+    deepEqual(BopomofoEncoder.getSymbolsCompositions(test[0], 2),
       test[1], test[0]);
   });
 });

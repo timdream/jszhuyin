@@ -199,6 +199,39 @@ test('query() a three-word phrase with completed sounds', function() {
   ime.load();
 });
 
+test('query() a three-word phrase with completed sounds, ' +
+  'but set LONGEST_PHRASE_LENGTH to 2', function() {
+  var ime = new JSZhuyin();
+  ime.LONGEST_PHRASE_LENGTH = 2;
+  ime.dataURL = './resources/testdata.data';
+  ime.onloadend = function() {
+    ime.symbols = 'ㄊㄞˊㄅㄟˇㄕˋ';
+    expect(1);
+    var candidateId = 42;
+    ime.oncandidateschange = function(results) {
+      deepEqual(results,
+        [['台北是', candidateId++],
+         ['台北', candidateId++],
+         ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+         ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+         ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+         ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+         ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+         ['籉', candidateId++],['秮', candidateId++]],
+        'Passed!');
+    };
+    ime.queue.done = function() {
+      ime.unload();
+
+      start();
+    };
+    ime.query();
+  };
+
+  stop();
+  ime.load();
+});
+
 test('query() with symbols exceeds MAX_SOUNDS_LENGTH' +
     ' (overflow candidate in phrases result)',
 function() {
