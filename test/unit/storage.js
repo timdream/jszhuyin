@@ -188,7 +188,7 @@ test('get() (not found)', function() {
   storage.load(testdataData);
 
   var value = storage.get(BopomofoEncoder.encode('ㄊㄞˊㄅㄟˇㄅㄟˇ'));
-  equal(value, undefined, 'Passed!');
+  equal(value, null, 'Passed!');
 });
 
 test('getRange()', function() {
