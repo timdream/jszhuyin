@@ -265,6 +265,86 @@ test('getSymbolsCompositions() with longestLength = 2', function() {
   });
 });
 
+test('getSymbolsCompositions() with longestLength = 3 & startsWith',
+function() {
+  var tests = [
+    [ 'ㄉㄧㄢ',
+      [ [2, [[2688]] ] ],
+      [ [[2760]],
+        [[2560, 200]],
+        [[2688, 72]],
+        [[2560, 128, 72]],
+        [[2560], [200]],
+        [[2560], [128, 72]],
+        [[2688], [72]]
+        //[[2560, 128], [72]],        // This should be removed (2)
+        //[[2560], [128], [72]]       // This should be removed (2)
+        ] ],
+    ['ㄓㄨˋㄧㄣ',
+      [ [2, [[7940, 128]]] ],
+      [ [[7940, 208]],
+        [[7940, 128, 80]],
+        [[7940], [208]],
+        [[7940], [128, 80]],
+        [[7940, 128], [80]]
+        //[[7940], [128], [80]]       // This should be removed (2)
+        ] ],
+    ['ㄓㄨㄧㄣ',
+      [ [2, [[7936]] ] ],
+      [ [[7936, 208]],
+        [[7680, 256, 208]],
+        [[7936, 128, 80]],
+        //[[7680, 256, 128, 80]],     // This should be removed (length)
+        [[7680], [256, 208]],
+        [[7680], [256, 128, 80]],
+        [[7936], [208]],
+        //[[7680, 256], [208]],       // This should be removed (2)
+        [[7936], [128, 80]],
+        //[[7680, 256], [128, 80]],   // This should be removed (2)
+        //[[7680], [256], [208]],     // This should be removed (2)
+        //[[7680], [256], [128, 80]], // This should be removed (2)
+        [[7936, 128], [80]],
+        [[7680, 256, 128], [80]],
+        [[7680], [256, 128], [80]],
+        [[7936], [128], [80]]
+        //[[7680, 256], [128], [80]], // This should be removed (2)
+        //[[7680], [256], [128], [80]]// This should be removed (2)
+        ] ],
+    ['ㄓㄨㄧㄣ',
+      [ [2, [[7936]] ],
+        [3, [[7936, 128]] ] ],
+      [ [[7936, 208]],
+        [[7680, 256, 208]],
+        [[7936, 128, 80]],
+        //[[7680, 256, 128, 80]],     // This should be removed (length)
+        [[7680], [256, 208]],
+        [[7680], [256, 128, 80]],
+        [[7936], [208]],
+        //[[7680, 256], [208]],       // This should be removed (2)
+        [[7936], [128, 80]],
+        //[[7680, 256], [128, 80]],   // This should be removed (2)
+        //[[7680], [256], [208]],     // This should be removed (2)
+        //[[7680], [256], [128, 80]], // This should be removed (2)
+        [[7936, 128], [80]],
+        //[[7680, 256, 128], [80]],   // This should be removed (3)
+        //[[7680], [256, 128], [80]], // This should be removed (3)
+        //[[7936], [128], [80]]       // This should be removed (3)
+        //[[7680, 256], [128], [80]], // This should be removed (3) (2)
+        //[[7680], [256], [128], [80]]// This should be removed (3) (2)
+        ] ]
+  ];
+
+  tests.forEach(function(test) {
+    var expendedEncodedSounds = BopomofoEncoder.encodeExpended(test[0]);
+    deepEqual(BopomofoEncoder.getSymbolsCompositions(
+        expendedEncodedSounds, 3, test[1]),
+      test[2], test[0]);
+
+    deepEqual(BopomofoEncoder.getSymbolsCompositions(test[0], 3, test[1]),
+      test[2], test[0]);
+  });
+});
+
 test('isIncompletionOf() should compare ㄉ with ㄉㄧㄢˋ.',
 function() {
   var flag = BopomofoEncoder.isIncompletionOf(
