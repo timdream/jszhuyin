@@ -83,8 +83,7 @@ test('load()', function() {
 
   stop();
   ime.load(new JSZhuyinServerIframeLoader('../lib/frame.html'), {
-    dataURL: '../test/resources/testdata.data',
-    SPLIT_SOUND_TO_MATCH_PHRASES: false
+    dataURL: '../test/resources/testdata.data'
   });
 });
 
@@ -131,8 +130,7 @@ test('load()', function() {
 
   stop();
   ime.load(new JSZhuyinServerWorkerLoader('../lib/worker.js'), {
-    dataURL: '../test/resources/testdata.data',
-    SPLIT_SOUND_TO_MATCH_PHRASES: false
+    dataURL: '../test/resources/testdata.data'
   });
 });
 
@@ -184,11 +182,12 @@ test('Run a simple interactive query.', function() {
        ['籉', candidateId++],['秮', candidateId++]],
       /* 'ㄊㄞ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
-       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
-       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
+       ['颱', candidateId++],['檯', candidateId++],['疼愛', candidateId++],
+       ['苔', candidateId++],['跆', candidateId++],['邰', candidateId++],
+       ['抬愛', candidateId++],['鮐', candidateId++],['旲', candidateId++],
+       ['炱', candidateId++],['嬯', candidateId++],['儓', candidateId++],
+       ['薹', candidateId++],['駘', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++]],
       /* 'ㄊㄞˊ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
@@ -228,8 +227,7 @@ test('Run a simple interactive query.', function() {
 
   stop();
   ime.load(new JSZhuyinServerWorkerLoader('../lib/worker.js'), {
-    dataURL: '../test/resources/testdata.data',
-    SPLIT_SOUND_TO_MATCH_PHRASES: false
+    dataURL: '../test/resources/testdata.data'
   });
 });
 
@@ -258,11 +256,12 @@ test('Confirm text with Enter key.', function() {
        ['籉', candidateId++],['秮', candidateId++]],
       /* 'ㄊㄞ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
-       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
-       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
+       ['颱', candidateId++],['檯', candidateId++],['疼愛', candidateId++],
+       ['苔', candidateId++],['跆', candidateId++],['邰', candidateId++],
+       ['抬愛', candidateId++],['鮐', candidateId++],['旲', candidateId++],
+       ['炱', candidateId++],['嬯', candidateId++],['儓', candidateId++],
+       ['薹', candidateId++],['駘', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++]],
       /* 'ㄊㄞˊ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
@@ -307,8 +306,7 @@ test('Confirm text with Enter key.', function() {
 
   stop();
   ime.load(new JSZhuyinServerWorkerLoader('../lib/worker.js'), {
-    dataURL: '../test/resources/testdata.data',
-    SPLIT_SOUND_TO_MATCH_PHRASES: false
+    dataURL: '../test/resources/testdata.data'
   });
 });
 
@@ -337,11 +335,12 @@ test('Confirm text with Enter key (SUGGEST_PHRASES = false).', function() {
        ['籉', candidateId++],['秮', candidateId++]],
       /* 'ㄊㄞ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
-       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
-       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
+       ['颱', candidateId++],['檯', candidateId++],['疼愛', candidateId++],
+       ['苔', candidateId++],['跆', candidateId++],['邰', candidateId++],
+       ['抬愛', candidateId++],['鮐', candidateId++],['旲', candidateId++],
+       ['炱', candidateId++],['嬯', candidateId++],['儓', candidateId++],
+       ['薹', candidateId++],['駘', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++]],
       /* 'ㄊㄞˊ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
@@ -387,7 +386,6 @@ test('Confirm text with Enter key (SUGGEST_PHRASES = false).', function() {
   stop();
   ime.load(new JSZhuyinServerWorkerLoader('../lib/worker.js'), {
     dataURL: '../test/resources/testdata.data',
-    SPLIT_SOUND_TO_MATCH_PHRASES: false,
     SUGGEST_PHRASES: false
   });
 });
@@ -417,11 +415,12 @@ test('Confirm text with a non-Bopomofo key.', function() {
        ['籉', candidateId++],['秮', candidateId++]],
       /* 'ㄊㄞ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
-       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
-       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
+       ['颱', candidateId++],['檯', candidateId++],['疼愛', candidateId++],
+       ['苔', candidateId++],['跆', candidateId++],['邰', candidateId++],
+       ['抬愛', candidateId++],['鮐', candidateId++],['旲', candidateId++],
+       ['炱', candidateId++],['嬯', candidateId++],['儓', candidateId++],
+       ['薹', candidateId++],['駘', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++]],
       /* 'ㄊㄞˊ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
@@ -466,8 +465,7 @@ test('Confirm text with a non-Bopomofo key.', function() {
 
   stop();
   ime.load(new JSZhuyinServerWorkerLoader('../lib/worker.js'), {
-    dataURL: '../test/resources/testdata.data',
-    SPLIT_SOUND_TO_MATCH_PHRASES: false
+    dataURL: '../test/resources/testdata.data'
   });
 });
 
@@ -485,8 +483,7 @@ test('Don\'t handle Enter key if there is no candidates.', function() {
 
   stop();
   ime.load(new JSZhuyinServerWorkerLoader('../lib/worker.js'), {
-    dataURL: '../test/resources/testdata.data',
-    SPLIT_SOUND_TO_MATCH_PHRASES: false
+    dataURL: '../test/resources/testdata.data'
   });
 });
 
@@ -515,11 +512,12 @@ test('Confirm text with candidate selection.', function() {
        ['籉', candidateId++],['秮', candidateId++]],
       /* 'ㄊㄞ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
-       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
-       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
+       ['颱', candidateId++],['檯', candidateId++],['疼愛', candidateId++],
+       ['苔', candidateId++],['跆', candidateId++],['邰', candidateId++],
+       ['抬愛', candidateId++],['鮐', candidateId++],['旲', candidateId++],
+       ['炱', candidateId++],['嬯', candidateId++],['儓', candidateId++],
+       ['薹', candidateId++],['駘', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++]],
       /* 'ㄊㄞˊ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
@@ -564,8 +562,7 @@ test('Confirm text with candidate selection.', function() {
 
   stop();
   ime.load(new JSZhuyinServerWorkerLoader('../lib/worker.js'), {
-    dataURL: '../test/resources/testdata.data',
-    SPLIT_SOUND_TO_MATCH_PHRASES: false
+    dataURL: '../test/resources/testdata.data'
   });
 });
 
@@ -590,11 +587,12 @@ test('Backspace key removes the last symbol.', function() {
        ['籉', candidateId++],['秮', candidateId++]],
       /* 'ㄊㄞ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
-       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
-       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
+       ['颱', candidateId++],['檯', candidateId++],['疼愛', candidateId++],
+       ['苔', candidateId++],['跆', candidateId++],['邰', candidateId++],
+       ['抬愛', candidateId++],['鮐', candidateId++],['旲', candidateId++],
+       ['炱', candidateId++],['嬯', candidateId++],['儓', candidateId++],
+       ['薹', candidateId++],['駘', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++]],
       /* 'ㄊㄞˊ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
@@ -655,8 +653,7 @@ test('Backspace key removes the last symbol.', function() {
 
   stop();
   ime.load(new JSZhuyinServerWorkerLoader('../lib/worker.js'), {
-    dataURL: '../test/resources/testdata.data',
-    SPLIT_SOUND_TO_MATCH_PHRASES: false
+    dataURL: '../test/resources/testdata.data'
   });
 });
 
@@ -674,7 +671,6 @@ test('Don\'t handle Backspace key if there is no compositions.', function() {
 
   stop();
   ime.load(new JSZhuyinServerWorkerLoader('../lib/worker.js'), {
-    dataURL: '../test/resources/testdata.data',
-    SPLIT_SOUND_TO_MATCH_PHRASES: false
+    dataURL: '../test/resources/testdata.data'
   });
 });

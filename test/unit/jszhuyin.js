@@ -108,16 +108,14 @@ test('load() non-exist files', function() {
   ime.load();
 });
 
-
-test('query() a word', function() {
+test('query() a word with a completed sound', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
-  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   ime.onloadend = function() {
-    ime.syllables = 'ㄊㄞˊ';
+    ime.symbols = 'ㄊㄞˊ';
     expect(1);
     var candidateId = 42;
-    ime.updateCandidates = function(results) {
+    ime.oncandidateschange = function(results) {
       deepEqual(results,
         [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
          ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
@@ -139,15 +137,14 @@ test('query() a word', function() {
   ime.load();
 });
 
-test('query() a two-word phrase', function() {
+test('query() a two-word phrase with completed sounds', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
-  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   ime.onloadend = function() {
-    ime.syllables = 'ㄊㄞˊㄅㄟˇ';
+    ime.symbols = 'ㄊㄞˊㄅㄟˇ';
     expect(1);
     var candidateId = 42;
-    ime.updateCandidates = function(results) {
+    ime.oncandidateschange = function(results) {
       deepEqual(results,
         [['台北', candidateId++],
          ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
@@ -170,15 +167,14 @@ test('query() a two-word phrase', function() {
   ime.load();
 });
 
-test('query() a three-word phrase', function() {
+test('query() a three-word phrase with completed sounds', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
-  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   ime.onloadend = function() {
-    ime.syllables = 'ㄊㄞˊㄅㄟˇㄕˋ';
+    ime.symbols = 'ㄊㄞˊㄅㄟˇㄕˋ';
     expect(1);
     var candidateId = 42;
-    ime.updateCandidates = function(results) {
+    ime.oncandidateschange = function(results) {
       deepEqual(results,
         [['台北市', candidateId++],['臺北市', candidateId++],
          ['台北是', candidateId++],
@@ -203,22 +199,56 @@ test('query() a three-word phrase', function() {
   ime.load();
 });
 
-test('query() with syllables exceeds MAX_SYLLABLES_LENGTH.', function() {
+test('query() a three-word phrase with completed sounds, ' +
+  'but set LONGEST_PHRASE_LENGTH to 2', function() {
+  var ime = new JSZhuyin();
+  ime.LONGEST_PHRASE_LENGTH = 2;
+  ime.dataURL = './resources/testdata.data';
+  ime.onloadend = function() {
+    ime.symbols = 'ㄊㄞˊㄅㄟˇㄕˋ';
+    expect(1);
+    var candidateId = 42;
+    ime.oncandidateschange = function(results) {
+      deepEqual(results,
+        [['台北是', candidateId++],
+         ['台北', candidateId++],
+         ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+         ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+         ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+         ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+         ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+         ['籉', candidateId++],['秮', candidateId++]],
+        'Passed!');
+    };
+    ime.queue.done = function() {
+      ime.unload();
+
+      start();
+    };
+    ime.query();
+  };
+
+  stop();
+  ime.load();
+});
+
+test('query() with symbols exceeds MAX_SOUNDS_LENGTH' +
+    ' (overflow candidate in phrases result)',
+function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
-  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
-  ime.MAX_SYLLABLES_LENGTH = 3;
+  ime.MAX_SOUNDS_LENGTH = 2;
   ime.onloadend = function() {
-    ime.syllables = 'ㄊㄞˊㄅㄟˇ';
+    ime.symbols = 'ㄊㄞˊㄅㄟˇ';
     expect(4);
     var candidateId = 42;
     ime.updateComposition = function() {
-      equal(ime.syllables, 'ㄊㄞˊㄕˋ', 'Passed!');
+      equal(ime.symbols, 'ㄊㄞˊㄅㄟˇ', 'Passed!');
     };
     ime.oncompositionend = function(composition) {
-      equal(composition, '台北', 'Passed!');
+      ok(false, 'Should not be called.');
     };
-    ime.updateCandidates = function(results) {
+    ime.oncandidateschange = function(results) {
       deepEqual(results,
         [['台北', candidateId++],
          ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
@@ -230,10 +260,76 @@ test('query() with syllables exceeds MAX_SYLLABLES_LENGTH.', function() {
         'Passed!');
     };
     ime.queue.done = function() {
-      ime.syllables = 'ㄊㄞˊㄅㄟˇㄊㄞˊㄕˋ';
-      ime.updateCandidates = function(results) {
+      ime.symbols = 'ㄊㄞˊㄅㄟˇㄊㄞˊ';
+      ime.updateComposition = function() {
+        equal(ime.symbols, 'ㄊㄞˊ', 'Passed!');
+      };
+      ime.oncompositionend = function(composition) {
+        equal(composition, '台北', 'Passed!');
+      };
+      ime.oncandidateschange = function(results) {
         deepEqual(results,
-          [['台是', candidateId++],
+          [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+           ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+           ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+           ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+           ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+           ['籉', candidateId++],['秮', candidateId++]],
+          'Passed!');
+      };
+      ime.queue.done = function() {
+        ime.unload();
+
+        start();
+      };
+      ime.query();
+    };
+    ime.query();
+  };
+
+  stop();
+  ime.load();
+});
+
+test('query() with symbols exceeds MAX_SOUNDS_LENGTH' +
+    ' (overflow candidate in composed results)',
+function() {
+  var ime = new JSZhuyin();
+  ime.dataURL = './resources/testdata.data';
+  ime.MAX_SOUNDS_LENGTH = 5;
+  ime.onloadend = function() {
+    ime.symbols = 'ㄊㄞˊㄅㄟˇㄊㄞˊㄅㄟˇ';
+    expect(4);
+    var candidateId = 42;
+    ime.updateComposition = function() {
+      equal(ime.symbols, 'ㄊㄞˊㄅㄟˇㄊㄞˊㄕˋ', 'Passed!');
+    };
+    ime.oncompositionend = function(composition) {
+      ok(false, 'Should not be called.');
+    };
+    ime.oncandidateschange = function(results) {
+      deepEqual(results,
+        [['台北台北', candidateId++],
+         ['台北', candidateId++],
+         ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+         ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+         ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+         ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+         ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+         ['籉', candidateId++],['秮', candidateId++]],
+        'Passed!');
+    };
+    ime.queue.done = function() {
+      ime.symbols = 'ㄊㄞˊㄅㄟˇㄊㄞˊㄊㄞˊㄊㄞˊㄕˋ';
+      ime.updateComposition = function() {
+        equal(ime.symbols, 'ㄊㄞˊㄊㄞˊㄊㄞˊㄕˋ', 'Passed!');
+      };
+      ime.oncompositionend = function(composition) {
+        equal(composition, '台北', 'Passed!');
+      };
+      ime.oncandidateschange = function(results) {
+        deepEqual(results,
+          [['台台台是', candidateId++],
            ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
            ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
            ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
@@ -256,16 +352,119 @@ test('query() with syllables exceeds MAX_SYLLABLES_LENGTH.', function() {
   ime.load();
 });
 
+test('query() with symbols exceeds MAX_SOUNDS_LENGTH' +
+    ' (overflow candidate in partial results)', function() {
+  var ime = new JSZhuyin();
+  ime.dataURL = './resources/testdata.data';
+  ime.MAX_SOUNDS_LENGTH = 5;
+  ime.onloadend = function() {
+    ime.symbols = 'ㄊㄞˊㄅㄟˇㄅㄟˊㄅㄟˊ';
+    expect(4);
+    var candidateId = 42;
+    ime.updateComposition = function() {
+      equal(ime.symbols, 'ㄊㄞˊㄅㄟˇㄅㄟˊㄅㄟˊ', 'Passed!');
+    };
+    ime.oncompositionend = function(composition) {
+      ok(false, 'Should not be called.');
+    };
+    ime.oncandidateschange = function(results) {
+      deepEqual(results,
+        [['台北ㄅㄟˊㄅㄟˊ', candidateId++],
+         ['台北', candidateId++],
+         ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+         ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+         ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+         ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+         ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+         ['籉', candidateId++],['秮', candidateId++]],
+        'Passed!');
+    };
+    ime.queue.done = function() {
+      ime.symbols = 'ㄊㄞˊㄅㄟˇㄅㄟˊㄅㄟˊㄅㄟˊㄅㄟˊ';
+      ime.updateComposition = function() {
+        equal(ime.symbols, 'ㄅㄟˊㄅㄟˊㄅㄟˊㄅㄟˊ', 'Passed!');
+      };
+      ime.oncompositionend = function(composition) {
+        equal(composition, '台北', 'Passed!');
+      };
+      ime.oncandidateschange = function(results) {
+        deepEqual(results,
+          [['ㄅㄟˊㄅㄟˊㄅㄟˊㄅㄟˊ', candidateId++],
+           ['ㄅㄟˊ', candidateId++]],
+          'Passed!');
+      };
+      ime.queue.done = function() {
+        ime.unload();
+
+        start();
+      };
+      ime.query();
+    };
+    ime.query();
+  };
+
+  stop();
+  ime.load();
+});
+
+test('query() with symbols exceeds MAX_SOUNDS_LENGTH' +
+    ' (overflow candidate in typo results)', function() {
+  var ime = new JSZhuyin();
+  ime.dataURL = './resources/testdata.data';
+  ime.MAX_SOUNDS_LENGTH = 5;
+  ime.onloadend = function() {
+    ime.symbols = 'ㄅㄟˊㄅㄟˊㄅㄟˊㄅㄟˊ';
+    expect(4);
+    var candidateId = 42;
+    ime.updateComposition = function() {
+      equal(ime.symbols, 'ㄅㄟˊㄅㄟˊㄅㄟˊㄅㄟˊ', 'Passed!');
+    };
+    ime.oncompositionend = function(composition) {
+      ok(false, 'Should not be called.');
+    };
+    ime.oncandidateschange = function(results) {
+      deepEqual(results,
+        [['ㄅㄟˊㄅㄟˊㄅㄟˊㄅㄟˊ', candidateId++],
+         ['ㄅㄟˊ', candidateId++]],
+        'Passed!');
+    };
+    ime.queue.done = function() {
+      ime.symbols = 'ㄅㄟˊㄅㄟˊㄅㄟˊㄅㄟˊㄌㄨˊㄌㄨˊ';
+      ime.updateComposition = function() {
+        equal(ime.symbols, 'ㄅㄟˊㄅㄟˊㄅㄟˊㄌㄨˊㄌㄨˊ', 'Passed!');
+      };
+      ime.oncompositionend = function(composition) {
+        equal(composition, 'ㄅㄟˊ', 'Passed!');
+      };
+      ime.oncandidateschange = function(results) {
+        deepEqual(results,
+          [['ㄅㄟˊㄅㄟˊㄅㄟˊㄌㄨˊㄌㄨˊ', candidateId++],
+           ['ㄅㄟˊ', candidateId++]],
+          'Passed!');
+      };
+      ime.queue.done = function() {
+        ime.unload();
+
+        start();
+      };
+      ime.query();
+    };
+    ime.query();
+  };
+
+  stop();
+  ime.load();
+});
+
 
 test('query() two words which don\'t made up a phrase', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
-  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   ime.onloadend = function() {
-    ime.syllables = 'ㄅㄟˇㄕˋ';
+    ime.symbols = 'ㄅㄟˇㄕˋ';
     expect(1);
     var candidateId = 42;
-    ime.updateCandidates = function(results) {
+    ime.oncandidateschange = function(results) {
       deepEqual(results,
         [['北是', candidateId++],['北', candidateId++]],
         'Passed!');
@@ -282,13 +481,13 @@ test('query() two words which don\'t made up a phrase', function() {
   ime.load();
 });
 
-test('query() non-exist word', function() {
+test('query() non-exist word with completed sounds', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
   ime.onloadend = function() {
-    ime.syllables = 'ㄅㄟˊ';
+    ime.symbols = 'ㄅㄟˊ';
     expect(1);
-    ime.updateCandidates = function(results) {
+    ime.oncandidateschange = function(results) {
       deepEqual(results,
         [['ㄅㄟˊ', 42]],
         'Passed!');
@@ -305,17 +504,261 @@ test('query() non-exist word', function() {
   ime.load();
 });
 
-test('query() non-exist phrase', function() {
+test('query() non-exist phrase with completed sounds at 0th place', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
-  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   ime.onloadend = function() {
-    ime.syllables = 'ㄊㄞˊㄅㄟˊ';
+    ime.symbols = 'ㄅㄟˊㄊㄞˊ';
     expect(1);
     var candidateId = 42;
-    ime.updateCandidates = function(results) {
+    ime.oncandidateschange = function(results) {
+      deepEqual(results,
+        [['ㄅㄟˊ台', candidateId++],
+         ['ㄅㄟˊ', candidateId++]],
+        'Passed!');
+    };
+    ime.queue.done = function() {
+      ime.unload();
+
+      start();
+    };
+    ime.query();
+  };
+
+  stop();
+  ime.load();
+});
+
+test('query() non-exist phrase with completed sounds at 1st place', function() {
+  var ime = new JSZhuyin();
+  ime.dataURL = './resources/testdata.data';
+  ime.onloadend = function() {
+    ime.symbols = 'ㄊㄞˊㄅㄟˊ';
+    expect(1);
+    var candidateId = 42;
+    ime.oncandidateschange = function(results) {
       deepEqual(results,
         [['台ㄅㄟˊ', candidateId++],
+         ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+         ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+         ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+         ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+         ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+         ['籉', candidateId++],['秮', candidateId++]],
+        'Passed!');
+    };
+    ime.queue.done = function() {
+      ime.unload();
+
+      start();
+    };
+    ime.query();
+  };
+
+  stop();
+  ime.load();
+});
+
+test('query() non-exist phrase with completed sounds', function() {
+  var ime = new JSZhuyin();
+  ime.dataURL = './resources/testdata.data';
+  ime.onloadend = function() {
+    ime.symbols = 'ㄅㄟˊㄅㄟˊ';
+    expect(1);
+    var candidateId = 42;
+    ime.oncandidateschange = function(results) {
+      deepEqual(results,
+        [['ㄅㄟˊㄅㄟˊ', candidateId++],
+         ['ㄅㄟˊ', candidateId++]],
+        'Passed!');
+    };
+    ime.queue.done = function() {
+      ime.unload();
+
+      start();
+    };
+    ime.query();
+  };
+
+  stop();
+  ime.load();
+});
+
+test('query() non-exist phrase with completed sound at 0th & incomplete at 1st',
+function() {
+  var ime = new JSZhuyin();
+  ime.dataURL = './resources/testdata.data';
+  ime.onloadend = function() {
+    ime.symbols = 'ㄅㄟˊㄌㄨ';
+    expect(1);
+    var candidateId = 42;
+    ime.oncandidateschange = function(results) {
+      deepEqual(results,
+        [['ㄅㄟˊㄌㄨ', candidateId++],
+         ['ㄅㄟˊ', candidateId++]],
+        'Passed!');
+    };
+    ime.queue.done = function() {
+      ime.unload();
+
+      start();
+    };
+    ime.query();
+  };
+
+  stop();
+  ime.load();
+});
+
+test('query() non-exist phrase with completed sound at 1th & incomplete at 0st',
+function() {
+  var ime = new JSZhuyin();
+  ime.dataURL = './resources/testdata.data';
+  ime.onloadend = function() {
+    ime.symbols = 'ㄌㄨㄅㄟˊ';
+    expect(1);
+    var candidateId = 42;
+    ime.oncandidateschange = function(results) {
+      deepEqual(results,
+        [['ㄌㄨㄅㄟˊ', candidateId++]],
+        'Passed!');
+    };
+    ime.queue.done = function() {
+      ime.unload();
+
+      start();
+    };
+    ime.query();
+  };
+
+  stop();
+  ime.load();
+});
+
+test('query() a word with one symbol', function() {
+  var ime = new JSZhuyin();
+  ime.dataURL = './resources/testdata.data';
+  ime.onloadend = function() {
+    ime.symbols = 'ㄊ';
+    expect(1);
+    var candidateId = 42;
+    ime.oncandidateschange = function(results) {
+      deepEqual(results,
+        [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+         ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+         ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+         ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+         ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+         ['籉', candidateId++],['秮', candidateId++]],
+        'Passed!');
+    };
+    ime.queue.done = function() {
+      ime.unload();
+
+      start();
+    };
+    ime.query();
+  };
+
+  stop();
+  ime.load();
+});
+
+test('query() with one symbol that matches nothing', function() {
+  var ime = new JSZhuyin();
+  ime.dataURL = './resources/testdata.data';
+  ime.onloadend = function() {
+    ime.symbols = 'ㄟ';
+    expect(1);
+    var candidateId = 42;
+    ime.oncandidateschange = function(results) {
+      deepEqual(results,
+        [['ㄟ', candidateId++]],
+        'Passed!');
+    };
+    ime.queue.done = function() {
+      ime.unload();
+
+      start();
+    };
+    ime.query();
+  };
+
+  stop();
+  ime.load();
+});
+
+test('query() with two symbols that matches nothing', function() {
+  var ime = new JSZhuyin();
+  ime.dataURL = './resources/testdata.data';
+  ime.onloadend = function() {
+    ime.symbols = 'ㄟㄟ';
+    expect(1);
+    var candidateId = 42;
+    ime.oncandidateschange = function(results) {
+      deepEqual(results,
+        [['ㄟㄟ', candidateId++]],
+        'Passed!');
+    };
+    ime.queue.done = function() {
+      ime.unload();
+
+      start();
+    };
+    ime.query();
+  };
+
+  stop();
+  ime.load();
+});
+
+test('query() a phrase compose of symbols that could split differently',
+function() {
+  var ime = new JSZhuyin();
+  ime.dataURL = './resources/testdata.data';
+  ime.onloadend = function() {
+    ime.symbols = 'ㄊㄞˊㄅㄟˇㄕㄨ';
+    expect(1);
+    var candidateId = 42;
+    ime.oncandidateschange = function(results) {
+      deepEqual(results,
+        [['台北市ㄨ', candidateId++],
+         ['台北市', candidateId++],
+         ['臺北市', candidateId++],
+         ['台北', candidateId++],
+         ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+         ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+         ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+         ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+         ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+         ['籉', candidateId++],['秮', candidateId++]],
+        'Passed!');
+    };
+    ime.queue.done = function() {
+      ime.unload();
+
+      start();
+    };
+    ime.query();
+  };
+
+  stop();
+  ime.load();
+});
+
+test('query() a phrase compose of symbols that could split differently' +
+  ' (don\'t split a completed sound)',
+function() {
+  var ime = new JSZhuyin();
+  ime.dataURL = './resources/testdata.data';
+  ime.onloadend = function() {
+    ime.symbols = 'ㄊㄞˊㄅㄟˇㄕㄨˇ';
+    expect(1);
+    var candidateId = 42;
+    ime.oncandidateschange = function(results) {
+      deepEqual(results,
+        [['台北ㄕㄨˇ', candidateId++],
+         ['台北', candidateId++],
          ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
          ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
          ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
@@ -339,7 +782,6 @@ test('query() non-exist phrase', function() {
 test('updateComposition()', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
-  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   expect(1);
   ime.oncompositionupdate = function(composition) {
     equal(composition, 'ㄊㄞˊㄅㄟˇ', 'Passed!');
@@ -347,7 +789,7 @@ test('updateComposition()', function() {
     start();
   };
   ime.onloadend = function() {
-    ime.syllables = 'ㄊㄞˊㄅㄟˇ';
+    ime.symbols = 'ㄊㄞˊㄅㄟˇ';
     ime.updateComposition();
   };
 
@@ -360,7 +802,6 @@ module('JSZhuyin (interactive/integration)');
 test('Simple interactive query (send all keys in one action).', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
-  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   expect(9);
   var candidateId = 42;
 
@@ -380,11 +821,12 @@ test('Simple interactive query (send all keys in one action).', function() {
        ['籉', candidateId++],['秮', candidateId++]],
       /* 'ㄊㄞ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
-       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
-       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
+       ['颱', candidateId++],['檯', candidateId++],['疼愛', candidateId++],
+       ['苔', candidateId++],['跆', candidateId++],['邰', candidateId++],
+       ['抬愛', candidateId++],['鮐', candidateId++],['旲', candidateId++],
+       ['炱', candidateId++],['嬯', candidateId++],['儓', candidateId++],
+       ['薹', candidateId++],['駘', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++]],
       /* 'ㄊㄞˊ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
@@ -428,151 +870,6 @@ test('Simple interactive query (send all keys in one action).', function() {
 test('Run a simple interactive query.', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
-  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
-  expect(9);
-  var candidateId = 42;
-
-  ime.onloadend = function() {
-    var expectedCompositions = ['ㄊ', 'ㄊㄞ', 'ㄊㄞˊ'];
-    ime.oncompositionupdate = function(composition) {
-      equal(composition, expectedCompositions.shift(), 'Composition updates.');
-    };
-
-    var expectedCandidates = [
-      /* 'ㄊ' */
-      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
-       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
-       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
-      /* 'ㄊㄞ' */
-      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
-       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
-       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
-      /* 'ㄊㄞˊ' */
-      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
-       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
-       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]]];
-    ime.oncandidateschange = function(candidates) {
-      deepEqual(candidates, expectedCandidates.shift(),
-        'Candidates equals to expected list.');
-    };
-
-    var nextActions = [
-      function() {
-        ok(ime.handleKeyEvent('ㄊ'.charCodeAt(0)), 'Handles ㄊ');
-      },
-      function() {
-        ok(ime.handleKeyEvent('ㄞ'.charCodeAt(0)), 'Handles ㄞ');
-      },
-      function() {
-        ok(ime.handleKeyEvent('ˊ'.charCodeAt(0)), 'Handles ˊ');
-      }
-    ];
-    ime.onactionhandled = function() {
-      if (!nextActions.length) {
-        setTimeout(function() {
-          ime.unload();
-          start();
-        });
-
-        return;
-      }
-
-      (nextActions.shift())();
-    };
-    (nextActions.shift())();
-  };
-
-  stop();
-  ime.load();
-});
-
-test('Run a simple interactive query (set ㄞ and ㄚ interchangable).',
-function() {
-  var ime = new JSZhuyin();
-  ime.dataURL = './resources/testdata.data';
-  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
-  expect(9);
-  var candidateId = 42;
-
-  ime.onloadend = function() {
-    var expectedCompositions = ['ㄊ', 'ㄊㄚ', 'ㄊㄚˊ'];
-    ime.oncompositionupdate = function(composition) {
-      equal(composition, expectedCompositions.shift(), 'Composition updates.');
-    };
-
-    var expectedCandidates = [
-      /* 'ㄊ' */
-      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
-       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
-       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
-      /* 'ㄊㄞ' */
-      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
-       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
-       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
-      /* 'ㄊㄞˊ' */
-      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
-       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
-       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]]];
-    ime.oncandidateschange = function(candidates) {
-      deepEqual(candidates, expectedCandidates.shift(),
-        'Candidates equals to expected list.');
-    };
-
-    var nextActions = [
-      function() {
-        ok(ime.handleKeyEvent('ㄊ'.charCodeAt(0)), 'Handles ㄊ');
-      },
-      function() {
-        ok(ime.handleKeyEvent('ㄚ'.charCodeAt(0)), 'Handles ㄚ');
-      },
-      function() {
-        ok(ime.handleKeyEvent('ˊ'.charCodeAt(0)), 'Handles ˊ');
-      }
-    ];
-    ime.onactionhandled = function() {
-      if (!nextActions.length) {
-        setTimeout(function() {
-          ime.unload();
-          start();
-        });
-
-        return;
-      }
-
-      (nextActions.shift())();
-    };
-
-    ime.setConfig({ INTERCHANGABLE_PAIRS: 'ㄚㄞ' });
-    (nextActions.shift())();
-  };
-
-  stop();
-  ime.load();
-});
-
-test('Run a simple interactive query (set SPLIT_SOUND_TO_MATCH_PHRASES=true).',
-function() {
-  var ime = new JSZhuyin();
-  ime.dataURL = './resources/testdata.data';
-  ime.SPLIT_SOUND_TO_MATCH_PHRASES = true;
   expect(9);
   var candidateId = 42;
 
@@ -640,10 +937,82 @@ function() {
   ime.load();
 });
 
+test('Run a simple interactive query (set ㄞ and ㄚ interchangable).',
+function() {
+  var ime = new JSZhuyin();
+  ime.dataURL = './resources/testdata.data';
+  expect(9);
+  var candidateId = 42;
+
+  ime.onloadend = function() {
+    var expectedCompositions = ['ㄊ', 'ㄊㄚ', 'ㄊㄚˊ'];
+    ime.oncompositionupdate = function(composition) {
+      equal(composition, expectedCompositions.shift(), 'Composition updates.');
+    };
+
+    var expectedCandidates = [
+      /* 'ㄊ' */
+      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+       ['籉', candidateId++],['秮', candidateId++]],
+      /* 'ㄊㄞ' */
+      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+       ['颱', candidateId++],['檯', candidateId++],['疼愛', candidateId++],
+       ['苔', candidateId++],['跆', candidateId++],['邰', candidateId++],
+       ['抬愛', candidateId++],['鮐', candidateId++],['旲', candidateId++],
+       ['炱', candidateId++],['嬯', candidateId++],['儓', candidateId++],
+       ['薹', candidateId++],['駘', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++]],
+      /* 'ㄊㄞˊ' */
+      [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
+       ['籉', candidateId++],['秮', candidateId++]]];
+    ime.oncandidateschange = function(candidates) {
+      deepEqual(candidates, expectedCandidates.shift(),
+        'Candidates equals to expected list.');
+    };
+
+    var nextActions = [
+      function() {
+        ok(ime.handleKeyEvent('ㄊ'.charCodeAt(0)), 'Handles ㄊ');
+      },
+      function() {
+        ok(ime.handleKeyEvent('ㄚ'.charCodeAt(0)), 'Handles ㄚ');
+      },
+      function() {
+        ok(ime.handleKeyEvent('ˊ'.charCodeAt(0)), 'Handles ˊ');
+      }
+    ];
+    ime.onactionhandled = function() {
+      if (!nextActions.length) {
+        setTimeout(function() {
+          ime.unload();
+          start();
+        });
+
+        return;
+      }
+
+      (nextActions.shift())();
+    };
+
+    ime.setConfig({ INTERCHANGABLE_PAIRS: 'ㄚㄞ' });
+    (nextActions.shift())();
+  };
+
+  stop();
+  ime.load();
+});
+
 test('Confirm text with Enter key.', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
-  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   expect(13);
   var candidateId = 42;
 
@@ -667,11 +1036,12 @@ test('Confirm text with Enter key.', function() {
        ['籉', candidateId++],['秮', candidateId++]],
       /* 'ㄊㄞ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
-       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
-       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
+       ['颱', candidateId++],['檯', candidateId++],['疼愛', candidateId++],
+       ['苔', candidateId++],['跆', candidateId++],['邰', candidateId++],
+       ['抬愛', candidateId++],['鮐', candidateId++],['旲', candidateId++],
+       ['炱', candidateId++],['嬯', candidateId++],['儓', candidateId++],
+       ['薹', candidateId++],['駘', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++]],
       /* 'ㄊㄞˊ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
@@ -723,7 +1093,6 @@ test('Confirm text with Enter key (SUGGEST_PHRASES = false).', function() {
   var ime = new JSZhuyin();
   ime.SUGGEST_PHRASES = false;
   ime.dataURL = './resources/testdata.data';
-  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   expect(13);
   var candidateId = 42;
 
@@ -747,11 +1116,12 @@ test('Confirm text with Enter key (SUGGEST_PHRASES = false).', function() {
        ['籉', candidateId++],['秮', candidateId++]],
       /* 'ㄊㄞ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
-       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
-       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
+       ['颱', candidateId++],['檯', candidateId++],['疼愛', candidateId++],
+       ['苔', candidateId++],['跆', candidateId++],['邰', candidateId++],
+       ['抬愛', candidateId++],['鮐', candidateId++],['旲', candidateId++],
+       ['炱', candidateId++],['嬯', candidateId++],['儓', candidateId++],
+       ['薹', candidateId++],['駘', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++]],
       /* 'ㄊㄞˊ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
@@ -802,7 +1172,6 @@ test('Confirm text with Enter key (SUGGEST_PHRASES = false).', function() {
 test('Confirm text with Enter key (set ㄞ and ㄚ interchangable).', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
-  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   expect(13);
   var candidateId = 42;
 
@@ -826,11 +1195,12 @@ test('Confirm text with Enter key (set ㄞ and ㄚ interchangable).', function()
        ['籉', candidateId++],['秮', candidateId++]],
       /* 'ㄊㄞ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
-       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
-       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
+       ['颱', candidateId++],['檯', candidateId++],['疼愛', candidateId++],
+       ['苔', candidateId++],['跆', candidateId++],['邰', candidateId++],
+       ['抬愛', candidateId++],['鮐', candidateId++],['旲', candidateId++],
+       ['炱', candidateId++],['嬯', candidateId++],['儓', candidateId++],
+       ['薹', candidateId++],['駘', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++]],
       /* 'ㄊㄞˊ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
@@ -882,7 +1252,6 @@ test('Confirm text with Enter key (set ㄞ and ㄚ interchangable).', function()
 test('Confirm text with a non-Bopomofo key.', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
-  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   expect(13);
   var candidateId = 42;
 
@@ -906,11 +1275,12 @@ test('Confirm text with a non-Bopomofo key.', function() {
        ['籉', candidateId++],['秮', candidateId++]],
       /* 'ㄊㄞ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
-       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
-       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
+       ['颱', candidateId++],['檯', candidateId++],['疼愛', candidateId++],
+       ['苔', candidateId++],['跆', candidateId++],['邰', candidateId++],
+       ['抬愛', candidateId++],['鮐', candidateId++],['旲', candidateId++],
+       ['炱', candidateId++],['嬯', candidateId++],['儓', candidateId++],
+       ['薹', candidateId++],['駘', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++]],
       /* 'ㄊㄞˊ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
@@ -961,7 +1331,6 @@ test('Confirm text with a non-Bopomofo key.', function() {
 test('Don\'t handle Enter key if there is no candidates.', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
-  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
   expect(1);
 
   ime.onloadend = function() {
@@ -979,7 +1348,6 @@ test('Don\'t handle Enter key if there is no candidates.', function() {
 test('Confirm text with candidate selection.', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
-  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
 
   expect(12);
   var candidateId = 42;
@@ -1004,11 +1372,12 @@ test('Confirm text with candidate selection.', function() {
        ['籉', candidateId++],['秮', candidateId++]],
       /* 'ㄊㄞ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
-       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
-       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
+       ['颱', candidateId++],['檯', candidateId++],['疼愛', candidateId++],
+       ['苔', candidateId++],['跆', candidateId++],['邰', candidateId++],
+       ['抬愛', candidateId++],['鮐', candidateId++],['旲', candidateId++],
+       ['炱', candidateId++],['嬯', candidateId++],['儓', candidateId++],
+       ['薹', candidateId++],['駘', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++]],
       /* 'ㄊㄞˊ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
@@ -1059,7 +1428,6 @@ test('Confirm text with candidate selection.', function() {
 test('Backspace key removes the last symbol.', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
-  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
 
   expect(15);
   var candidateId = 42;
@@ -1079,11 +1447,12 @@ test('Backspace key removes the last symbol.', function() {
        ['籉', candidateId++],['秮', candidateId++]],
       /* 'ㄊㄞ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
-       ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
-       ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
+       ['颱', candidateId++],['檯', candidateId++],['疼愛', candidateId++],
+       ['苔', candidateId++],['跆', candidateId++],['邰', candidateId++],
+       ['抬愛', candidateId++],['鮐', candidateId++],['旲', candidateId++],
+       ['炱', candidateId++],['嬯', candidateId++],['儓', candidateId++],
+       ['薹', candidateId++],['駘', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++]],
       /* 'ㄊㄞˊ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
@@ -1150,7 +1519,6 @@ test('Backspace key removes the last symbol.', function() {
 test('Don\'t handle Backspace key if there is no compositions.', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
-  ime.SPLIT_SOUND_TO_MATCH_PHRASES = false;
 
   expect(1);
   ime.onloadend = function() {

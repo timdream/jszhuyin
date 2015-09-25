@@ -7,59 +7,39 @@ module('BopomofoEncoder');
 test('encode() should follow the original spec.', function() {
   var str = BopomofoEncoder.encode('ㄉㄧㄢˋ');
 
-  equal(str, String.fromCharCode(2764), 'Passed!');
+  deepEqual(str, [2764], 'Passed!');
 });
 
 test('encode() should encode multiple symbols.', function() {
-  var syllablesStr = 'ㄓㄨˋㄧㄣˉㄕㄨˉㄖㄨˋㄈㄚˇ';
-  var str = BopomofoEncoder.encode(syllablesStr);
+  var symbols = 'ㄓㄨˋㄧㄣˉㄕㄨˉㄖㄨˋㄈㄚˇ';
+  var str = BopomofoEncoder.encode(symbols);
 
   // ㄓㄨˋㄧㄣˉㄕㄨˉㄖㄨˋㄈㄚˇ
-  equal(str, 'ἄÑ⌁┄ࠋ', 'Passed!');
+  deepEqual(str, [7940, 209, 8961, 9476, 2059], 'Passed!');
 });
 
 test('encode() should encode multiple partial symbols.', function() {
-  var syllablesStr = 'ㄓㄨˋㄧㄣㄕㄖㄈ';
-  var str = BopomofoEncoder.encode(syllablesStr);
+  var symbols = 'ㄓㄨˋㄧㄣㄕㄖㄈ';
+  var str = BopomofoEncoder.encode(symbols);
 
   // ㄓㄨˋㄧㄣㄕㄖㄈ
-  equal(str, 'ἄÐ∀␀ࠀ', 'Passed!');
+  deepEqual(str, [7940, 208, 8704, 9216, 2048], 'Passed!');
 });
-
-test('encode() should encode multiple partial symbols ' +
-    'with \'tone\' set to \'all\'.', function() {
-  var syllablesStr = 'ㄓㄨˋㄧㄣㄕㄖㄈ';
-  var str = BopomofoEncoder.encode(syllablesStr, { tone: 'all' });
-
-  // ㄓㄨˋㄧㄣˉㄕˉㄖˉㄈˉ
-  equal(str, 'ἄÑ∁␁ࠁ', 'Passed!');
-});
-
-test('encode() should encode multiple partial symbols ' +
-    'with \'tone\' set to \'more-than-one-symbol\'.', function() {
-  var syllablesStr = 'ㄓㄨˋㄧㄣㄕㄖㄈ';
-  var str =
-    BopomofoEncoder.encode(syllablesStr, { tone: 'more-than-one-symbol' });
-
-  // ㄓㄨˋㄧㄣˉㄕㄖㄈ
-  equal(str, 'ἄÑ∀␀ࠀ', 'Passed!');
-});
-
 
 test('encode() should encode multiple partial symbols ' +
     'with correct order if \'reorder\' is set to \'true\'.', function() {
-  var syllablesStr = 'ㄨㄓˋㄧㄣㄕㄖㄈ';
-  var str = BopomofoEncoder.encode(syllablesStr, { reorder: true });
+  var symbols = 'ㄨㄓˋㄧㄣㄕㄖㄈ';
+  var str = BopomofoEncoder.encode(symbols, { reorder: true });
 
   // ㄓㄨˋㄕㄧㄣㄖㄈ
-  equal(str, 'ἄ⋐␀ࠀ', 'Passed!');
+  deepEqual(str, [7940, 8912, 9216, 2048], 'Passed!');
 });
 
-test('encode() should throw if syllablesStr contains illegal symbol.',
+test('encode() should throw if symbols contains illegal symbol.',
 function() {
-  var syllablesStr = 'Hello world!';
+  var symbols = 'Hello world!';
   try {
-    BopomofoEncoder.encode(syllablesStr);
+    BopomofoEncoder.encode(symbols);
   } catch (e) {
     ok(true, 'Passed!');
     return;
@@ -68,20 +48,20 @@ function() {
 });
 
 test('decode() should follow the original spec.', function() {
-  var str = BopomofoEncoder.decode(String.fromCharCode(2764));
+  var str = BopomofoEncoder.decode([2764]);
 
   equal(str, 'ㄉㄧㄢˋ', 'Passed!');
 });
 
 test('decode() should decode multiple symbols.', function() {
-  var encodedStr = 'ἄÑ⌁┄ࠋ';
+  var encodedStr = [7940, 209, 8961, 9476, 2059];
   var str = BopomofoEncoder.decode(encodedStr);
 
   equal(str, 'ㄓㄨˋㄧㄣˉㄕㄨˉㄖㄨˋㄈㄚˇ', 'Passed!');
 });
 
 test('decode() should decode multiple partial symbols.', function() {
-  var encodedStr = 'ἄÐ∀␀ࠀ';
+  var encodedStr = [7940, 208, 8704, 9216, 2048];
   var str = BopomofoEncoder.decode(encodedStr);
 
   equal(str, 'ㄓㄨˋㄧㄣㄕㄖㄈ', 'Passed!');
@@ -112,21 +92,184 @@ function() {
   equal(flag, false, 'Passed!');
 });
 
-test('isIncompletionOf() should compare ㄉ with ㄉㄧㄢˋ.',
-function() {
-  var flag = BopomofoEncoder.isIncompletionOf(
-    BopomofoEncoder.encode('ㄉ').charCodeAt(0),
-    BopomofoEncoder.encode('ㄉㄧㄢˋ').charCodeAt(0)
-  );
+test('appendToSymbols()', function() {
+  var symbols =
+    BopomofoEncoder.appendToSymbols('ㄓㄨˋㄧㄣˉㄕㄨˉㄖㄨˋㄈ', 'ㄚ');
 
-  equal(flag, true, 'Passed!');
+  equal(symbols, 'ㄓㄨˋㄧㄣˉㄕㄨˉㄖㄨˋㄈㄚ', 'Passed!');
+});
+
+test('appendToSymbols() with APPEND_MODE_REORDER', function() {
+  var symbols =
+    BopomofoEncoder.appendToSymbols('ㄓㄨˋㄧㄣˉㄕㄨˉㄖㄨˋㄚ', 'ㄈ',
+      BopomofoEncoder.APPEND_MODE_REORDER);
+
+  equal(symbols, 'ㄓㄨˋㄧㄣˉㄕㄨˉㄖㄨˋㄈㄚ', 'Passed!');
 });
 
 test('isIncompletionOf() should compare ㄉ with ㄉㄧㄢˋ.',
 function() {
   var flag = BopomofoEncoder.isIncompletionOf(
-    BopomofoEncoder.encode('ㄉ').charCodeAt(0),
-    BopomofoEncoder.encode('ㄉㄧㄢˋ').charCodeAt(0)
+    BopomofoEncoder.encode('ㄉ')[0],
+    BopomofoEncoder.encode('ㄉㄧㄢˋ')[0]
+  );
+
+  equal(flag, true, 'Passed!');
+});
+
+test('encodeExpended() (completed sounds)', function() {
+  var arr =
+    BopomofoEncoder.encodeExpended('ㄓㄨˋㄧㄣˉㄕㄨˉㄖㄨˋㄈㄚˇ');
+
+  // ㄓㄨˋㄧㄣˉㄕㄨˉㄖㄨˋㄈㄚˇ
+  var expectedArr = [7940, 209, 8961, 9476, 2059];
+
+  deepEqual(arr, expectedArr, 'Passed!');
+});
+
+test('encodeExpended() (incompleted sounds)', function() {
+  var arr =
+    BopomofoEncoder.encodeExpended('ㄓㄨㄧㄣㄕㄨㄖㄨㄈㄚ');
+
+  var expectedArr = [7680, 256, 128, 80, 8704, 256, 9216, 256, 2048, 8];
+
+  deepEqual(arr, expectedArr, 'Passed!');
+});
+
+test('encodeExpended() (mix completed and incompleted sounds)',
+function() {
+  var tests = [
+    [ 'ㄓㄨㄧㄣㄕㄨˉㄖㄨㄈㄚ', [7680, 256, 128, 80, 8961, 9216, 256, 2048, 8]],
+    [ 'ㄓㄧㄕㄖㄈㄚˇ', [7680, 128, 8704, 9216, 2059]],
+    [ 'ㄓㄨˋㄧㄕㄖㄈ', [7940, 128, 8704, 9216, 2048]],
+    [ 'ˉˇ', [1, 3]]
+  ];
+
+  tests.forEach(function(test) {
+    deepEqual(BopomofoEncoder.encodeExpended(test[0]), test[1], test[0]);
+  });
+});
+
+test('getSymbolsCompositions()', function() {
+  var tests = [
+    [ 'ㄓ',
+      [ [[7680]]] ],
+    [ 'ㄓㄓ',
+      [ [[7680, 7680]],
+        [[7680], [7680]] ] ],
+    [ 'ㄓㄨ',
+      [ [[7936]],
+        [[7680, 256]],
+        [[7680], [256]] ] ],
+    [ 'ㄉㄧㄢˋ',
+      [ [[ 2764 ]]] ],
+    [ 'ㄉㄧㄢ',
+      [ [[2760]],
+        [[2560, 200]],
+        [[2688, 72]],
+        [[2560, 128, 72]],
+        [[2560], [200]],
+        [[2560], [128, 72]],
+        [[2688], [72]],
+        [[2560, 128], [72]],
+        [[2560], [128], [72]] ] ],
+    ['ㄓㄨˋㄧㄣˉ',
+      [ [[7940, 209]],
+        [[7940], [209]] ] ],
+    ['ㄓㄨˋㄧㄣ',
+      [ [[7940, 208]],
+        [[7940, 128, 80]],
+        [[7940], [208]],
+        [[7940], [128, 80]],
+        [[7940, 128], [80]],
+        [[7940], [128], [80]] ] ],
+    ['ㄓㄨㄧㄣ',
+      [ [[7936, 208]],
+        [[7680, 256, 208]],
+        [[7936, 128, 80]],
+        [[7680, 256, 128, 80]],
+        [[7680], [256, 208]],
+        [[7680], [256, 128, 80]],
+        [[7936], [208]],
+        [[7680, 256], [208]],
+        [[7936], [128, 80]],
+        [[7680, 256], [128, 80]],
+        [[7680], [256], [208]],
+        [[7680], [256], [128, 80]],
+        [[7936, 128], [80]],
+        [[7680, 256, 128], [80]],
+        [[7680], [256, 128], [80]],
+        [[7936], [128], [80]],
+        [[7680, 256], [128], [80]],
+        [[7680], [256], [128], [80]] ] ]
+  ];
+
+  tests.forEach(function(test) {
+    var expendedEncodedSounds = BopomofoEncoder.encodeExpended(test[0]);
+    deepEqual(BopomofoEncoder.getSymbolsCompositions(expendedEncodedSounds),
+      test[1], test[0]);
+
+    deepEqual(BopomofoEncoder.getSymbolsCompositions(test[0]),
+      test[1], test[0]);
+  });
+});
+
+test('getSymbolsCompositions() with longestLength = 2', function() {
+  var tests = [
+    [ 'ㄉㄧㄢ',
+      [ [[2760]],
+        [[2560, 200]],
+        [[2688, 72]],
+        // [[2560, 128, 72]],         // This should be removed
+        [[2560], [200]],
+        [[2560], [128, 72]],
+        [[2688], [72]],
+        [[2560, 128], [72]],
+        [[2560], [128], [72]] ] ],
+    ['ㄓㄨˋㄧㄣ',
+      [ [[7940, 208]],
+        // [[7940, 128, 80]],         // This should be removed
+        [[7940], [208]],
+        [[7940], [128, 80]],
+        [[7940, 128], [80]],
+        [[7940], [128], [80]] ] ],
+    ['ㄓㄨㄧㄣ',
+      [ [[7936, 208]],
+        // [[7680, 256, 208]],        // This should be removed
+        // [[7936, 128, 80]],         // This should be removed
+        // [[7680, 256, 128, 80]],    // This should be removed
+        [[7680], [256, 208]],
+        // [[7680], [256, 128, 80]],  // This should be removed
+        [[7936], [208]],
+        [[7680, 256], [208]],
+        [[7936], [128, 80]],
+        [[7680, 256], [128, 80]],
+        [[7680], [256], [208]],
+        [[7680], [256], [128, 80]],
+        [[7936, 128], [80]],
+        // [[7680, 256, 128], [80]],  // This should be removed
+        [[7680], [256, 128], [80]],
+        [[7936], [128], [80]],
+        [[7680, 256], [128], [80]],
+        [[7680], [256], [128], [80]] ] ]
+  ];
+
+  tests.forEach(function(test) {
+    var expendedEncodedSounds = BopomofoEncoder.encodeExpended(test[0]);
+    deepEqual(
+      BopomofoEncoder.getSymbolsCompositions(expendedEncodedSounds, 2),
+      test[1], test[0]);
+
+    deepEqual(BopomofoEncoder.getSymbolsCompositions(test[0], 2),
+      test[1], test[0]);
+  });
+});
+
+test('isIncompletionOf() should compare ㄉ with ㄉㄧㄢˋ.',
+function() {
+  var flag = BopomofoEncoder.isIncompletionOf(
+    BopomofoEncoder.encode('ㄉ')[0],
+    BopomofoEncoder.encode('ㄉㄧㄢˋ')[0]
   );
 
   equal(flag, true, 'Passed!');
@@ -135,8 +278,8 @@ function() {
 test('isIncompletionOf() should compare ㄉㄧ with ㄉㄧㄢˋ.',
 function() {
   var flag = BopomofoEncoder.isIncompletionOf(
-    BopomofoEncoder.encode('ㄉㄧ').charCodeAt(0),
-    BopomofoEncoder.encode('ㄉㄧㄢˋ').charCodeAt(0)
+    BopomofoEncoder.encode('ㄉㄧ')[0],
+    BopomofoEncoder.encode('ㄉㄧㄢˋ')[0]
   );
 
   equal(flag, true, 'Passed!');
@@ -145,8 +288,8 @@ function() {
 test('isIncompletionOf() should compare ㄉㄧㄢ with ㄉㄧㄢˋ.',
 function() {
   var flag = BopomofoEncoder.isIncompletionOf(
-    BopomofoEncoder.encode('ㄉㄧㄢ').charCodeAt(0),
-    BopomofoEncoder.encode('ㄉㄧㄢˋ').charCodeAt(0)
+    BopomofoEncoder.encode('ㄉㄧㄢ')[0],
+    BopomofoEncoder.encode('ㄉㄧㄢˋ')[0]
   );
 
   equal(flag, true, 'Passed!');
@@ -155,8 +298,8 @@ function() {
 test('isIncompletionOf() should compare ㄓ with ㄓㄨˋ.',
 function() {
   var flag = BopomofoEncoder.isIncompletionOf(
-    BopomofoEncoder.encode('ㄓ').charCodeAt(0),
-    BopomofoEncoder.encode('ㄓㄨˋ').charCodeAt(0)
+    BopomofoEncoder.encode('ㄓ')[0],
+    BopomofoEncoder.encode('ㄓㄨˋ')[0]
   );
 
   equal(flag, true, 'Passed!');
@@ -165,8 +308,8 @@ function() {
 test('isIncompletionOf() should compare ㄓㄨ with ㄓㄨˋ.',
 function() {
   var flag = BopomofoEncoder.isIncompletionOf(
-    BopomofoEncoder.encode('ㄓㄨ').charCodeAt(0),
-    BopomofoEncoder.encode('ㄓㄨˋ').charCodeAt(0)
+    BopomofoEncoder.encode('ㄓㄨ')[0],
+    BopomofoEncoder.encode('ㄓㄨˋ')[0]
   );
 
   equal(flag, true, 'Passed!');
@@ -175,8 +318,8 @@ function() {
 test('isIncompletionOf() should compare ㄓㄨˋ with ㄉㄧㄢˋ.',
 function() {
   var flag = BopomofoEncoder.isIncompletionOf(
-    BopomofoEncoder.encode('ㄓㄨˋ').charCodeAt(0),
-    BopomofoEncoder.encode('ㄉㄧㄢˋ').charCodeAt(0)
+    BopomofoEncoder.encode('ㄓㄨˋ')[0],
+    BopomofoEncoder.encode('ㄉㄧㄢˋ')[0]
   );
 
   equal(flag, false, 'Passed!');
@@ -185,8 +328,8 @@ function() {
 test('isIncompletionOf() should compare ㄧㄢˋ with ㄉㄧㄢˋ.',
 function() {
   var flag = BopomofoEncoder.isIncompletionOf(
-    BopomofoEncoder.encode('ㄧㄢˋ').charCodeAt(0),
-    BopomofoEncoder.encode('ㄉㄧㄢˋ').charCodeAt(0)
+    BopomofoEncoder.encode('ㄧㄢˋ')[0],
+    BopomofoEncoder.encode('ㄉㄧㄢˋ')[0]
   );
 
   equal(flag, false, 'Passed!');
@@ -195,8 +338,8 @@ function() {
 test('isIncompletionOf() should compare ㄉㄢ with ㄉㄧㄢˋ.',
 function() {
   var flag = BopomofoEncoder.isIncompletionOf(
-    BopomofoEncoder.encode('ㄉㄢ').charCodeAt(0),
-    BopomofoEncoder.encode('ㄉㄧㄢˋ').charCodeAt(0)
+    BopomofoEncoder.encode('ㄉㄢ')[0],
+    BopomofoEncoder.encode('ㄉㄧㄢˋ')[0]
   );
 
   equal(flag, false, 'Passed!');
@@ -205,8 +348,8 @@ function() {
 test('isIncompletionOf() should compare ㄢˋ with ㄉㄧㄢˋ.',
 function() {
   var flag = BopomofoEncoder.isIncompletionOf(
-    BopomofoEncoder.encode('ㄢˋ').charCodeAt(0),
-    BopomofoEncoder.encode('ㄉㄧㄢˋ').charCodeAt(0)
+    BopomofoEncoder.encode('ㄢˋ')[0],
+    BopomofoEncoder.encode('ㄉㄧㄢˋ')[0]
   );
 
   equal(flag, false, 'Passed!');
@@ -215,8 +358,8 @@ function() {
 test('isIncompletionOf() should compare ㄨ with ㄓㄨˋ.',
 function() {
   var flag = BopomofoEncoder.isIncompletionOf(
-    BopomofoEncoder.encode('ㄨ').charCodeAt(0),
-    BopomofoEncoder.encode('ㄓㄨˋ').charCodeAt(0)
+    BopomofoEncoder.encode('ㄨ')[0],
+    BopomofoEncoder.encode('ㄓㄨˋ')[0]
   );
 
   equal(flag, false, 'Passed!');
@@ -224,120 +367,59 @@ function() {
 
 test('isCompleted(ㄓㄨˋ)', function() {
   var flag = BopomofoEncoder.isCompleted(
-    BopomofoEncoder.encode('ㄓㄨˋ').charCodeAt(0));
+    BopomofoEncoder.encode('ㄓㄨˋ')[0]);
 
   equal(flag, true, 'Passed!');
 });
 
 test('isCompleted(ㄨ)', function() {
   var flag = BopomofoEncoder.isCompleted(
-    BopomofoEncoder.encode('ㄨ').charCodeAt(0));
+    BopomofoEncoder.encode('ㄨ')[0]);
 
   equal(flag, false, 'Passed!');
 });
 
 test('replace(ㄖㄤˊ,ㄤ,ㄢ)', function() {
   var code = BopomofoEncoder.replace(
-      BopomofoEncoder.encode('ㄖㄤˊ').charCodeAt(0),
-      BopomofoEncoder.encode('ㄤ').charCodeAt(0),
-      BopomofoEncoder.encode('ㄢ').charCodeAt(0)
+      BopomofoEncoder.encode('ㄖㄤˊ')[0],
+      BopomofoEncoder.encode('ㄤ')[0],
+      BopomofoEncoder.encode('ㄢ')[0]
     );
-  equal(code, BopomofoEncoder.encode('ㄖㄢˊ').charCodeAt(0), 'Passed!');
+  equal(code, BopomofoEncoder.encode('ㄖㄢˊ')[0], 'Passed!');
 });
 
 test('replace(ㄖㄣˊ,ㄤ,ㄢ)', function() {
   var code = BopomofoEncoder.replace(
-      BopomofoEncoder.encode('ㄖㄣˊ').charCodeAt(0),
-      BopomofoEncoder.encode('ㄤ').charCodeAt(0),
-      BopomofoEncoder.encode('ㄢ').charCodeAt(0)
+      BopomofoEncoder.encode('ㄖㄣˊ')[0],
+      BopomofoEncoder.encode('ㄤ')[0],
+      BopomofoEncoder.encode('ㄢ')[0]
     );
-  equal(code, BopomofoEncoder.encode('ㄖㄣˊ').charCodeAt(0), 'Passed!');
+  equal(code, BopomofoEncoder.encode('ㄖㄣˊ')[0], 'Passed!');
 });
 
 test('replace(ㄏㄡˇ,ㄡ,ㄨㄛ)', function() {
   var code = BopomofoEncoder.replace(
-      BopomofoEncoder.encode('ㄏㄡˇ').charCodeAt(0),
-      BopomofoEncoder.encode('ㄡ').charCodeAt(0),
-      BopomofoEncoder.encode('ㄨㄛ').charCodeAt(0)
+      BopomofoEncoder.encode('ㄏㄡˇ')[0],
+      BopomofoEncoder.encode('ㄡ')[0],
+      BopomofoEncoder.encode('ㄨㄛ')[0]
     );
-  equal(code, BopomofoEncoder.encode('ㄏㄨㄛˇ').charCodeAt(0), 'Passed!');
+  equal(code, BopomofoEncoder.encode('ㄏㄨㄛˇ')[0], 'Passed!');
 });
 
 test('replace(ㄏㄨㄛˇ,ㄨㄛ,ㄡ)', function() {
   var code = BopomofoEncoder.replace(
-      BopomofoEncoder.encode('ㄏㄨㄛˇ').charCodeAt(0),
-      BopomofoEncoder.encode('ㄨㄛ').charCodeAt(0),
-      BopomofoEncoder.encode('ㄡ').charCodeAt(0)
+      BopomofoEncoder.encode('ㄏㄨㄛˇ')[0],
+      BopomofoEncoder.encode('ㄨㄛ')[0],
+      BopomofoEncoder.encode('ㄡ')[0]
     );
-  equal(code, BopomofoEncoder.encode('ㄏㄡˇ').charCodeAt(0), 'Passed!');
+  equal(code, BopomofoEncoder.encode('ㄏㄡˇ')[0], 'Passed!');
 });
 
 test('replace(ㄏㄨˇ,ㄨㄛ,ㄡ)', function() {
   var code = BopomofoEncoder.replace(
-      BopomofoEncoder.encode('ㄏㄨˇ').charCodeAt(0),
-      BopomofoEncoder.encode('ㄨㄛ').charCodeAt(0),
-      BopomofoEncoder.encode('ㄡ').charCodeAt(0)
+      BopomofoEncoder.encode('ㄏㄨˇ')[0],
+      BopomofoEncoder.encode('ㄨㄛ')[0],
+      BopomofoEncoder.encode('ㄡ')[0]
     );
-  equal(code, BopomofoEncoder.encode('ㄏㄨˇ').charCodeAt(0), 'Passed!');
-});
-
-test('split(ㄏㄨㄛˇ)', function() {
-  var codes = BopomofoEncoder.split(
-    BopomofoEncoder.encode('ㄏㄨㄛˇ').charCodeAt(0));
-  deepEqual(codes, [
-    [ BopomofoEncoder.encode('ㄏㄨㄛˇ').charCodeAt(0) ]
-  ], 'Don\'t split completed code.');
-});
-
-test('split(ㄏㄨㄛ)', function() {
-  var codes = BopomofoEncoder.split(
-    BopomofoEncoder.encode('ㄏㄨㄛ').charCodeAt(0));
-  deepEqual(codes, [
-    [ BopomofoEncoder.encode('ㄏㄨㄛ').charCodeAt(0) ],
-    [ BopomofoEncoder.encode('ㄏ').charCodeAt(0),
-      BopomofoEncoder.encode('ㄨㄛ').charCodeAt(0) ],
-    [ BopomofoEncoder.encode('ㄏㄨ').charCodeAt(0),
-      BopomofoEncoder.encode('ㄛ').charCodeAt(0) ],
-    [ BopomofoEncoder.encode('ㄏ').charCodeAt(0),
-      BopomofoEncoder.encode('ㄨ').charCodeAt(0),
-      BopomofoEncoder.encode('ㄛ').charCodeAt(0) ] ], 'Split 3-symbol code.');
-});
-
-test('split(ㄏㄨ)', function() {
-  var codes = BopomofoEncoder.split(
-    BopomofoEncoder.encode('ㄏㄨ').charCodeAt(0));
-  deepEqual(codes, [
-    [ BopomofoEncoder.encode('ㄏㄨ').charCodeAt(0) ],
-    [ BopomofoEncoder.encode('ㄏ').charCodeAt(0),
-      BopomofoEncoder.encode('ㄨ').charCodeAt(0) ] ], 'Split 2-symbol code.');
-});
-
-test('split(ㄨㄛ)', function() {
-  var codes = BopomofoEncoder.split(
-    BopomofoEncoder.encode('ㄨㄛ').charCodeAt(0));
-  deepEqual(codes, [
-    [ BopomofoEncoder.encode('ㄨㄛ').charCodeAt(0) ],
-    [ BopomofoEncoder.encode('ㄨ').charCodeAt(0),
-      BopomofoEncoder.encode('ㄛ').charCodeAt(0) ] ], 'Split 2-symbol code.');
-});
-
-test('split(ㄏ)', function() {
-  var codes = BopomofoEncoder.split(
-    BopomofoEncoder.encode('ㄏ').charCodeAt(0));
-  deepEqual(codes, [
-    [ BopomofoEncoder.encode('ㄏ').charCodeAt(0) ] ], 'Split 1-symbol code.');
-});
-
-test('split(ㄨ)', function() {
-  var codes = BopomofoEncoder.split(
-    BopomofoEncoder.encode('ㄨ').charCodeAt(0));
-  deepEqual(codes, [
-    [ BopomofoEncoder.encode('ㄨ').charCodeAt(0) ] ], 'Split 1-symbol code.');
-});
-
-test('split(ㄛ)', function() {
-  var codes = BopomofoEncoder.split(
-    BopomofoEncoder.encode('ㄛ').charCodeAt(0));
-  deepEqual(codes, [
-    [ BopomofoEncoder.encode('ㄛ').charCodeAt(0) ] ], 'Split 1-symbol code.');
+  equal(code, BopomofoEncoder.encode('ㄏㄨˇ')[0], 'Passed!');
 });

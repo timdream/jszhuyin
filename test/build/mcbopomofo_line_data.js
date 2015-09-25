@@ -24,10 +24,8 @@ test('✈ ㄈㄟ-ㄐㄧ 0.0', function() {
   lineData.parse('✈ ㄈㄟ-ㄐㄧ 0.0');
   assert.equal(lineData.isValid, true);
   assert.equal(lineData.str, '✈');
-  assert.equal(BopomofoEncoder.decode(lineData.encodedStr),
+  assert.equal(BopomofoEncoder.decode(lineData.encodedSounds),
     'ㄈㄟˉㄐㄧˉ');
-  assert.equal(BopomofoEncoder.decode(lineData.shortcutEncodedStr),
-    'ㄈㄐ');
   assert.equal(lineData.score, 0);
 });
 
@@ -36,10 +34,8 @@ test('𡻈 ㄓㄣ 0.0 (CJK Ext. B)', function() {
   lineData.parse('𡻈 ㄓㄣ 0.0');
   assert.equal(lineData.isValid, true);
   assert.equal(lineData.str, '𡻈');
-  assert.equal(BopomofoEncoder.decode(lineData.encodedStr),
+  assert.equal(BopomofoEncoder.decode(lineData.encodedSounds),
     'ㄓㄣˉ');
-  assert.equal(BopomofoEncoder.decode(lineData.shortcutEncodedStr),
-    'ㄓ');
   assert.equal(lineData.score, 0);
 });
 
@@ -49,10 +45,8 @@ test('自食其力 ㄗˋ-ㄕˊ-ㄑㄧˊ-ㄌㄧˋ -5.41649390', function() {
   lineData.parse('自食其力 ㄗˋ-ㄕˊ-ㄑㄧˊ-ㄌㄧˋ -5.41649390');
   assert.equal(lineData.isValid, true);
   assert.equal(lineData.str, '自食其力');
-  assert.equal(BopomofoEncoder.decode(lineData.encodedStr),
+  assert.equal(BopomofoEncoder.decode(lineData.encodedSounds),
     'ㄗˋㄕˊㄑㄧˊㄌㄧˋ');
-  assert.equal(BopomofoEncoder.decode(lineData.shortcutEncodedStr),
-    'ㄗㄕㄑㄌ');
   assert.equal(lineData.score, -5.41649390);
 });
 
@@ -62,10 +56,8 @@ test('花開花落 ㄏㄨㄚ-ㄎㄞ-ㄏㄨㄚ-ㄌㄨㄛˋ -6.56262194', function
   lineData.parse('花開花落 ㄏㄨㄚ-ㄎㄞ-ㄏㄨㄚ-ㄌㄨㄛˋ -6.56262194');
   assert.equal(lineData.isValid, true);
   assert.equal(lineData.str, '花開花落');
-  assert.equal(BopomofoEncoder.decode(lineData.encodedStr),
+  assert.equal(BopomofoEncoder.decode(lineData.encodedSounds),
     'ㄏㄨㄚ\u02c9ㄎㄞ\u02c9ㄏㄨㄚ\u02c9ㄌㄨㄛˋ',
     'First tone is inserted here.');
-  assert.equal(BopomofoEncoder.decode(lineData.shortcutEncodedStr),
-    'ㄏㄎㄏㄌ');
   assert.equal(lineData.score, -6.56262194);
 });

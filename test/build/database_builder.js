@@ -37,8 +37,8 @@ test('put()', function() {
   res[0x41][0x42][0x43] = [buf2];
 
   var db = new DatabaseBuilder();
-  db.put(String.fromCharCode(0x41, 0x42), buf1);
-  db.put(String.fromCharCode(0x41, 0x42, 0x43), buf2);
+  db.put([0x41, 0x42], buf1);
+  db.put([0x41, 0x42, 0x43], buf2);
 
   assert.deepEqual(db.data, res);
 });
@@ -56,9 +56,9 @@ test('get()', function() {
   var db = new DatabaseBuilder();
   db.data = res;
 
-  assert.deepEqual(db.get(String.fromCharCode(0x41, 0x42)), buf1);
+  assert.deepEqual(db.get([0x41, 0x42]), buf1);
   assert.deepEqual(
-    db.get(String.fromCharCode(0x41, 0x42, 0x43)), buf2);
+    db.get([0x41, 0x42, 0x43]), buf2);
 });
 
 test('getBlob()', function() {
@@ -72,8 +72,8 @@ test('getBlob()', function() {
   res[0x41][0x42][0x43] = [buf2];
 
   var db = new DatabaseBuilder();
-  db.put(String.fromCharCode(0x41, 0x42), buf1);
-  db.put(String.fromCharCode(0x41, 0x42, 0x43), buf2);
+  db.put([0x41, 0x42], buf1);
+  db.put([0x41, 0x42, 0x43], buf2);
 
   var buffer = db.getBlob();
 
