@@ -534,7 +534,7 @@ test('query() non-exist word with completed sounds', function() {
   ime.load();
 });
 
-test('query() non-exist phrase with completed sounds at 0th place', function() {
+test('query() non-exist phrase with non-exist word at 0th place', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
   ime.onloadend = function() {
@@ -543,7 +543,7 @@ test('query() non-exist phrase with completed sounds at 0th place', function() {
     var candidateId = 42;
     ime.oncandidateschange = function(results) {
       deepEqual(results,
-        [['ㄅㄟˊ台', candidateId++],
+        [['ㄅㄟˊㄊㄞˊ', candidateId++],
          ['ㄅㄟˊ', candidateId++]],
         'Passed!');
     };
@@ -559,7 +559,7 @@ test('query() non-exist phrase with completed sounds at 0th place', function() {
   ime.load();
 });
 
-test('query() non-exist phrase with completed sounds at 1st place', function() {
+test('query() non-exist phrase with non-exist word at 1st place', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
   ime.onloadend = function() {
