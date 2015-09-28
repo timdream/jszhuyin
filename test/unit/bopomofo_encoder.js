@@ -167,6 +167,30 @@ test('trimToLength()', function() {
   });
 });
 
+test('trimToLengthFromEnd()', function() {
+  var tests = [
+    [ 'ㄓㄓㄓ', 'ㄓㄓㄓ' ],
+    [ 'ㄓㄓㄓㄓ', 'ㄓㄓㄓㄓ' ],
+    [ 'ㄓㄓㄓㄓㄓ', 'ㄓㄓㄓㄓㄓ' ],
+    [ 'ㄓㄓㄓㄓㄓㄓ', 'ㄓㄓㄓㄓㄓㄓ' ],
+    [ 'ㄉㄓㄓㄓㄓㄓㄓ', 'ㄓㄓㄓㄓㄓㄓ' ],
+    [ 'ㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓ', 'ㄓㄓㄓㄓㄓㄓ' ],
+    [ 'ㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓ', 'ㄓㄓㄓㄓㄓㄓ' ],
+    [ 'ㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓㄨㄓㄓㄓㄓㄓ', 'ㄓㄨㄓㄓㄓㄓㄓ' ],
+    [ 'ㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓㄉㄧㄢㄓㄓㄓㄓㄓ', 'ㄉㄧㄢㄓㄓㄓㄓㄓ' ],
+    [ 'ㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓㄉㄧㄢˋㄓㄓㄓㄓㄓ', 'ㄉㄧㄢˋㄓㄓㄓㄓㄓ' ]
+  ];
+
+  tests.forEach(function(test) {
+    var expendedEncodedSounds = BopomofoEncoder.encodeExpended(test[0]);
+    equal(
+      BopomofoEncoder.trimToLengthFromEnd(expendedEncodedSounds, 6),
+      test[1], test[0]);
+    equal(BopomofoEncoder.trimToLengthFromEnd(test[0], 6),
+      test[1], test[0]);
+  });
+});
+
 test('getSymbolCombinations()', function() {
   var tests = [
     [ 'ㄓㄨ',
