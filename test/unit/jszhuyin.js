@@ -650,7 +650,8 @@ function() {
     var candidateId = 42;
     ime.oncandidateschange = function(results) {
       deepEqual(results,
-        [['ㄌㄨㄅㄟˊ', candidateId++]],
+        [['ㄌㄨㄅㄟˊ', candidateId++],
+         ['ㄌ', candidateId++]],
         'Passed!');
     };
     ime.queue.done = function() {
@@ -727,7 +728,8 @@ test('query() with two symbols that matches nothing', function() {
     var candidateId = 42;
     ime.oncandidateschange = function(results) {
       deepEqual(results,
-        [['ㄟㄟ', candidateId++]],
+        [['ㄟㄟ', candidateId++],
+         ['ㄟ', candidateId++]],
         'Passed!');
     };
     ime.queue.done = function() {
