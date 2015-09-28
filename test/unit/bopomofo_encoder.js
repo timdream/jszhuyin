@@ -150,6 +150,23 @@ function() {
   });
 });
 
+test('trimToLength()', function() {
+  var tests = [
+    [ 'ㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓ', 'ㄓㄓㄓㄓㄓㄓ' ],
+    [ 'ㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓ', 'ㄓㄓㄓㄓㄓㄓ' ],
+    [ 'ㄓㄓㄓㄓㄓㄓㄨㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓ', 'ㄓㄓㄓㄓㄓㄓㄨ' ],
+    [ 'ㄓㄓㄓㄓㄓㄉㄧㄢㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓ', 'ㄓㄓㄓㄓㄓㄉㄧㄢ' ],
+    [ 'ㄓㄓㄓㄓㄓㄉㄧㄢˋㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓ', 'ㄓㄓㄓㄓㄓㄉㄧㄢˋ' ]
+  ];
+
+  tests.forEach(function(test) {
+    var expendedEncodedSounds = BopomofoEncoder.encodeExpended(test[0]);
+    equal(
+      BopomofoEncoder.trimToLength(expendedEncodedSounds, 6), test[1], test[0]);
+    equal(BopomofoEncoder.trimToLength(test[0], 6), test[1], test[0]);
+  });
+});
+
 test('getSymbolCombinations()', function() {
   var tests = [
     [ 'ㄓㄨ',
