@@ -7,6 +7,7 @@ var McBopomofoDataConverter =
   require('../../build/mcbopomofo_data_converter.js');
 
 var converter = new McBopomofoDataConverter();
+converter.LONGEST_PHRASE_LENGTH = 3;
 converter.convert(__dirname + '/testdata.txt', __dirname + '/testdata.data');
 
 var buffer = fs.readFileSync(__dirname + '/testdata.data');

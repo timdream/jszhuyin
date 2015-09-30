@@ -287,14 +287,14 @@ function() {
     { index: 40, score: -6.093285083770752, str: '跆' },
     { index: 40, score: -6.300410747528076, str: '邰' },
     { index: 40, score: -7.555683135986328, str: '鮐' },
-    { index: 40, score: -7.85671329498291, str: '旲' },
-    { index: 40, score: -7.85671329498291, str: '炱' },
-    { index: 40, score: -7.85671329498291, str: '嬯' },
-    { index: 40, score: -7.85671329498291, str: '儓' },
-    { index: 40, score: -7.85671329498291, str: '薹' },
     { index: 40, score: -7.85671329498291, str: '駘' },
+    { index: 40, score: -7.85671329498291, str: '薹' },
     { index: 40, score: -7.85671329498291, str: '籉' },
-    { index: 40, score: -7.85671329498291, str: '秮' } ]);
+    { index: 40, score: -7.85671329498291, str: '秮' },
+    { index: 40, score: -7.85671329498291, str: '炱' },
+    { index: 40, score: -7.85671329498291, str: '旲' },
+    { index: 40, score: -7.85671329498291, str: '嬯' },
+    { index: 40, score: -7.85671329498291, str: '儓' } ]);
 });
 
 test('getIncompleteMatched(ㄊ,ㄞ)', function() {

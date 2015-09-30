@@ -120,9 +120,9 @@ test('query() a word with a completed sound', function() {
         [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
          ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
          ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-         ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-         ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-         ['籉', candidateId++],['秮', candidateId++]],
+         ['駘', candidateId++],['薹', candidateId++],['籉', candidateId++],
+         ['秮', candidateId++],['炱', candidateId++],['旲', candidateId++],
+         ['嬯', candidateId++],['儓', candidateId++]],
         'Passed!');
     };
     ime.queue.done = function() {
@@ -150,9 +150,9 @@ test('query() a two-word phrase with completed sounds', function() {
          ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
          ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
          ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-         ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-         ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-         ['籉', candidateId++],['秮', candidateId++]],
+         ['駘', candidateId++],['薹', candidateId++],['籉', candidateId++],
+         ['秮', candidateId++],['炱', candidateId++],['旲', candidateId++],
+         ['嬯', candidateId++],['儓', candidateId++]],
         'Passed!');
     };
     ime.queue.done = function() {
@@ -181,9 +181,9 @@ test('query() a three-word phrase with completed sounds', function() {
          ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
          ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
          ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-         ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-         ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-         ['籉', candidateId++],['秮', candidateId++]],
+         ['駘', candidateId++],['薹', candidateId++],['籉', candidateId++],
+         ['秮', candidateId++],['炱', candidateId++],['旲', candidateId++],
+         ['嬯', candidateId++],['儓', candidateId++]],
         'Passed!');
     };
     ime.queue.done = function() {
@@ -212,9 +212,9 @@ test('query() a three-word composed result with completed sounds', function() {
          ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
          ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
          ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-         ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-         ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-         ['籉', candidateId++],['秮', candidateId++]],
+         ['駘', candidateId++],['薹', candidateId++],['籉', candidateId++],
+         ['秮', candidateId++],['炱', candidateId++],['旲', candidateId++],
+         ['嬯', candidateId++],['儓', candidateId++]],
         'Passed!');
     };
     ime.queue.done = function() {
@@ -245,9 +245,9 @@ test('query() a three-word phrase with completed sounds, ' +
          ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
          ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
          ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-         ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-         ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-         ['籉', candidateId++],['秮', candidateId++]],
+         ['駘', candidateId++],['薹', candidateId++],['籉', candidateId++],
+         ['秮', candidateId++],['炱', candidateId++],['旲', candidateId++],
+         ['嬯', candidateId++],['儓', candidateId++]],
         'Passed!');
     };
     ime.queue.done = function() {
@@ -284,9 +284,9 @@ function() {
          ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
          ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
          ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-         ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-         ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-         ['籉', candidateId++],['秮', candidateId++]],
+         ['駘', candidateId++],['薹', candidateId++],['籉', candidateId++],
+         ['秮', candidateId++],['炱', candidateId++],['旲', candidateId++],
+         ['嬯', candidateId++],['儓', candidateId++]],
         'Passed!');
     };
     ime.queue.done = function() {
@@ -302,9 +302,9 @@ function() {
           [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
            ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
            ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-           ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-           ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-           ['籉', candidateId++],['秮', candidateId++]],
+           ['駘', candidateId++],['薹', candidateId++],['籉', candidateId++],
+           ['秮', candidateId++],['炱', candidateId++],['旲', candidateId++],
+           ['嬯', candidateId++],['儓', candidateId++]],
           'Passed!');
       };
       ime.queue.done = function() {
@@ -344,9 +344,9 @@ function() {
          ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
          ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
          ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-         ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-         ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-         ['籉', candidateId++],['秮', candidateId++]],
+         ['駘', candidateId++],['薹', candidateId++],['籉', candidateId++],
+         ['秮', candidateId++],['炱', candidateId++],['旲', candidateId++],
+         ['嬯', candidateId++],['儓', candidateId++]],
         'Passed!');
     };
     ime.queue.done = function() {
@@ -363,9 +363,9 @@ function() {
            ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
            ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
            ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-           ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-           ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-           ['籉', candidateId++],['秮', candidateId++]],
+           ['駘', candidateId++],['薹', candidateId++],['籉', candidateId++],
+           ['秮', candidateId++],['炱', candidateId++],['旲', candidateId++],
+           ['嬯', candidateId++],['儓', candidateId++]],
           'Passed!');
       };
       ime.queue.done = function() {
@@ -404,9 +404,9 @@ test('query() with symbols exceeds MAX_SOUNDS_LENGTH' +
          ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
          ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
          ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-         ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-         ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-         ['籉', candidateId++],['秮', candidateId++]],
+         ['駘', candidateId++],['薹', candidateId++],['籉', candidateId++],
+         ['秮', candidateId++],['炱', candidateId++],['旲', candidateId++],
+         ['嬯', candidateId++],['儓', candidateId++]],
         'Passed!');
     };
     ime.queue.done = function() {
@@ -572,9 +572,9 @@ test('query() non-exist phrase with non-exist word at 1st place', function() {
          ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
          ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
          ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-         ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-         ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-         ['籉', candidateId++],['秮', candidateId++]],
+         ['駘', candidateId++],['薹', candidateId++],['籉', candidateId++],
+         ['秮', candidateId++],['炱', candidateId++],['旲', candidateId++],
+         ['嬯', candidateId++],['儓', candidateId++]],
         'Passed!');
     };
     ime.queue.done = function() {
@@ -678,9 +678,9 @@ test('query() a word with one symbol', function() {
         [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
          ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
          ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-         ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-         ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-         ['籉', candidateId++],['秮', candidateId++]],
+         ['駘', candidateId++],['薹', candidateId++],['籉', candidateId++],
+         ['秮', candidateId++],['炱', candidateId++],['旲', candidateId++],
+         ['嬯', candidateId++],['儓', candidateId++]],
         'Passed!');
     };
     ime.queue.done = function() {
@@ -761,9 +761,9 @@ function() {
          ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
          ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
          ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-         ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-         ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-         ['籉', candidateId++],['秮', candidateId++]],
+         ['駘', candidateId++],['薹', candidateId++],['籉', candidateId++],
+         ['秮', candidateId++],['炱', candidateId++],['旲', candidateId++],
+         ['嬯', candidateId++],['儓', candidateId++]],
         'Passed!');
     };
     ime.queue.done = function() {
@@ -794,9 +794,9 @@ function() {
          ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
          ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
          ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-         ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-         ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-         ['籉', candidateId++],['秮', candidateId++]],
+         ['駘', candidateId++],['薹', candidateId++],['籉', candidateId++],
+         ['秮', candidateId++],['炱', candidateId++],['旲', candidateId++],
+         ['嬯', candidateId++],['儓', candidateId++]],
         'Passed!');
     };
     ime.queue.done = function() {
@@ -848,24 +848,24 @@ test('Simple interactive query (send all keys in one action).', function() {
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
        ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
+       ['駘', candidateId++],['薹', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++],['炱', candidateId++],['旲', candidateId++],
+       ['嬯', candidateId++],['儓', candidateId++]],
       /* 'ㄊㄞ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['疼愛', candidateId++],
        ['苔', candidateId++],['跆', candidateId++],['邰', candidateId++],
-       ['抬愛', candidateId++],['鮐', candidateId++],['旲', candidateId++],
-       ['炱', candidateId++],['嬯', candidateId++],['儓', candidateId++],
-       ['薹', candidateId++],['駘', candidateId++],['籉', candidateId++],
-       ['秮', candidateId++]],
+       ['抬愛', candidateId++],['鮐', candidateId++],['駘', candidateId++],
+       ['薹', candidateId++],['籉', candidateId++],['秮', candidateId++],
+       ['炱', candidateId++],['旲', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++]],
       /* 'ㄊㄞˊ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
        ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]]];
+       ['駘', candidateId++],['薹', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++],['炱', candidateId++],['旲', candidateId++],
+       ['嬯', candidateId++],['儓', candidateId++]]];
     ime.oncandidateschange = function(candidates) {
       deepEqual(candidates, expectedCandidates.shift(),
         'Candidates equals to expected list.');
@@ -916,24 +916,24 @@ test('Run a simple interactive query.', function() {
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
        ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
+       ['駘', candidateId++],['薹', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++],['炱', candidateId++],['旲', candidateId++],
+       ['嬯', candidateId++],['儓', candidateId++]],
       /* 'ㄊㄞ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['疼愛', candidateId++],
        ['苔', candidateId++],['跆', candidateId++],['邰', candidateId++],
-       ['抬愛', candidateId++],['鮐', candidateId++],['旲', candidateId++],
-       ['炱', candidateId++],['嬯', candidateId++],['儓', candidateId++],
-       ['薹', candidateId++],['駘', candidateId++],['籉', candidateId++],
-       ['秮', candidateId++]],
+       ['抬愛', candidateId++],['鮐', candidateId++],['駘', candidateId++],
+       ['薹', candidateId++],['籉', candidateId++],['秮', candidateId++],
+       ['炱', candidateId++],['旲', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++]],
       /* 'ㄊㄞˊ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
        ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]]];
+       ['駘', candidateId++],['薹', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++],['炱', candidateId++],['旲', candidateId++],
+       ['嬯', candidateId++],['儓', candidateId++]]];
     ime.oncandidateschange = function(candidates) {
       deepEqual(candidates, expectedCandidates.shift(),
         'Candidates equals to expected list.');
@@ -987,24 +987,24 @@ function() {
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
        ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
+       ['駘', candidateId++],['薹', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++],['炱', candidateId++],['旲', candidateId++],
+       ['嬯', candidateId++],['儓', candidateId++]],
       /* 'ㄊㄞ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['疼愛', candidateId++],
        ['苔', candidateId++],['跆', candidateId++],['邰', candidateId++],
-       ['抬愛', candidateId++],['鮐', candidateId++],['旲', candidateId++],
-       ['炱', candidateId++],['嬯', candidateId++],['儓', candidateId++],
-       ['薹', candidateId++],['駘', candidateId++],['籉', candidateId++],
-       ['秮', candidateId++]],
+       ['抬愛', candidateId++],['鮐', candidateId++],['駘', candidateId++],
+       ['薹', candidateId++],['籉', candidateId++],['秮', candidateId++],
+       ['炱', candidateId++],['旲', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++]],
       /* 'ㄊㄞˊ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
        ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]]];
+       ['駘', candidateId++],['薹', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++],['炱', candidateId++],['旲', candidateId++],
+       ['嬯', candidateId++],['儓', candidateId++]]];
     ime.oncandidateschange = function(candidates) {
       deepEqual(candidates, expectedCandidates.shift(),
         'Candidates equals to expected list.');
@@ -1063,24 +1063,24 @@ test('Confirm text with Enter key.', function() {
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
        ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
+       ['駘', candidateId++],['薹', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++],['炱', candidateId++],['旲', candidateId++],
+       ['嬯', candidateId++],['儓', candidateId++]],
       /* 'ㄊㄞ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['疼愛', candidateId++],
        ['苔', candidateId++],['跆', candidateId++],['邰', candidateId++],
-       ['抬愛', candidateId++],['鮐', candidateId++],['旲', candidateId++],
-       ['炱', candidateId++],['嬯', candidateId++],['儓', candidateId++],
-       ['薹', candidateId++],['駘', candidateId++],['籉', candidateId++],
-       ['秮', candidateId++]],
+       ['抬愛', candidateId++],['鮐', candidateId++],['駘', candidateId++],
+       ['薹', candidateId++],['籉', candidateId++],['秮', candidateId++],
+       ['炱', candidateId++],['旲', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++]],
       /* 'ㄊㄞˊ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
        ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
+       ['駘', candidateId++],['薹', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++],['炱', candidateId++],['旲', candidateId++],
+       ['嬯', candidateId++],['儓', candidateId++]],
       /* Suggestions */
       [['北', 0],['北市', 0]]];
     ime.oncandidateschange = function(candidates) {
@@ -1143,24 +1143,24 @@ test('Confirm text with Enter key (SUGGEST_PHRASES = false).', function() {
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
        ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
+       ['駘', candidateId++],['薹', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++],['炱', candidateId++],['旲', candidateId++],
+       ['嬯', candidateId++],['儓', candidateId++]],
       /* 'ㄊㄞ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['疼愛', candidateId++],
        ['苔', candidateId++],['跆', candidateId++],['邰', candidateId++],
-       ['抬愛', candidateId++],['鮐', candidateId++],['旲', candidateId++],
-       ['炱', candidateId++],['嬯', candidateId++],['儓', candidateId++],
-       ['薹', candidateId++],['駘', candidateId++],['籉', candidateId++],
-       ['秮', candidateId++]],
+       ['抬愛', candidateId++],['鮐', candidateId++],['駘', candidateId++],
+       ['薹', candidateId++],['籉', candidateId++],['秮', candidateId++],
+       ['炱', candidateId++],['旲', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++]],
       /* 'ㄊㄞˊ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
        ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
+       ['駘', candidateId++],['薹', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++],['炱', candidateId++],['旲', candidateId++],
+       ['嬯', candidateId++],['儓', candidateId++]],
       /* Confirm */
       []];
     ime.oncandidateschange = function(candidates) {
@@ -1222,24 +1222,24 @@ test('Confirm text with Enter key (set ㄞ and ㄚ interchangable).', function()
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
        ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
+       ['駘', candidateId++],['薹', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++],['炱', candidateId++],['旲', candidateId++],
+       ['嬯', candidateId++],['儓', candidateId++]],
       /* 'ㄊㄞ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['疼愛', candidateId++],
        ['苔', candidateId++],['跆', candidateId++],['邰', candidateId++],
-       ['抬愛', candidateId++],['鮐', candidateId++],['旲', candidateId++],
-       ['炱', candidateId++],['嬯', candidateId++],['儓', candidateId++],
-       ['薹', candidateId++],['駘', candidateId++],['籉', candidateId++],
-       ['秮', candidateId++]],
+       ['抬愛', candidateId++],['鮐', candidateId++],['駘', candidateId++],
+       ['薹', candidateId++],['籉', candidateId++],['秮', candidateId++],
+       ['炱', candidateId++],['旲', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++]],
       /* 'ㄊㄞˊ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
        ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
+       ['駘', candidateId++],['薹', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++],['炱', candidateId++],['旲', candidateId++],
+       ['嬯', candidateId++],['儓', candidateId++]],
       /* Suggestions */
       [['北', 0],['北市', 0]]];
     ime.oncandidateschange = function(candidates) {
@@ -1302,24 +1302,24 @@ test('Confirm text with a non-Bopomofo key.', function() {
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
        ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
+       ['駘', candidateId++],['薹', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++],['炱', candidateId++],['旲', candidateId++],
+       ['嬯', candidateId++],['儓', candidateId++]],
       /* 'ㄊㄞ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['疼愛', candidateId++],
        ['苔', candidateId++],['跆', candidateId++],['邰', candidateId++],
-       ['抬愛', candidateId++],['鮐', candidateId++],['旲', candidateId++],
-       ['炱', candidateId++],['嬯', candidateId++],['儓', candidateId++],
-       ['薹', candidateId++],['駘', candidateId++],['籉', candidateId++],
-       ['秮', candidateId++]],
+       ['抬愛', candidateId++],['鮐', candidateId++],['駘', candidateId++],
+       ['薹', candidateId++],['籉', candidateId++],['秮', candidateId++],
+       ['炱', candidateId++],['旲', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++]],
       /* 'ㄊㄞˊ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
        ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
+       ['駘', candidateId++],['薹', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++],['炱', candidateId++],['旲', candidateId++],
+       ['嬯', candidateId++],['儓', candidateId++]],
       /* Confirm */
       []];
     ime.oncandidateschange = function(candidates) {
@@ -1399,24 +1399,24 @@ test('Confirm text with candidate selection.', function() {
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
        ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
+       ['駘', candidateId++],['薹', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++],['炱', candidateId++],['旲', candidateId++],
+       ['嬯', candidateId++],['儓', candidateId++]],
       /* 'ㄊㄞ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['疼愛', candidateId++],
        ['苔', candidateId++],['跆', candidateId++],['邰', candidateId++],
-       ['抬愛', candidateId++],['鮐', candidateId++],['旲', candidateId++],
-       ['炱', candidateId++],['嬯', candidateId++],['儓', candidateId++],
-       ['薹', candidateId++],['駘', candidateId++],['籉', candidateId++],
-       ['秮', candidateId++]],
+       ['抬愛', candidateId++],['鮐', candidateId++],['駘', candidateId++],
+       ['薹', candidateId++],['籉', candidateId++],['秮', candidateId++],
+       ['炱', candidateId++],['旲', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++]],
       /* 'ㄊㄞˊ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
        ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
+       ['駘', candidateId++],['薹', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++],['炱', candidateId++],['旲', candidateId++],
+       ['嬯', candidateId++],['儓', candidateId++]],
       /* Suggestions */
       []];
     ime.oncandidateschange = function(candidates) {
@@ -1474,39 +1474,39 @@ test('Backspace key removes the last symbol.', function() {
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
        ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
+       ['駘', candidateId++],['薹', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++],['炱', candidateId++],['旲', candidateId++],
+       ['嬯', candidateId++],['儓', candidateId++]],
       /* 'ㄊㄞ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['疼愛', candidateId++],
        ['苔', candidateId++],['跆', candidateId++],['邰', candidateId++],
-       ['抬愛', candidateId++],['鮐', candidateId++],['旲', candidateId++],
-       ['炱', candidateId++],['嬯', candidateId++],['儓', candidateId++],
-       ['薹', candidateId++],['駘', candidateId++],['籉', candidateId++],
-       ['秮', candidateId++]],
+       ['抬愛', candidateId++],['鮐', candidateId++],['駘', candidateId++],
+       ['薹', candidateId++],['籉', candidateId++],['秮', candidateId++],
+       ['炱', candidateId++],['旲', candidateId++],['嬯', candidateId++],
+       ['儓', candidateId++]],
       /* 'ㄊㄞˊ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
        ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
+       ['駘', candidateId++],['薹', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++],['炱', candidateId++],['旲', candidateId++],
+       ['嬯', candidateId++],['儓', candidateId++]],
       /* 'ㄊㄞˊˊ' */
       [['台ˊ', candidateId++],
        ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
        ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]],
+       ['駘', candidateId++],['薹', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++],['炱', candidateId++],['旲', candidateId++],
+       ['嬯', candidateId++],['儓', candidateId++]],
       /* 'ㄊㄞˊ' */
       [['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
        ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
        ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
-       ['旲', candidateId++],['炱', candidateId++],['嬯', candidateId++],
-       ['儓', candidateId++],['薹', candidateId++],['駘', candidateId++],
-       ['籉', candidateId++],['秮', candidateId++]]];
+       ['駘', candidateId++],['薹', candidateId++],['籉', candidateId++],
+       ['秮', candidateId++],['炱', candidateId++],['旲', candidateId++],
+       ['嬯', candidateId++],['儓', candidateId++]]];
     ime.oncandidateschange = function(candidates) {
       deepEqual(candidates, expectedCandidates.shift(),
         'Candidates equals to expected list.');

@@ -4,6 +4,7 @@ var fs = require('fs');
 var JSZhuyinDataPack = require('../lib/jszhuyin_data_pack.js');
 var DatabaseBuilder = require('../build/database_builder.js');
 var McBopomofoLineData = require('../build/mcbopomofo_line_data.js');
+var BopomofoEncoder = require('../lib/bopomofo_encoder.js');
 
 var McBopomofoDataConverter = function McBopomofoDataConverter() {
   this.stage = this.STAGE_IDLE;
@@ -95,16 +96,32 @@ function _sortingResultAndInsertIntoDB(results) {
   var i = 0;
 
   for (encodedStr in results) {
+    var encodedSounds = Array.prototype.map.call(encodedStr, function(chr) {
+      return chr.charCodeAt(0);
+    });
+
     result = results[encodedStr].sort(function(a, b) {
       this._reportProgress(this.STAGE_SORTING_ENTRIES, i);
       i++;
 
-      return (b.score - a.score);
+      if (b.score > a.score) {
+        return 1;
+      }
+      if (b.score < a.score) {
+        return -1;
+      }
+      if (b.str > a.str) {
+        return 1;
+      }
+      if (b.str < a.str) {
+        return -1;
+      }
+
+      throw new Error('McBopomofoDataConverter: ' +
+        'Duplicate entry found for "' +
+        BopomofoEncoder.decode(encodedSounds) + '": "' + a.str + '".');
     }.bind(this));
 
-    var encodedSounds = Array.prototype.map.call(encodedStr, function(chr) {
-      return chr.charCodeAt(0);
-    });
     db.put(encodedSounds, (new JSZhuyinDataPack(result)).getPacked());
   }
 
