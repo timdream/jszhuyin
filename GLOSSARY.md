@@ -21,6 +21,13 @@ This technique was found in [libtabe](http://sourceforge.net/projects/libtabe/) 
 This project implements the encoder-decoder in `lib/bopomofo_encoder.js`.
 It's worthy to note the encoded sounds can be stored in strings, since JavaScript strings are encoded in USC-2.
 
+## Expended encoded sound
+
+This is specific to JSZhuyin internally only.
+Since the processing logic supports typing words with incomplete sounds, there will be multiple ways to seperate a set of symbols into (incomplete) sounds (as opposed to only seperate the sounds when step into the tonal mark).
+Expended encoded sound encodes each symbol into it's own 16 bit number so they can be groupped and processed seperately.
+The only exception is when a tonal mark is really encountered -- in that case symbols are regarded as a completed sound and they are not expended (this rule can be changed but results might not be useful to users).
+
 ## Input Method
 
 > 輸入法
@@ -79,6 +86,7 @@ We can also infer the number of sound a series of Bopomofo symbols inputted by p
 
 Mandarin, like other spoken Chinese languages, are tonal languages.
 A sound can only be denoted with a tone recorded by a tonal mark.
+Consequently, a tonal mark can be used as a determiner when processing a set of symbols.
 
 ## Word
 
