@@ -199,22 +199,22 @@ test('trimToLengthFromEnd()', function() {
 test('getSymbolCombinations()', function() {
   var tests = [
     [ 'ㄓㄨ',
-      [ [7936],
-        [7680, 256] ] ],
+      [ [7680, 256],
+        [7936] ] ],
     [ 'ㄉㄧㄢˋ',
       [ [ 2764 ] ] ],
     [ 'ㄉㄧㄢˋㄉㄧㄢˋ',
-      [ [ 2764,2764 ] ] ],
+      [ [ 2764, 2764 ] ] ],
     [ 'ㄉㄧㄢ',
-      [ [2760],
+      [ [2560, 128, 72],
         [2560, 200],
         [2688, 72],
-        [2560, 128, 72] ] ],
+        [2760] ] ],
     [ 'ㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓ',
       [ [7680, 7680, 7680, 7680, 7680, 7680, 7680, 7680, 7680, 7680] ] ],
     [ 'ㄓㄓㄓㄓㄓㄓㄓㄨㄓㄓ',
-      [ [7680, 7680, 7680, 7680, 7680, 7680, 7936, 7680, 7680],
-        [7680, 7680, 7680, 7680, 7680, 7680, 7680, 256, 7680, 7680] ] ],
+      [ [7680, 7680, 7680, 7680, 7680, 7680, 7680, 256, 7680, 7680],
+        [7680, 7680, 7680, 7680, 7680, 7680, 7936, 7680, 7680] ] ],
     [ 'ㄉㄧㄢˋㄓㄓㄓㄓㄓㄓ',
       [ [ 2764, 7680, 7680, 7680, 7680, 7680, 7680 ] ] ]
   ];
@@ -225,6 +225,39 @@ test('getSymbolCombinations()', function() {
       test[1], test[0]);
 
     deepEqual(BopomofoEncoder.getSymbolCombinations(test[0]),
+      test[1], test[0]);
+  });
+});
+
+test('getSymbolCombinations() with length = 2', function() {
+  var tests = [
+    [ 'ㄓㄨ',
+      [ [7680, 256],
+        [7936] ] ],
+    [ 'ㄉㄧㄢˋ',
+      [ [ 2764 ] ] ],
+    [ 'ㄉㄧㄢˋㄉㄧㄢˋ',
+      [ [ 2764, 2764 ] ] ],
+    [ 'ㄉㄧㄢˋㄉㄧㄢˋㄉㄧㄢˋ',
+      [ ] ],
+    [ 'ㄉㄧㄢ',
+      [ [2560, 200],
+        [2688, 72],
+        [2760] ] ],
+    [ 'ㄓㄓㄓㄓㄓㄓㄓㄓㄓㄓ',
+      [ ] ],
+    [ 'ㄓㄓㄓㄓㄓㄓㄓㄨㄓㄓ',
+      [ ] ],
+    [ 'ㄉㄧㄢˋㄓㄓㄓㄓㄓㄓ',
+      [ ] ]
+  ];
+
+  tests.forEach(function(test) {
+    var expendedEncodedSounds = BopomofoEncoder.encodeExpended(test[0]);
+    deepEqual(BopomofoEncoder.getSymbolCombinations(expendedEncodedSounds, 2),
+      test[1], test[0]);
+
+    deepEqual(BopomofoEncoder.getSymbolCombinations(test[0], 2),
       test[1], test[0]);
   });
 });
