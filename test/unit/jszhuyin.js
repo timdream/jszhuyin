@@ -543,7 +543,7 @@ test('query() non-exist phrase with non-exist word at 0th place', function() {
     var candidateId = 42;
     ime.oncandidateschange = function(results) {
       deepEqual(results,
-        [['ㄅㄟˊㄊㄞˊ', candidateId++],
+        [['ㄅㄟˊ台', candidateId++],
          ['ㄅㄟˊ', candidateId++]],
         'Passed!');
     };
