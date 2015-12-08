@@ -326,7 +326,8 @@
     var T = {
       LOADING: '載入中...',
       LOADED: '載入完成。',
-      ERROR: '載入失敗，無法使用。'
+      LOAD_ERROR: '資料檔案載入失敗，無法使用。',
+      ERROR: '程式錯誤（%ERROR%）。'
     };
 
     function ConfigDialog() {
@@ -477,8 +478,14 @@
         client.setConfig(configHandler.getConfigObject());
         status.textContent = T.LOADED;
       };
-      client.onerror = function() {
-        status.textContent = T.ERROR;
+      client.onerror = function(err) {
+        if (err.message.indexOf('DataLoader') !== -1) {
+          status.textContent = T.LOAD_ERROR;
+        } else {
+          leaveDistractionFree();
+          status.textContent = T.ERROR.replace('%ERROR%', err.message);
+          console.error(err);
+        }
       };
 
       var webIME = new JSZhuyinWebIME({
