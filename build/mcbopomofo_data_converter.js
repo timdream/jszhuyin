@@ -1,7 +1,7 @@
 'use strict';
 
 var fs = require('fs');
-var JSZhuyinDataPack = require('../lib/jszhuyin_data_pack.js');
+var JSZhuyinDataPack = require('../lib/jszhuyin_data_pack.js').JSZhuyinDataPack;
 var DatabaseBuilder = require('../build/database_builder.js');
 var McBopomofoLineData = require('../build/mcbopomofo_line_data.js');
 var BopomofoEncoder = require('../lib/bopomofo_encoder.js');
