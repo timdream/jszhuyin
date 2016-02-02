@@ -325,6 +325,7 @@
 
     var T = {
       LOADING: '載入中...',
+      LOADING_WITH_PROGRESS: '載入中（%PROGRESS%）...',
       LOADED: '載入完成。',
       LOAD_ERROR: '資料檔案載入失敗，無法使用。',
       ERROR: '程式錯誤（%ERROR%）。'
@@ -471,6 +472,15 @@
 
       var client = window.client = new JSZhuyinClient();
       client.load(new JSZhuyinServerWorkerLoader());
+      client.ondownloadprogress = function(progressDict) {
+        if (!progressDict.lengthComputable) {
+          status.textContent = T.LOADING_WITH_PROGRESS.replace(
+            '%PROGRESS%', (progressDict.loaded / 1048576).toFixed(2) + ' MB');
+        } else {
+          status.textContent = T.LOADING_WITH_PROGRESS.replace('%PROGRESS%',
+            (progressDict.loaded / progressDict.total * 100).toFixed(2) + '%');
+        }
+      };
       client.onload = function() {
         inputarea.setAttribute('contenteditable', true);
         inputarea.focus();
@@ -533,4 +543,3 @@
   </script>
 </body>
 </html>
-
