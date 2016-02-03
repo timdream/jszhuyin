@@ -414,12 +414,16 @@
       this.reorderEl.checked = this.reorderSymbols =
         (hash.indexOf('reorder=0') === -1);
 
-      var interchangagblePairs = this.interchangagblePairs =
-        (hash.match(/fuzzy=([^&]*)/) || ['',''])[1];
+      this.interchangagblePairs = '';
+      var interchangagblePairs =
+        decodeURIComponent((hash.match(/fuzzy=([^&]*)/) || ['',''])[1]);
 
       this.interchangagblePairsEls.forEach(function(el) {
         el.checked = (interchangagblePairs.indexOf(el.dataset.pair) !== -1);
-      });
+        if (el.checked) {
+          this.interchangagblePairs += el.dataset.pair;
+        }
+      }.bind(this));
     };
     ConfigHandler.prototype.setConfigToHash = function() {
       var hash = [];
