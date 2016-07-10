@@ -81,7 +81,7 @@ module.exports = function(grunt) {
   // Run the test suite with QUnit on SlimerJS
   grunt.registerTask('test-slimerjs', ['connect', 'shell:qunit-slimerjs']);
 
-  // Pull data from McBopomofo repo and convert them to JSON.
+  // Pull data from McBopomofo repo and convert them to our binary data.
   grunt.registerTask('data', ['shell:data', 'convert-data', 'clean:data']);
 
   // Quick shell command to rsync the code to my site

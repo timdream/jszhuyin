@@ -41,7 +41,7 @@ MIT License
 
 使用 MIT License 授權的[小麥注音](http://mcbopomofo.openvanilla.org)詞庫，由 [mjhsieh](https://github.com/mjhsieh) 維護，基於 [libtabe](http://sourceforge.net/projects/libtabe/)。
 
-使用前請先執行 `grunt data` 從 McBopomofo 產生適用於 JSZhuyin 的詞庫檔案。
+使用前請先執行 `npm run grunt data` 從 McBopomofo 產生適用於 JSZhuyin 的詞庫檔案。
 
 ## 斷詞演算法
 
