@@ -26,15 +26,6 @@ module.exports = function(grunt) {
         }
       }
     },
-    qunit: {
-      test: {
-        options: {
-          urls: [
-            'http://localhost:' + HTTPD_PORT + '/test/'
-          ]
-        }
-      }
-    },
     mochaTest: {
       test: {
         options: {
@@ -60,14 +51,10 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-mocha-test');
 
-  grunt.loadNpmTasks('grunt-contrib-qunit');
   grunt.loadNpmTasks('grunt-contrib-connect');
 
   // Run tests
   grunt.registerTask('test', ['mochaTest', 'jshint', 'test-slimerjs']);
-
-  // Run the test suite with QUnit on PhantomJS (currently broken.)
-  grunt.registerTask('test-phantomjs', ['connect', 'qunit']);
 
   // Run the test suite with QUnit on SlimerJS
   grunt.registerTask('test-slimerjs', ['connect', 'qunit-slimerjs']);
