@@ -22,6 +22,7 @@
     "grunt-contrib-qunit": "^1.2.0",
     "grunt-mocha-test": "^0.12.7",
     "mocha": "^2.5.3",
+    "qunitjs": "^1.23.1",
     "slimerjs": "^0.9.1-2"
   },
   "license": "MIT"
