@@ -10,6 +10,35 @@ This library was intially developed as part of [Mozilla Firefox OS - Gaia](https
 
 MIT License
 
+## CLI 介面
+
+    $ npm install --global jszhuyin
+    ...
+    $ jszhuyin ㄐㄊㄌㄞˊㄒㄧㄝˇㄓㄨˋㄧㄣㄕㄖㄈ
+    今天來寫注音輸入法
+    今天
+    家庭
+    交通
+    具體
+    檢討
+    ...
+
+## 從 NodeJS 呼叫
+
+```javascript
+const { JSZhuyin } = require('jszhuyin');
+var jszhuyin = new JSZhuyin();
+jszhuyin.load();
+
+var candidates = [];
+jszhuyin.oncandidateschange = function(c) {
+  candidates = c;
+};
+jszhuyin.handleKey('ㄐㄊㄌㄞˊㄒㄧㄝˇㄓㄨˋㄧㄣㄕㄖㄈ');
+
+console.log(candidates[0][0]); // '今天來寫注音輸入法'
+```
+
 ## 安裝至網站
 
 您可以直接連結 Github 上的檔案：

@@ -23,6 +23,7 @@
     "grunt": "grunt"
   },
   "bin": "./lib/cli.js",
+  "main": "./lib/main.js",
   "devDependencies": {
     "chai": "^3.5.0",
     "grunt": "^1.0.1",
