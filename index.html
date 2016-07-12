@@ -336,6 +336,7 @@
     ConfigDialog.prototype.CLOSE_BTN_ID = 'config-dialog-close';
     ConfigDialog.prototype.OPEN_BTN_ID = 'config-btn';
     ConfigDialog.prototype.DIALOG_ID = 'config-dialog-dialog';
+    ConfigDialog.prototype.onopened = null;
     ConfigDialog.prototype.start = function() {
       this.dialogEl = document.getElementById(this.DIALOG_ID);
       this.closeEl = document.getElementById(this.CLOSE_BTN_ID);
@@ -350,6 +351,11 @@
       switch (target) {
         case this.openEl:
           this.dialogEl.classList.add('show');
+
+          if (typeof this.onopened === 'function') {
+            this.onopened();
+          }
+
           break;
         case this.closeEl:
           this.dialogEl.classList.remove('show');
@@ -464,6 +470,7 @@
       var candidatesList = document.getElementById('candidates');
 
       var configDialog = new ConfigDialog();
+      configDialog.onopened = leaveDistractionFree;
       configDialog.start();
 
       var configHandler = new ConfigHandler();
