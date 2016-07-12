@@ -811,6 +811,32 @@ function() {
   ime.load();
 });
 
+test('handleKey() a multi-symbols key', function() {
+  var ime = new JSZhuyin();
+  ime.dataURL = './resources/testdata.data';
+  ime.onloadend = function() {
+    start();
+    expect(1);
+    var candidateId = 42;
+    ime.oncandidateschange = function(results) {
+      deepEqual(results,
+        [['台北', candidateId++],
+         ['台', candidateId++],['臺', candidateId++],['抬', candidateId++],
+         ['颱', candidateId++],['檯', candidateId++],['苔', candidateId++],
+         ['跆', candidateId++],['邰', candidateId++],['鮐', candidateId++],
+         ['駘', candidateId++],['薹', candidateId++],['籉', candidateId++],
+         ['秮', candidateId++],['炱', candidateId++],['旲', candidateId++],
+         ['嬯', candidateId++],['儓', candidateId++]],
+        'Passed!');
+    };
+    ime.handleKey('ㄊㄞˊㄅㄟˇ');
+    ime.unload();
+  };
+
+  stop();
+  ime.load();
+});
+
 test('updateComposition()', function() {
   var ime = new JSZhuyin();
   ime.dataURL = './resources/testdata.data';
