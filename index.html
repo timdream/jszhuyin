@@ -143,37 +143,6 @@
       float: right;
     }
 
-    @media screen and (min-width: 768px) {
-      #candidates,
-      #candidates li {
-        display: block;
-        clear: both;
-      }
-
-      #panel {
-        padding-bottom: 8px;
-      }
-
-      #candidates::after {
-        margin-bottom: 0;
-      }
-
-      #candidates li {
-        padding-left: 2em;
-      }
-
-      #candidates li span {
-        float: none;
-        border: none;
-        background: none;
-        padding-left: 0;
-      }
-
-      #candidates li span::before {
-        margin: 3px 8px 0 -2em;
-      }
-    }
-
     #candidates.can-go-left:not(.can-go-right)::after {
       content: '←';
     }
@@ -195,6 +164,41 @@
       margin-right: 0.5em;
       margin-top: 3px;
       width: 1.5em;
+    }
+
+    @media screen and (min-width: 768px) {
+      #candidates,
+      #candidates li {
+        display: block;
+        clear: both;
+      }
+
+      #panel {
+        padding-bottom: 8px;
+      }
+
+      #candidates::after {
+        margin-bottom: 0;
+      }
+
+      #candidates li {
+        padding-left: 2em;
+      }
+
+      #candidates li:hover {
+        background-color: #eee;
+      }
+
+      #candidates li span {
+        float: none;
+        border: none;
+        background: none;
+        padding-left: 0;
+      }
+
+      #candidates li span::before {
+        margin: 1px 8px 0 -2em;
+      }
     }
 
     /* Config */
@@ -650,6 +654,7 @@
         function(candidate, index) {
           var element = this.element;
           var li = document.createElement('li');
+          li.setAttribute('data-index', index);
           var span = document.createElement('span');
           span.textContent = candidate[0];
           span.setAttribute('data-index', index);
