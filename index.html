@@ -79,6 +79,21 @@
       outline: none;
     }
 
+
+    @media screen and (min-width: 768px) {
+      #panel {
+        position: absolute;
+        z-index: 2000;
+        max-width: 50%;
+        margin: 5px 10px 10px 0;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+      }
+
+      body {
+        margin-bottom: 40%;
+      }
+    }
+
     #panel .panel-heading {
       margin-bottom: 0;
     }
@@ -126,6 +141,37 @@
 
     #candidates::after {
       float: right;
+    }
+
+    @media screen and (min-width: 768px) {
+      #candidates,
+      #candidates li {
+        display: block;
+        clear: both;
+      }
+
+      #panel {
+        padding-bottom: 8px;
+      }
+
+      #candidates::after {
+        margin-bottom: 0;
+      }
+
+      #candidates li {
+        padding-left: 2em;
+      }
+
+      #candidates li span {
+        float: none;
+        border: none;
+        background: none;
+        padding-left: 0;
+      }
+
+      #candidates li span::before {
+        margin: 3px 8px 0 -2em;
+      }
     }
 
     #candidates.can-go-left:not(.can-go-right)::after {
@@ -215,7 +261,8 @@
       <button id="config-btn" class="pull-right btn btn-default disabled"><span class="glyphicon glyphicon-wrench"></span></button>
       <strong>JS 注音</strong>為使用 Web 技術開發的自動選字注音輸入法。</p>
     <p>您可以在此處線上輸入中文，不需安裝任何程式。</p>
-    <div id="inputarea" class="well well-sm"></div>
+    <!-- We would need a <br> here to make sure we can get the client rect we could work with -->
+    <div id="inputarea" class="well well-sm"><br/></div>
     <div class="panel panel-primary" id="panel" hidden>
       <div class="panel-heading"><span id="composition"></span></div>
       <ul class="pagination" id="candidates"></ul>
@@ -531,11 +578,70 @@
         if (!candidatesList.children.length &&
             !composition.textContent.length) {
           panel.setAttribute('hidden', 'true');
+          window.removeEventListener('resize', positionPanel);
 
           return;
         }
 
         panel.removeAttribute('hidden');
+        window.addEventListener('resize', positionPanel);
+
+        positionPanel();
+      };
+
+      var positionPanel = function positionPanel() {
+        var sel = window.getSelection();
+        // XXX sync reflow, improve this.
+
+        var isFloating =
+          window.getComputedStyle(panel).getPropertyValue('position') ===
+          'absolute';
+        if (!isFloating) {
+          // No need to calculate the position, goodbye!
+          return;
+        }
+
+        var rect;
+        rect = sel.getRangeAt(0).getBoundingClientRect();
+        if (rect.width === 0 && rect.left === 0 && rect.right === 0) {
+          // Empty rect?! Maybe because the caret is not placed in a text node,
+          // We need to get a rect by considering the node (probably <br>)
+          // before the caret.
+          var el = sel.focusNode.childNodes[sel.focusOffset];
+          if (el) {
+            rect = el.getBoundingClientRect();
+          } else {
+            // This only happens if inputarea is emptied, or if use have
+            // pasted empty element into our inputarea.
+            rect = sel.focusNode.getBoundingClientRect();
+          }
+        }
+
+        if (rect.width === 0 && rect.left === 0 && rect.right === 0) {
+          // Still empty rect?! Let's use the safe fallback.
+          rect = inputarea.getBoundingClientRect();
+        }
+
+        panel.style.top = (
+          document.documentElement.scrollTop +
+          document.body.scrollTop +
+          rect.top +
+          rect.height).toFixed(2) + 'px';
+
+        var panelRect = panel.getBoundingClientRect();
+        if (rect.left + panelRect.width <
+          document.body.getBoundingClientRect().width) {
+          panel.style.left = rect.left.toFixed(2) + 'px';
+          panel.style.right = '';
+        } else {
+          panel.style.left = '';
+          panel.style.right = '0';
+        }
+
+        if (document.documentElement.clientHeight <
+            (panelRect.top + panelRect.height)) {
+          panel.scrollIntoView();
+        }
       };
 
       // Overwrite the addCandidateItem() method because
