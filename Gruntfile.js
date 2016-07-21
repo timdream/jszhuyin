@@ -29,10 +29,10 @@ module.exports = function(grunt) {
     mochaTest: {
       test: {
         options: {
-          reporter: 'dot',
+          reporter: 'spec',
           ui: 'qunit'
         },
-        src: ['test/build/**/*.js']
+        src: ['test/build/**/*.js', 'test/interaction/test_node.js']
       }
     },
     jshint: {
@@ -150,6 +150,12 @@ module.exports = function(grunt) {
     var cp = childProcess.execFile(
       binPath, childArgs,
       function(err, stdout, stderr) {
+        if (err) {
+          grunt.log.error(err);
+        }
+        if (stderr) {
+          grunt.log.error(stderr);
+        }
         if (err || stderr || stdout.indexOf(', 0 failed.') === -1) {
           done(false);
         } else {
