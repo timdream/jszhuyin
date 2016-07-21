@@ -1,5 +1,23 @@
 [
   {
     "filename": "simple.js"
+  },
+  {
+    "filename": "simple-no-suggestion.js"
+  },
+  {
+    "filename": "simple-symbol.js"
+  },
+  {
+    "filename": "enter-unhandled.js"
+  },
+  {
+    "filename": "select.js"
+  },
+  {
+    "filename": "backspace.js"
+  },
+  {
+    "filename": "backspace-unhandled.js"
   }
 ]

@@ -61,14 +61,22 @@ WebTestsLoader.prototype = {
     taskTests.forEach(function(TaskTest) {
       test(TaskTest.NAME, function() {
         stop();
-        ok(true, TaskTest.NAME); // :'(
+
+        var taskTest = new TaskTest();
 
         var jszhuyin = new JSZhuyin();
         jszhuyin.DATA_ARRAY_BUFFER = testdataBuffer;
+        for (var key in taskTest.config) {
+          jszhuyin[key] = taskTest.config[key];
+        }
         jszhuyin.load();
         var runner = new TaskRunner(jszhuyin);
-        runner.ondone = start;
-        var taskTest = new TaskTest();
+        runner.ondone = function() {
+          // XXX Fix this
+          //jszhuyin.unload();
+          ok(true, TaskTest.NAME); // :'(
+          start();
+        };
         runner.run(taskTest);
       });
     });
@@ -77,18 +85,27 @@ WebTestsLoader.prototype = {
     taskTests.forEach(function(TaskTest) {
       test(TaskTest.NAME, function() {
         stop();
-        ok(true, TaskTest.NAME); // :'(
+
+        var taskTest = new TaskTest();
 
         var jszhuyin = new JSZhuyinClient();
         jszhuyin.onloadend = function() {
           var runner = new TaskRunner(jszhuyin);
-          runner.ondone = start;
-          var taskTest = new TaskTest();
+          runner.ondone = function() {
+            jszhuyin.unload();
+            ok(true, TaskTest.NAME); // :'(
+            start();
+          };
           runner.run(taskTest);
         };
+
+        var config = { dataURL: '../test/resources/testdata.data' };
+        for (var key in taskTest.config) {
+          config[key] = taskTest.config[key];
+        }
+
         jszhuyin.load(
-          new JSZhuyinServerWorkerLoader('../lib/worker.js'),
-          { dataURL: '../test/resources/testdata.data' });
+          new JSZhuyinServerWorkerLoader('../lib/worker.js'), config);
       });
     });
 
@@ -96,18 +113,27 @@ WebTestsLoader.prototype = {
     taskTests.forEach(function(TaskTest) {
       test(TaskTest.NAME, function() {
         stop();
-        ok(true, TaskTest.NAME); // :'(
+
+        var taskTest = new TaskTest();
 
         var jszhuyin = new JSZhuyinClient();
         jszhuyin.onloadend = function() {
           var runner = new TaskRunner(jszhuyin);
-          runner.ondone = start;
-          var taskTest = new TaskTest();
+          runner.ondone = function() {
+            jszhuyin.unload();
+            ok(true, TaskTest.NAME); // :'(
+            start();
+          };
           runner.run(taskTest);
         };
+
+        var config = { dataURL: '../test/resources/testdata.data' };
+        for (var key in taskTest.config) {
+          config[key] = taskTest.config[key];
+        }
+
         jszhuyin.load(
-          new JSZhuyinServerIframeLoader('../lib/frame.html'),
-          { dataURL: '../test/resources/testdata.data' });
+          new JSZhuyinServerIframeLoader('../lib/frame.html'), config);
       });
     });
 

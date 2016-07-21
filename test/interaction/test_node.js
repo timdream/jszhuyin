@@ -16,11 +16,15 @@ manifest.forEach(function(fileDesc) {
   var TaskTest = require('./tests/' + fileDesc.filename).TaskTest;
 
   test(TaskTest.NAME, function() {
+    var taskTest = new TaskTest();
+
     var jszhuyin = new JSZhuyin();
     jszhuyin.DATA_ARRAY_BUFFER = testdataBuffer;
+    for (var key in taskTest.config) {
+      jszhuyin[key] = taskTest.config[key];
+    }
     jszhuyin.load();
     var runner = new TaskRunner(jszhuyin);
-    var taskTest = new TaskTest();
     runner.run(taskTest);
   });
 });
