@@ -3,6 +3,9 @@
     "filename": "simple.js"
   },
   {
+    "filename": "simple-interchangable.js"
+  },
+  {
     "filename": "simple-no-suggestion.js"
   },
   {
@@ -19,5 +22,8 @@
   },
   {
     "filename": "backspace-unhandled.js"
+  },
+  {
+    "filename": "no-wait.js"
   }
 ]
