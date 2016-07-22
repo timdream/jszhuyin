@@ -39,6 +39,8 @@ jszhuyin.handleKey('ㄐㄊㄌㄞˊㄒㄧㄝˇㄓㄨˋㄧㄣㄕㄖㄈ');
 console.log(candidates[0][0]); // '今天來寫注音輸入法'
 ```
 
+[在 Tonic 試用此範例](https://tonicdev.com/npm/jszhuyin)。
+
 ## 安裝至網站
 
 您可以直接連結 Github 上的檔案：
