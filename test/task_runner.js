@@ -18,6 +18,9 @@ function TaskRunner(jszhuyin) {
 };
 
 TaskRunner.prototype = {
+  DETECT_CALLBACKS: [
+    'compositionupdate', 'candidateschange', 'compositionend'],
+
   run: function(taskTask) {
     if (this.tasks && this.tasks.length) {
       throw new Error('Task is running.');
@@ -28,8 +31,8 @@ TaskRunner.prototype = {
     this._runTask();
   },
 
-  _throwOnExec: function() {
-    throw new Error('Should not execute again.');
+  _throwOnExec: function(cbName) {
+    throw new Error(cbName + ' callback should not execute.');
   },
 
   _runTask: function() {
@@ -50,7 +53,7 @@ TaskRunner.prototype = {
         this.jszhuyin.onactionhandled = function() {
           this.jszhuyin.onactionhandled = null;
           if (callbackValues) {
-            task.expectCallbacks.forEach(function(cbName) {
+            this.DETECT_CALLBACKS.forEach(function(cbName) {
               this.jszhuyin['on' + cbName] = null;
             }.bind(this));
             task.checkCallbackValues
@@ -62,11 +65,26 @@ TaskRunner.prototype = {
         if (task.expectCallbacks) {
           callbackValues = {};
           task.expectCallbacks.forEach(function(cbName) {
+            if (this.DETECT_CALLBACKS.indexOf(cbName) === -1) {
+              throw new Error('You cannot detect ' + cbName +
+                ' in the task runner steps.');
+            }
+
             this.jszhuyin['on' + cbName] = function(val) {
-              this.jszhuyin['on' + cbName] = this._throwOnExec.bind(this);
+              this.jszhuyin['on' + cbName] =
+                this._throwOnExec.bind(this, cbName);
               callbackValues[cbName] = val;
             }.bind(this);
           }.bind(this));
+
+          this.DETECT_CALLBACKS
+            .filter(function(cbName) {
+              return (task.expectCallbacks.indexOf(cbName) === -1);
+            }.bind(this))
+            .forEach(function(cbName) {
+              this.jszhuyin['on' + cbName] =
+                this._throwOnExec.bind(this, cbName);
+            }.bind(this));
         }
       }
 

@@ -25,5 +25,68 @@
   },
   {
     "filename": "no-wait.js"
+  },
+  {
+    "filename": "multi-symbols.js"
+  },
+  {
+    "filename": "phrase.js"
+  },
+  {
+    "filename": "phrase-incomplete.js"
+  },
+  {
+    "filename": "phrase2.js"
+  },
+  {
+    "filename": "phrase-incomplete2.js"
+  },
+  {
+    "filename": "compose-phrase.js"
+  },
+  {
+    "filename": "phrase-longest-length.js"
+  },
+  {
+    "filename": "max-sound-overflow-from-phrase.js"
+  },
+  {
+    "filename": "max-sound-overflow-from-composed.js"
+  },
+  {
+    "filename": "max-sound-overflow-from-partial.js"
+  },
+  {
+    "filename": "max-sound-overflow-from-typo.js"
+  },
+  {
+    "filename": "split-sounds.js"
+  },
+  {
+    "filename": "split-sounds2.js"
+  },
+  {
+    "filename": "nothing.js"
+  },
+  {
+    "filename": "nothing2.js"
+  },
+  {
+    "filename": "nothing-completed.js"
+  },
+  {
+    "filename": "nothing-completed2.js"
+  },
+  {
+    "filename": "nothing-complete-first.js"
+  },
+  {
+    "filename": "nothing-complete-second.js"
+  },
+  {
+    "filename": "typo-first.js"
+  },
+  {
+    "filename": "typo-second.js"
   }
 ]
