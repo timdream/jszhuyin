@@ -15,7 +15,7 @@ suite('JSZhuyin interaction tests');
 manifest.forEach(function(fileDesc) {
   var TaskTest = require('./tests/' + fileDesc.filename).TaskTest;
 
-  test(TaskTest.NAME, function() {
+  test(TaskTest.NAME, function(done) {
     var taskTest = new TaskTest();
 
     var jszhuyin = new JSZhuyin();
@@ -25,6 +25,10 @@ manifest.forEach(function(fileDesc) {
     }
     jszhuyin.load();
     var runner = new TaskRunner(jszhuyin);
+    runner.ondone = function() {
+      jszhuyin.unload();
+      done();
+    };
     runner.run(taskTest);
   });
 });

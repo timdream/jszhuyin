@@ -72,8 +72,7 @@ WebTestsLoader.prototype = {
         jszhuyin.load();
         var runner = new TaskRunner(jszhuyin);
         runner.ondone = function() {
-          // XXX Fix this
-          //jszhuyin.unload();
+          jszhuyin.unload();
           ok(true, TaskTest.NAME); // :'(
           start();
         };
