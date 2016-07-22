@@ -114,6 +114,8 @@
 					for (i = 0, len = currentTestAssertions.length; i < len; i++) {
 						console.log('    ' + currentTestAssertions[i]);
 					}
+				} else {
+					console.log('Test passed: ' + name);
 				}
 
 				currentTestAssertions.length = 0;
