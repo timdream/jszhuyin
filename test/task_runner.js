@@ -21,13 +21,13 @@ TaskRunner.prototype = {
   DETECT_CALLBACKS: [
     'compositionupdate', 'candidateschange', 'compositionend'],
 
-  run: function(taskTask) {
+  run: function(taskTest) {
     if (this.tasks && this.tasks.length) {
       throw new Error('Task is running.');
     }
 
-    this.taskTask = taskTask;
-    this.tasks = taskTask.tasks;
+    this.taskTest = taskTest;
+    this.tasks = [].concat(taskTest.tasks);
     this._runTask();
   },
 
@@ -38,7 +38,7 @@ TaskRunner.prototype = {
   _runTask: function() {
     var task = this.tasks.shift();
     if (!task) {
-      this.taskTask = null;
+      this.taskTest = null;
       this.tasks = null;
       if (typeof this.ondone === 'function') {
         this.ondone();
@@ -57,7 +57,7 @@ TaskRunner.prototype = {
               this.jszhuyin['on' + cbName] = null;
             }.bind(this));
             task.checkCallbackValues
-              .call(this.taskTask, callbackValues, this.jszhuyin);
+              .call(this.taskTest, callbackValues, this.jszhuyin);
           }
           this._runTask();
         }.bind(this);
@@ -93,7 +93,7 @@ TaskRunner.prototype = {
 
       if (task.checkReturnedValue) {
         task.checkReturnedValue
-          .call(this.taskTask, returnValue, this.jszhuyin);
+          .call(this.taskTest, returnValue, this.jszhuyin);
       }
 
       if (wait) {
