@@ -2,7 +2,8 @@
 
 /* global JSZhuyin, JSZhuyinClient, JSZhuyinServerWorkerLoader,
           JSZhuyinServerIframeLoader,
-          TaskRunner, arrayToUint16LEArrayBuffer, testdataResArray */
+          TaskRunner, arrayToUint16LEArrayBuffer, testdataResArray,
+          QUnit */
 
 // This runs the interaction tests against QUnit 1.x
 // Eventually we should be using Mocha and TDD UI.
@@ -143,19 +144,10 @@ WebTestsLoader.prototype = {
   }
 };
 
-module('Test setup');
+QUnit.config.autostart = false;
 
 var loader = new WebTestsLoader();
 loader.load();
-
-test('Interaction test setup', function() {
-  expect(0);
-  if (loader.isDone) {
-    return;
-  }
-
-  stop();
-  loader.ondone = start;
-});
+loader.ondone = QUnit.start.bind(QUnit);
 
 })();
