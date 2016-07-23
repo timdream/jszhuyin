@@ -46,7 +46,7 @@
       {
         fn: 'handleKey',
         args: ['Enter'],
-        wait: true,
+        wait: 4,
         checkReturnedValue: function(returnedValue) {
           assert(returnedValue, 'Expected handled.');
         },

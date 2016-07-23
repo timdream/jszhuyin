@@ -28,6 +28,7 @@ TaskRunner.prototype = {
 
     this.taskTest = taskTest;
     this.tasks = [].concat(taskTest.tasks);
+    this.noWaitActionHandled = 0;
     this._runTask();
   },
 
@@ -48,9 +49,18 @@ TaskRunner.prototype = {
 
     if (task.fn) {
       var wait = task.wait;
+      var waitCount = (typeof wait === 'number') ? wait : 1;
+
       var callbackValues;
       if (wait) {
+        waitCount -= this.noWaitActionHandled;
+        this.noWaitActionHandled = 0;
+
         this.jszhuyin.onactionhandled = function() {
+          waitCount--;
+          if (waitCount) {
+            return;
+          }
           this.jszhuyin.onactionhandled = null;
           if (callbackValues) {
             this.DETECT_CALLBACKS.forEach(function(cbName) {
@@ -71,6 +81,10 @@ TaskRunner.prototype = {
             }
 
             this.jszhuyin['on' + cbName] = function(val) {
+              if (waitCount !== 1) {
+                return;
+              }
+
               this.jszhuyin['on' + cbName] =
                 this._throwOnExec.bind(this, cbName);
               callbackValues[cbName] = val;
@@ -86,6 +100,11 @@ TaskRunner.prototype = {
                 this._throwOnExec.bind(this, cbName);
             }.bind(this));
         }
+      } else {
+        this.jszhuyin.onactionhandled = function() {
+          this.jszhuyin.onactionhandled = null;
+          this.noWaitActionHandled++;
+        }.bind(this);
       }
 
       var returnValue =
