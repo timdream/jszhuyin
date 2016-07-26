@@ -30,6 +30,12 @@
     "filename": "backspace-unhandled.js"
   },
   {
+    "filename": "escape.js"
+  },
+  {
+    "filename": "escape-unhandled.js"
+  },
+  {
     "filename": "no-wait.js"
   },
   {
