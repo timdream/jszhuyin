@@ -28,7 +28,8 @@ TaskRunner.prototype = {
 
     this.taskTest = taskTest;
     this.tasks = [].concat(taskTest.tasks);
-    this.noWaitActionHandled = 0;
+    this.numWaitActionHandled = 0;
+    this.reqIds = [];
     this._runTask();
   },
 
@@ -41,11 +42,19 @@ TaskRunner.prototype = {
     if (!task) {
       this.taskTest = null;
       this.tasks = null;
+
+      if (this.reqIds.length) {
+        throw new Error('TaskRunner: Task finished but with pending actions.');
+      }
+
       if (typeof this.ondone === 'function') {
         this.ondone();
       }
       return;
     }
+
+    var taskReqId = Math.random().toString(32).substr(2);
+    this.reqIds.push(taskReqId);
 
     if (task.fn) {
       var wait = task.wait;
@@ -53,10 +62,14 @@ TaskRunner.prototype = {
 
       var callbackValues;
       if (wait) {
-        waitCount -= this.noWaitActionHandled;
-        this.noWaitActionHandled = 0;
+        waitCount -= this.numWaitActionHandled;
+        this.numWaitActionHandled = 0;
 
-        this.jszhuyin.onactionhandled = function() {
+        this.jszhuyin.onactionhandled = function(returnedReqId) {
+          var expectedReqId = this.reqIds.shift();
+          if (returnedReqId !== expectedReqId) {
+            throw new Error('TaskRunner: unexpected reqId.');
+          }
           waitCount--;
           if (waitCount) {
             return;
@@ -80,9 +93,13 @@ TaskRunner.prototype = {
                 ' in the task runner steps.');
             }
 
-            this.jszhuyin['on' + cbName] = function(val) {
+            this.jszhuyin['on' + cbName] = function(val, returnedReqId) {
               if (waitCount !== 1) {
                 return;
+              }
+
+              if (returnedReqId !== taskReqId) {
+                throw new Error('TaskRunner: unexpected reqId.');
               }
 
               this.jszhuyin['on' + cbName] =
@@ -101,14 +118,28 @@ TaskRunner.prototype = {
             }.bind(this));
         }
       } else {
-        this.jszhuyin.onactionhandled = function() {
+        this.jszhuyin.onactionhandled = function(returnedReqId) {
+          var expectedReqId = this.reqIds.shift();
+          if (returnedReqId !== expectedReqId) {
+            throw new Error('TaskRunner: unexpected reqId.');
+          }
           this.jszhuyin.onactionhandled = null;
-          this.noWaitActionHandled++;
+          this.numWaitActionHandled++;
         }.bind(this);
       }
 
+      var args = [].concat(task.args, taskReqId);
+
       var returnValue =
-        this.jszhuyin[task.fn].apply(this.jszhuyin, task.args);
+        this.jszhuyin[task.fn].apply(this.jszhuyin, args);
+
+      if (returnValue === false) {
+        var poppedReqId = this.reqIds.pop();
+        if (poppedReqId !== taskReqId) {
+          throw new Error('TaskRunner: function ' + task.fn +
+            ' report unhandled but action was handled.');
+        }
+      }
 
       if (task.checkReturnedValue) {
         task.checkReturnedValue
