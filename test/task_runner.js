@@ -28,13 +28,44 @@ TaskRunner.prototype = {
 
     this.taskTest = taskTest;
     this.tasks = [].concat(taskTest.tasks);
-    this.numWaitActionHandled = 0;
-    this.reqIds = [];
-    this._runTask();
-  },
+    this.taskDataArr = [];
 
-  _throwOnExec: function(cbName) {
-    throw new Error(cbName + ' callback should not execute.');
+    this.DETECT_CALLBACKS
+      .forEach(function(cbName) {
+        this.jszhuyin['on' + cbName] = function(val, reqId) {
+          var taskData = this.taskDataArr[0];
+          if (!taskData || taskData.reqId !== reqId) {
+            throw new Error(
+              'TaskRunner: Unknown or misordered reqId: ' + reqId);
+          }
+          if (!taskData.task.expectCallbacks ||
+              taskData.task.expectCallbacks.indexOf(cbName) === -1) {
+            throw new Error('TaskRunner: ' + cbName + ' should not call.');
+          }
+
+          if (cbName in taskData.callbackValues) {
+            throw new Error('TaskRunner: ' + cbName + ' called twice.');
+          }
+
+          taskData.callbackValues[cbName] = val;
+        }.bind(this);
+      }.bind(this));
+
+    this.jszhuyin.onactionhandled = function(returnedReqId) {
+      var taskData = this.taskDataArr.shift();
+      if (!taskData || returnedReqId !== taskData.reqId) {
+        throw new Error('TaskRunner: unexpected reqId.');
+      }
+      if (taskData.callbackValues) {
+        taskData.task.checkCallbackValues
+          .call(this.taskTest, taskData.callbackValues, this.jszhuyin);
+      }
+      if (taskData.task.wait) {
+        this._runTask();
+      }
+    }.bind(this);
+
+    this._runTask();
   },
 
   _runTask: function() {
@@ -43,9 +74,15 @@ TaskRunner.prototype = {
       this.taskTest = null;
       this.tasks = null;
 
-      if (this.reqIds.length) {
+      if (this.taskDataArr.length) {
         throw new Error('TaskRunner: Task finished but with pending actions.');
       }
+
+      this.jszhuyin.onactionhandled = null;
+      this.DETECT_CALLBACKS
+        .forEach(function(cbName) {
+          this.jszhuyin['on' + cbName] = null;
+        }.bind(this));
 
       if (typeof this.ondone === 'function') {
         this.ondone();
@@ -54,88 +91,18 @@ TaskRunner.prototype = {
     }
 
     var taskReqId = Math.random().toString(32).substr(2);
-    this.reqIds.push(taskReqId);
+    var taskData = { task: task, callbackValues: {}, reqId: taskReqId };
+    this.taskDataArr.push(taskData);
 
     if (task.fn) {
-      var wait = task.wait;
-      var waitCount = (typeof wait === 'number') ? wait : 1;
-
-      var callbackValues;
-      if (wait) {
-        waitCount -= this.numWaitActionHandled;
-        this.numWaitActionHandled = 0;
-
-        this.jszhuyin.onactionhandled = function(returnedReqId) {
-          var expectedReqId = this.reqIds.shift();
-          if (returnedReqId !== expectedReqId) {
-            throw new Error('TaskRunner: unexpected reqId.');
-          }
-          waitCount--;
-          if (waitCount) {
-            return;
-          }
-          this.jszhuyin.onactionhandled = null;
-          if (callbackValues) {
-            this.DETECT_CALLBACKS.forEach(function(cbName) {
-              this.jszhuyin['on' + cbName] = null;
-            }.bind(this));
-            task.checkCallbackValues
-              .call(this.taskTest, callbackValues, this.jszhuyin);
-          }
-          this._runTask();
-        }.bind(this);
-
-        if (task.expectCallbacks) {
-          callbackValues = {};
-          task.expectCallbacks.forEach(function(cbName) {
-            if (this.DETECT_CALLBACKS.indexOf(cbName) === -1) {
-              throw new Error('You cannot detect ' + cbName +
-                ' in the task runner steps.');
-            }
-
-            this.jszhuyin['on' + cbName] = function(val, returnedReqId) {
-              if (waitCount !== 1) {
-                return;
-              }
-
-              if (returnedReqId !== taskReqId) {
-                throw new Error('TaskRunner: unexpected reqId.');
-              }
-
-              this.jszhuyin['on' + cbName] =
-                this._throwOnExec.bind(this, cbName);
-              callbackValues[cbName] = val;
-            }.bind(this);
-          }.bind(this));
-
-          this.DETECT_CALLBACKS
-            .filter(function(cbName) {
-              return (task.expectCallbacks.indexOf(cbName) === -1);
-            }.bind(this))
-            .forEach(function(cbName) {
-              this.jszhuyin['on' + cbName] =
-                this._throwOnExec.bind(this, cbName);
-            }.bind(this));
-        }
-      } else {
-        this.jszhuyin.onactionhandled = function(returnedReqId) {
-          var expectedReqId = this.reqIds.shift();
-          if (returnedReqId !== expectedReqId) {
-            throw new Error('TaskRunner: unexpected reqId.');
-          }
-          this.jszhuyin.onactionhandled = null;
-          this.numWaitActionHandled++;
-        }.bind(this);
-      }
-
       var args = [].concat(task.args, taskReqId);
 
       var returnValue =
         this.jszhuyin[task.fn].apply(this.jszhuyin, args);
 
       if (returnValue === false) {
-        var poppedReqId = this.reqIds.pop();
-        if (poppedReqId !== taskReqId) {
+        var poppedTaskData = this.taskDataArr.pop();
+        if (poppedTaskData !== taskData) {
           throw new Error('TaskRunner: function ' + task.fn +
             ' report unhandled but action was handled.');
         }
@@ -146,7 +113,7 @@ TaskRunner.prototype = {
           .call(this.taskTest, returnValue, this.jszhuyin);
       }
 
-      if (wait) {
+      if (task.wait) {
         return;
       }
     } else if (task.exec) {

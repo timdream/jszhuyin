@@ -27,6 +27,20 @@
         args: ['ㄊ'],
         checkReturnedValue: function(returnedValue) {
           assert(returnedValue, 'Expected handled.');
+        },
+        expectCallbacks: ['compositionupdate', 'candidateschange'],
+        checkCallbackValues: function(values) {
+          assert.strictEqual(values.compositionupdate, 'ㄊ');
+          assert.deepEqual(values.candidateschange,
+            [['台', this.candidateId++], ['臺', this.candidateId++],
+             ['抬', this.candidateId++], ['颱', this.candidateId++],
+             ['檯', this.candidateId++], ['苔', this.candidateId++],
+             ['跆', this.candidateId++], ['邰', this.candidateId++],
+             ['鮐', this.candidateId++], ['駘', this.candidateId++],
+             ['薹', this.candidateId++], ['籉', this.candidateId++],
+             ['秮', this.candidateId++], ['炱', this.candidateId++],
+             ['旲', this.candidateId++], ['嬯', this.candidateId++],
+             ['儓', this.candidateId++]]);
         }
       },
       {
@@ -34,6 +48,21 @@
         args: ['ㄞ'],
         checkReturnedValue: function(returnedValue) {
           assert(returnedValue, 'Expected handled.');
+        },
+        expectCallbacks: ['compositionupdate', 'candidateschange'],
+        checkCallbackValues: function(values) {
+          assert.strictEqual(values.compositionupdate, 'ㄊㄞ');
+          assert.deepEqual(values.candidateschange,
+            [['台', this.candidateId++], ['臺', this.candidateId++],
+             ['抬', this.candidateId++], ['颱', this.candidateId++],
+             ['檯', this.candidateId++], ['疼愛', this.candidateId++],
+             ['苔', this.candidateId++], ['跆', this.candidateId++],
+             ['邰', this.candidateId++], ['抬愛', this.candidateId++],
+             ['鮐', this.candidateId++], ['駘', this.candidateId++],
+             ['薹', this.candidateId++], ['籉', this.candidateId++],
+             ['秮', this.candidateId++], ['炱', this.candidateId++],
+             ['旲', this.candidateId++], ['嬯', this.candidateId++],
+             ['儓', this.candidateId++]]);
         }
       },
       {
@@ -41,12 +70,26 @@
         args: ['ˊ'],
         checkReturnedValue: function(returnedValue) {
           assert(returnedValue, 'Expected handled.');
+        },
+        expectCallbacks: ['compositionupdate', 'candidateschange'],
+        checkCallbackValues: function(values) {
+          assert.strictEqual(values.compositionupdate, 'ㄊㄞˊ');
+          assert.deepEqual(values.candidateschange,
+            [['台', this.candidateId++], ['臺', this.candidateId++],
+             ['抬', this.candidateId++], ['颱', this.candidateId++],
+             ['檯', this.candidateId++], ['苔', this.candidateId++],
+             ['跆', this.candidateId++], ['邰', this.candidateId++],
+             ['鮐', this.candidateId++], ['駘', this.candidateId++],
+             ['薹', this.candidateId++], ['籉', this.candidateId++],
+             ['秮', this.candidateId++], ['炱', this.candidateId++],
+             ['旲', this.candidateId++], ['嬯', this.candidateId++],
+             ['儓', this.candidateId++]]);
         }
       },
       {
         fn: 'handleKey',
         args: ['Enter'],
-        wait: 4,
+        wait: true,
         checkReturnedValue: function(returnedValue) {
           assert(returnedValue, 'Expected handled.');
         },
