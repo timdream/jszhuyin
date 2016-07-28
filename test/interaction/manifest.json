@@ -12,6 +12,12 @@
     "filename": "simple-symbol.js"
   },
   {
+    "filename": "simple-symbol2.js"
+  },
+  {
+    "filename": "simple-symbol2-no-wait.js"
+  },
+  {
     "filename": "enter-unhandled.js"
   },
   {
@@ -31,6 +37,9 @@
   },
   {
     "filename": "backspace2.js"
+  },
+  {
+    "filename": "backspace2-no-wait.js"
   },
   {
     "filename": "backspace-unhandled.js"

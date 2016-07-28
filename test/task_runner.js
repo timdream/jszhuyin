@@ -56,7 +56,7 @@ TaskRunner.prototype = {
       if (!taskData || returnedReqId !== taskData.reqId) {
         throw new Error('TaskRunner: unexpected reqId.');
       }
-      if (taskData.callbackValues) {
+      if (typeof taskData.task.checkCallbackValues === 'function') {
         taskData.task.checkCallbackValues
           .call(this.taskTest, taskData.callbackValues, this.jszhuyin);
       }
