@@ -501,166 +501,197 @@
       };
     };
 
-    window.onload = function() {
-      window.onload = null;
+    function JSZhuyinApp() {
+    }
 
+    JSZhuyinApp.prototype.start = function() {
+      this._startNav();
+      this._startUI();
+      this._startEngine();
+    };
+
+    JSZhuyinApp.prototype.handleEvent = function(evt) {
+      switch (evt.type) {
+        case 'mousemove':
+        case 'blur':
+          this.leaveDistractionFree();
+          break;
+
+        case 'resize':
+          this.positionPanel();
+          break;
+      }
+    };
+
+    JSZhuyinApp.prototype._startNav = function() {
       var mobileNav = document.getElementById('mobile-nav');
       mobileNav.selectedIndex = 0;
       mobileNav.addEventListener('change', function(evt) {
         window.location.href = mobileNav.value;
       });
+    };
 
-      var status = document.getElementById('status');
-      var deleteDatabase = document.getElementById('delete_database');
-      status.textContent = T.LOADING;
+    JSZhuyinApp.prototype._startUI = function() {
+      this.statusEl = document.getElementById('status');
+      this.statusEl.textContent = T.LOADING;
 
-      var panel = document.getElementById('panel');
-      var inputarea = document.getElementById('inputarea');
+      var panel = this.panelEl = document.getElementById('panel');
+      var inputarea = this.inputareaEl = document.getElementById('inputarea');
 
-      var composition = document.getElementById('composition');
-      var candidatesList = document.getElementById('candidates');
+      this.compositionEl = document.getElementById('composition');
+      this.candidatesListEl = document.getElementById('candidates');
 
-      var configDialog = new ConfigDialog();
-      configDialog.onopened = leaveDistractionFree;
+      var configDialog = this.configDialog = new ConfigDialog();
+      configDialog.onopened = this.leaveDistractionFree.bind(this);
       configDialog.start();
 
-      var configHandler = new ConfigHandler();
+      var configHandler = this.configHandler = new ConfigHandler();
       configHandler.start();
       configHandler.onconfigupdate = function() {
-        if (client.loaded) {
-          client.setConfig(configHandler.getConfigObject());
+        if (this.client.loaded) {
+          this.client.setConfig(configHandler.getConfigObject());
         }
-      };
+      }.bind(this);
+    };
 
-      var client = window.client = new JSZhuyinClient();
+    JSZhuyinApp.prototype._startEngine = function() {
+      var client = this.client = new JSZhuyinClient();
       client.load(new JSZhuyinServerWorkerLoader());
       client.ondownloadprogress = function(progressDict) {
         if (!progressDict.lengthComputable) {
-          status.textContent = T.LOADING_WITH_PROGRESS.replace(
+          this.statusEl.textContent = T.LOADING_WITH_PROGRESS.replace(
             '%PROGRESS%', (progressDict.loaded / 1048576).toFixed(2) + ' MB');
         } else {
-          status.textContent = T.LOADING_WITH_PROGRESS.replace('%PROGRESS%',
+          this.statusEl.textContent = T.LOADING_WITH_PROGRESS.replace('%PROGRESS%',
             (progressDict.loaded / progressDict.total * 100).toFixed(2) + '%');
         }
-      };
+      }.bind(this);
       client.onload = function() {
-        inputarea.setAttribute('contenteditable', true);
-        inputarea.focus();
+        this.inputareaEl.setAttribute('contenteditable', true);
+        this.inputareaEl.focus();
 
-        client.setConfig(configHandler.getConfigObject());
-        status.textContent = T.LOADED;
-      };
+        this.client.setConfig(this.configHandler.getConfigObject());
+        this.statusEl.textContent = T.LOADED;
+      }.bind(this);
       client.onerror = function(err) {
         if (err.message.indexOf('DataLoader') !== -1) {
-          status.textContent = T.LOAD_ERROR;
+          this.statusEl.textContent = T.LOAD_ERROR;
         } else {
-          leaveDistractionFree();
-          status.textContent = T.ERROR.replace('%ERROR%', err.message);
+          this.leaveDistractionFree();
+          this.statusEl.textContent = T.ERROR.replace('%ERROR%', err.message);
           console.error(err);
         }
-      };
+      }.bind(this);
 
-      var webIME = new JSZhuyinWebIME({
-        composition: composition,
-        candidatesList: candidatesList
+      var webIME = this.webIME = new JSZhuyinWebIME({
+        composition: this.compositionEl,
+        candidatesList: this.candidatesListEl
       }, client);
-
-      var leaveDistractionFree = function leaveDistractionFree() {
-        window.removeEventListener('mousemove', leaveDistractionFree);
-        inputarea.removeEventListener('blur', leaveDistractionFree);
-        document.body.className = '';
-      }
-
-      webIME.oncompositionend =
-      webIME.oncompositionupdate =
-      webIME.oncandidateschange = function updatePanelStyle() {
-        document.body.className = 'distraction-free';
-        status.textContent = '';
-        window.addEventListener('mousemove', leaveDistractionFree);
-        inputarea.addEventListener('blur', leaveDistractionFree);
-
-        if (!candidatesList.children.length &&
-            !composition.textContent.length) {
-          panel.setAttribute('hidden', 'true');
-          window.removeEventListener('resize', positionPanel);
-
-          return;
-        }
-
-        panel.removeAttribute('hidden');
-        window.addEventListener('resize', positionPanel);
-
-        positionPanel();
-      };
-
-      var positionPanel = function positionPanel() {
-        var sel = window.getSelection();
-        // XXX sync reflow, improve this.
-
-        var isFloating =
-          window.getComputedStyle(panel).getPropertyValue('position') ===
-          'absolute';
-        if (!isFloating) {
-          // No need to calculate the position, goodbye!
-          return;
-        }
-
-        var rect;
-        rect = sel.getRangeAt(0).getBoundingClientRect();
-        if (rect.width === 0 && rect.left === 0 && rect.right === 0) {
-          // Empty rect?! Maybe because the caret is not placed in a text node,
-          // We need to get a rect by considering the node (probably <br>)
-          // before the caret.
-          var el = sel.focusNode.childNodes[sel.focusOffset];
-          if (el) {
-            rect = el.getBoundingClientRect();
-          } else {
-            // This only happens if inputarea is emptied, or if use have
-            // pasted empty element into our inputarea.
-            rect = sel.focusNode.getBoundingClientRect();
-          }
-        }
-
-        if (rect.width === 0 && rect.left === 0 && rect.right === 0) {
-          // Still empty rect?! Let's use the safe fallback.
-          rect = inputarea.getBoundingClientRect();
-        }
-
-        panel.style.top = (
-          document.documentElement.scrollTop +
-          document.body.scrollTop +
-          rect.top +
-          rect.height).toFixed(2) + 'px';
-
-        var panelRect = panel.getBoundingClientRect();
-        if (rect.left + panelRect.width <
-          document.body.getBoundingClientRect().width) {
-          panel.style.left = rect.left.toFixed(2) + 'px';
-          panel.style.right = '';
-        } else {
-          panel.style.left = '';
-          panel.style.right = '0';
-        }
-
-        if (document.documentElement.clientHeight <
-            (panelRect.top + panelRect.height)) {
-          panel.scrollIntoView();
-        }
-      };
 
       // Overwrite the addCandidateItem() method because
       // we need an extra wrapped <span> for every item.
-      JSZhuyinWebIME.CandidatesList.prototype.addCandidateItem =
-        function(candidate, index) {
-          var element = this.element;
-          var li = document.createElement('li');
-          li.setAttribute('data-index', index);
-          var span = document.createElement('span');
-          span.textContent = candidate[0];
-          span.setAttribute('data-index', index);
-          li.appendChild(span);
-          element.appendChild(li);
-        };
+      webIME.candidatesList.addCandidateItem = function(candidate, index) {
+        var element = this.element;
+        var li = document.createElement('li');
+        li.setAttribute('data-index', index);
+        var span = document.createElement('span');
+        span.textContent = candidate[0];
+        span.setAttribute('data-index', index);
+        li.appendChild(span);
+        element.appendChild(li);
+      };
+
+      webIME.oncompositionend =
+      webIME.oncompositionupdate =
+      webIME.oncandidateschange = this.updatePanelStyle.bind(this);
+    };
+
+    JSZhuyinApp.prototype.updatePanelStyle = function() {
+      this.statusEl.textContent = '';
+      this.enterDistractionFree();
+
+      if (!this.candidatesListEl.children.length &&
+          !this.compositionEl.textContent.length) {
+        this.panelEl.setAttribute('hidden', 'true');
+        window.removeEventListener('resize', this);
+      } else {
+        this.panelEl.removeAttribute('hidden');
+        window.addEventListener('resize', this);
+        this.positionPanel();
+      }
+    };
+
+    JSZhuyinApp.prototype.positionPanel = function() {
+      var sel = window.getSelection();
+      // XXX sync reflow, improve this.
+
+      var isFloating =
+        window.getComputedStyle(this.panelEl)
+        .getPropertyValue('position') === 'absolute';
+      if (!isFloating) {
+        // No need to calculate the position, goodbye!
+        return;
+      }
+
+      var rect;
+      rect = sel.getRangeAt(0).getBoundingClientRect();
+      if (rect.width === 0 && rect.left === 0 && rect.right === 0) {
+        // Empty rect?! Maybe because the caret is not placed in a text node,
+        // We need to get a rect by considering the node (probably <br>)
+        // before the caret.
+        var el = sel.focusNode.childNodes[sel.focusOffset];
+        if (el) {
+          rect = el.getBoundingClientRect();
+        } else {
+          // This only happens if inputarea is emptied, or if use have
+          // pasted empty element into our inputarea.
+          rect = sel.focusNode.getBoundingClientRect();
+        }
+      }
+
+      if (rect.width === 0 && rect.left === 0 && rect.right === 0) {
+        // Still empty rect?! Let's use the safe fallback.
+        rect = inputareaEl.getBoundingClientRect();
+      }
+
+      this.panelEl.style.top = (
+        document.documentElement.scrollTop +
+        document.body.scrollTop +
+        rect.top +
+        rect.height).toFixed(2) + 'px';
+
+      var panelRect = this.panelEl.getBoundingClientRect();
+      if (rect.left + panelRect.width <
+        document.body.getBoundingClientRect().width) {
+        this.panelEl.style.left = rect.left.toFixed(2) + 'px';
+        this.panelEl.style.right = '';
+      } else {
+        this.panelEl.style.left = '';
+        this.panelEl.style.right = '0';
+      }
+
+      if (document.documentElement.clientHeight <
+          (panelRect.top + panelRect.height)) {
+        this.panelEl.scrollIntoView();
+      }
+    };
+
+    JSZhuyinApp.prototype.enterDistractionFree = function() {
+      window.addEventListener('mousemove', this);
+      this.inputareaEl.addEventListener('blur', this);
+      document.body.className = 'distraction-free';
+    };
+
+    JSZhuyinApp.prototype.leaveDistractionFree = function() {
+      window.removeEventListener('mousemove', this);
+      this.inputareaEl.removeEventListener('blur', this);
+      document.body.className = '';
+    };
+
+    window.app = new JSZhuyinApp();
+    window.onload = function() {
+      window.onload = null;
+      window.app.start();
     };
   </script>
 </body>
