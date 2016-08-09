@@ -1,6 +1,6 @@
 # APIs
 
-This documents defines public APIs in [WebIDL](https://www.w3.org/TR/WebIDL/).
+This document defines public APIs in [WebIDL](https://www.w3.org/TR/WebIDL/).
 All methods and properties not listed here are private methods, which is subject to breaking changes between minor version changes.
 
 The [WebIDL Checker](https://www.w3.org/2009/07/webidl-check) can make sure the syntax is valid (Comment lines w/ Bopomofo symbols needs to be removed, though).
