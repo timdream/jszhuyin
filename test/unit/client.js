@@ -6,7 +6,8 @@
 module('JSZhuyinServerIframeLoader');
 
 test('load()', function() {
-  var loader = new JSZhuyinServerIframeLoader('/base/test/resources/frame.html');
+  var loader =
+    new JSZhuyinServerIframeLoader('/base/test/resources/frame.html');
   expect(2);
   loader.onload = function() {
     ok(true, 'Passed!');

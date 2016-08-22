@@ -41,6 +41,12 @@ module.exports = function(grunt) {
       },
       all: ['Gruntfile.js', 'lib/**/*.js', 'test/**/*.js',
         '!test/headless-runner.js', 'build/**/*.js']
+    },
+    karma: {
+      test: {
+        configFile: 'karma.conf.js',
+        singleRun: true
+      }
     }
   });
 
@@ -53,8 +59,10 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-contrib-connect');
 
+  grunt.loadNpmTasks('grunt-karma');
+
   // Run tests
-  grunt.registerTask('test', ['mochaTest', 'jshint', 'test-slimerjs']);
+  grunt.registerTask('test', ['mochaTest', 'jshint', 'karma:test']);
 
   // Run the test suite with QUnit on SlimerJS
   grunt.registerTask('test-slimerjs', ['connect', 'qunit-slimerjs']);
