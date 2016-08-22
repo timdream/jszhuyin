@@ -38,6 +38,7 @@
     "karma-chrome-launcher": "^2.0.0",
     "karma-firefox-launcher": "^1.0.0",
     "karma-qunit": "^1.2.0",
+    "karma-spec-reporter": "0.0.26",
     "mocha": "^2.5.3",
     "qunitjs": "^1.23.1"
   },
