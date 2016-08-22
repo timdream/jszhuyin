@@ -33,6 +33,10 @@
     "grunt-contrib-jshint": "^1.0.0",
     "grunt-mocha-test": "^0.12.7",
     "grunt-shell": "^1.3.0",
+    "karma": "^1.2.0",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-firefox-launcher": "^1.0.0",
+    "karma-qunit": "^1.2.0",
     "mocha": "^2.5.3",
     "qunitjs": "^1.23.1",
     "slimerjs": "^0.9.1-2"
