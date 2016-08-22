@@ -6,7 +6,8 @@
 module('JSZhuyinServerIframeLoader');
 
 test('load()', function() {
-  var loader = new JSZhuyinServerIframeLoader('../test/resources/frame.html');
+  var loader =
+    new JSZhuyinServerIframeLoader('/base/test/resources/frame.html');
   expect(2);
   loader.onload = function() {
     ok(true, 'Passed!');
@@ -25,7 +26,7 @@ module('JSZhuyinServerWorkerLoader');
 
 test('load()', function() {
   var loader =
-    new JSZhuyinServerWorkerLoader('../test/resources/post_messenger.js');
+    new JSZhuyinServerWorkerLoader('/base/test/resources/post_messenger.js');
   expect(2);
   loader.onload = function() {
     ok(true, 'Passed!');
@@ -58,9 +59,9 @@ test('load()', function() {
   stop();
 
   var loader = new DataLoader();
-  loader.DATA_URL = '../test/resources/testdata.data';
+  loader.DATA_URL = '/base/test/resources/testdata.data';
   loader.onload = function() {
-    var serverLoader = new JSZhuyinServerIframeLoader('../lib/frame.html');
+    var serverLoader = new JSZhuyinServerIframeLoader('/base/lib/frame.html');
     ime.load(serverLoader, {}, loader.data);
   };
   loader.load();
@@ -82,8 +83,8 @@ test('load()', function() {
   };
 
   stop();
-  ime.load(new JSZhuyinServerIframeLoader('../lib/frame.html'), {
-    dataURL: '../test/resources/testdata.data'
+  ime.load(new JSZhuyinServerIframeLoader('/base/lib/frame.html'), {
+    dataURL: '/base/test/resources/testdata.data'
   });
 });
 
@@ -105,9 +106,9 @@ test('load()', function() {
   stop();
 
   var loader = new DataLoader();
-  loader.DATA_URL = '../test/resources/testdata.data';
+  loader.DATA_URL = '/base/test/resources/testdata.data';
   loader.onload = function() {
-    var serverLoader = new JSZhuyinServerWorkerLoader('../lib/worker.js');
+    var serverLoader = new JSZhuyinServerWorkerLoader('/base/lib/worker.js');
     ime.load(serverLoader, {}, loader.data);
   };
   loader.load();
@@ -129,8 +130,8 @@ test('load()', function() {
   };
 
   stop();
-  ime.load(new JSZhuyinServerWorkerLoader('../lib/worker.js'), {
-    dataURL: '../test/resources/testdata.data'
+  ime.load(new JSZhuyinServerWorkerLoader('/base/lib/worker.js'), {
+    dataURL: '/base/test/resources/testdata.data'
   });
 });
 
@@ -154,7 +155,7 @@ test('load() non-exist files', function() {
   };
 
   stop();
-  ime.load(new JSZhuyinServerWorkerLoader('../lib/worker.js'), {
-    dataURL: '../test/resources/404.data'
+  ime.load(new JSZhuyinServerWorkerLoader('/base/lib/worker.js'), {
+    dataURL: '/base/test/resources/404.data'
   });
 });

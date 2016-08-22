@@ -29,7 +29,7 @@ var resStringArray = numberArrayToStringArray([
 
 test('load()', function(assert) {
   var loader = new DataLoader();
-  loader.DATA_URL = './resources/test.data';
+  loader.DATA_URL = '/base/test/resources/test.data';
 
   var done = assert.async();
   expect(3);
@@ -47,7 +47,7 @@ test('load()', function(assert) {
 
 test('load() non-exist files', function(assert) {
   var loader = new DataLoader();
-  loader.DATA_URL = './resources/404.data';
+  loader.DATA_URL = '/base/test/resources/404.data';
   var done = assert.async();
   expect(2);
   loader.onerror = function() {

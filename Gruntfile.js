@@ -39,8 +39,16 @@ module.exports = function(grunt) {
       options: {
         jshintrc: true
       },
-      all: ['Gruntfile.js', 'lib/**/*.js', 'test/**/*.js',
-        '!test/headless-runner.js', 'build/**/*.js']
+      all: ['Gruntfile.js',
+        'lib/**/*.js',
+        'test/**/*.js',
+        'build/**/*.js']
+    },
+    karma: {
+      test: {
+        configFile: 'karma.conf.js',
+        singleRun: true
+      }
     }
   });
 
@@ -53,11 +61,10 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-contrib-connect');
 
-  // Run tests
-  grunt.registerTask('test', ['mochaTest', 'jshint', 'test-slimerjs']);
+  grunt.loadNpmTasks('grunt-karma');
 
-  // Run the test suite with QUnit on SlimerJS
-  grunt.registerTask('test-slimerjs', ['connect', 'qunit-slimerjs']);
+  // Run tests
+  grunt.registerTask('test', ['mochaTest', 'jshint', 'karma:test']);
 
   // Pull data from McBopomofo repo and convert them to our binary data.
   grunt.registerTask('data', ['shell:data', 'convert-data', 'clean:data']);
@@ -131,38 +138,5 @@ module.exports = function(grunt) {
     };
 
     converter.convert('./data/data.txt', './data/database.data');
-  });
-
-  // Glue script for executing SlimerJS
-  grunt.registerTask('qunit-slimerjs', function runQUnitSlimerJS() {
-    var done = this.async();
-
-    var childProcess = require('child_process');
-    var slimerjs = require('slimerjs');
-    var path = require('path');
-
-    var url = 'http://localhost:' + HTTPD_PORT + '/test/';
-    var binPath = slimerjs.path;
-    var childArgs = [path.join(__dirname, 'test', 'headless-runner.js'), url];
-
-    grunt.log.writeln('Testing ' + url);
-
-    var cp = childProcess.execFile(
-      binPath, childArgs,
-      function(err, stdout, stderr) {
-        if (err) {
-          grunt.log.error(err);
-        }
-        if (stderr) {
-          grunt.log.error(stderr);
-        }
-        if (err || stderr || stdout.indexOf(', 0 failed.') === -1) {
-          done(false);
-        } else {
-          done();
-        }
-      });
-    cp.stdout.pipe(process.stdout);
-    cp.stderr.pipe(process.stderr);
   });
 };
