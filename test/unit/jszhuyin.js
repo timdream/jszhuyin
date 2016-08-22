@@ -76,7 +76,7 @@ test('create instance', function() {
 
 test('load()', function() {
   var ime = new JSZhuyin();
-  ime.dataURL = './resources/testdata.data';
+  ime.dataURL = '/base/test/resources/testdata.data';
   expect(2);
   ime.onloadend = function(status) {
     ok(ime.loaded, 'Passed!');
@@ -92,7 +92,7 @@ test('load()', function() {
 
 test('load() non-exist files', function() {
   var ime = new JSZhuyin();
-  ime.dataURL = './resources/404.data';
+  ime.dataURL = '/base/test/resources/404.data';
   expect(2);
   ime.onerror = function() {
     ok(true, 'Passed!');
@@ -110,7 +110,7 @@ test('load() non-exist files', function() {
 
 test('updateComposition()', function() {
   var ime = new JSZhuyin();
-  ime.dataURL = './resources/testdata.data';
+  ime.dataURL = '/base/test/resources/testdata.data';
   expect(1);
   ime.oncompositionupdate = function(composition) {
     equal(composition, 'ㄊㄞˊㄅㄟˇ', 'Passed!');

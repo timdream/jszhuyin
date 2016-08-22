@@ -22,7 +22,7 @@ WebTestsLoader.prototype = {
 
   _getTestManifest: function() {
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', './interaction/manifest.json');
+    xhr.open('GET', '/base/test/interaction/manifest.json');
     xhr.send();
     xhr.onloadend = function() {
       this._loadAllTests(JSON.parse(xhr.responseText));
@@ -40,7 +40,7 @@ WebTestsLoader.prototype = {
       }
 
       var el = document.createElement('script');
-      el.src = './interaction/tests/' + fileDesc.filename;
+      el.src = '/base/test/interaction/tests/' + fileDesc.filename;
       el.onload = function() {
         var TaskTest = window.TaskTest;
         window.TaskTest = null;
@@ -99,13 +99,13 @@ WebTestsLoader.prototype = {
           runner.run(taskTest);
         };
 
-        var config = { dataURL: '../test/resources/testdata.data' };
+        var config = { dataURL: '/base/test/resources/testdata.data' };
         for (var key in taskTest.config) {
           config[key] = taskTest.config[key];
         }
 
         jszhuyin.load(
-          new JSZhuyinServerWorkerLoader('../lib/worker.js'), config);
+          new JSZhuyinServerWorkerLoader('/base/lib/worker.js'), config);
       });
     });
 
@@ -127,13 +127,13 @@ WebTestsLoader.prototype = {
           runner.run(taskTest);
         };
 
-        var config = { dataURL: '../test/resources/testdata.data' };
+        var config = { dataURL: '/base/test/resources/testdata.data' };
         for (var key in taskTest.config) {
           config[key] = taskTest.config[key];
         }
 
         jszhuyin.load(
-          new JSZhuyinServerIframeLoader('../lib/frame.html'), config);
+          new JSZhuyinServerIframeLoader('/base/lib/frame.html'), config);
       });
     });
 
@@ -149,5 +149,8 @@ QUnit.config.autostart = false;
 var loader = new WebTestsLoader();
 loader.load();
 loader.ondone = QUnit.start.bind(QUnit);
+
+// Prevent Karma from starting the test.
+QUnit.start = function() {};
 
 })();

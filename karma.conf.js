@@ -13,6 +13,13 @@ module.exports = function(config) {
     frameworks: ['qunit'],
 
 
+    client: {
+      qunit: {
+        showUI: true,
+        testTimeout: 100 * 1E3
+      }
+    },
+
     // list of files / patterns to load in the browser
     files: [
       'test/util.js',
@@ -25,6 +32,11 @@ module.exports = function(config) {
       'lib/client.js',
       'lib/web.js',
       'test/unit/*.js',
+
+      'test/task_runner.js',
+      'node_modules/chai/chai.js',
+      'test/interaction/test_web.js',
+
       { pattern: 'test/**', included: false },
       { pattern: 'lib/**', included: false }
     ],
@@ -67,8 +79,7 @@ module.exports = function(config) {
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
     browsers: [
-      'Firefox',
-    //  'Chrome'
+      'Firefox'
     ],
 
 
