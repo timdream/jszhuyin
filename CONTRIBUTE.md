@@ -6,14 +6,14 @@
 * [`node`](http://nodejs.org/) (comes with [`npm`](http://npmjs.org/) built-in)
 * GNU Make
 * Python
+* Firefox –– 目前 Travis-CI 是設定為 48 版，如需更新請修改設定檔。
 
 
 ## 本機使用
 
-1. 執行 `npm install` 下載開發相關的相依套件。
-2. 執行 `npm run grunt data`，下載 McBopomofo 並產生資料檔（此步驟會執行 McBopomofo 的 Makefile 故需要 make 與 Python）。
-3. 執行本機伺服器（可以使用 `npm run grunt connect:test:keepalive`）
-4. 用瀏覽器連到上述指令顯示的網址。
+1. 執行 `npm install` 下載開發相關的相依套件，並且觸發 prepublish script，下載 McBopomofo 並產生資料檔（此步驟會執行 McBopomofo 的 Makefile 故需要 make 與 Python）。
+2. 執行本機伺服器（可以使用 `npm run grunt connect:test:keepalive`）
+3. 用瀏覽器連到上述指令顯示的網址。
 
 ## 測試
 
