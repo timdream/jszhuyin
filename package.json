@@ -39,8 +39,7 @@
     "karma-firefox-launcher": "^1.0.0",
     "karma-qunit": "^1.2.0",
     "mocha": "^2.5.3",
-    "qunitjs": "^1.23.1",
-    "slimerjs": "^0.9.1-2"
+    "qunitjs": "^1.23.1"
   },
   "license": "MIT",
   "keywords": [

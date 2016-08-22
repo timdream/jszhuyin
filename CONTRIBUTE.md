@@ -17,7 +17,7 @@
 
 ## 測試
 
-執行 `npm test` 會自動執行 SlimerJS、jshint、編譯程式測試。
+執行 `npm test` 會自動執行 Karma、jshint、編譯程式測試。Karma 會啟動 Firefox 進行測試。
 
 ### 瀏覽器測試
 
