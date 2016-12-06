@@ -520,6 +520,11 @@
         case 'resize':
           this.positionPanel();
           break;
+
+        case 'compositionstart':
+        case 'compositionupdate':
+          this.showNativeIMEWarning();
+          break;
       }
     };
 
@@ -569,6 +574,8 @@
       client.onload = function() {
         this.inputareaEl.setAttribute('contenteditable', true);
         this.inputareaEl.focus();
+        this.inputareaEl.addEventListener('compositionstart', this);
+        this.inputareaEl.addEventListener('compositionupdate', this);
 
         this.client.setConfig(this.configHandler.getConfigObject());
         this.statusEl.textContent = T.LOADED;
@@ -606,9 +613,15 @@
       webIME.oncandidateschange = this.updatePanelStyle.bind(this);
     };
 
-    JSZhuyinApp.prototype.updatePanelStyle = function() {
+    JSZhuyinApp.prototype.updatePanelStyle = function(data) {
       this.statusEl.textContent = '';
-      this.enterDistractionFree();
+
+      var hasData = (typeof data === 'string' && data) ||
+        (typeof data === 'object' && data.length);
+      if (hasData) {
+        this.hideNativeIMEWarning();
+        this.enterDistractionFree();
+      }
 
       if (!this.candidatesListEl.children.length &&
           !this.compositionEl.textContent.length) {
@@ -618,6 +631,28 @@
         this.panelEl.removeAttribute('hidden');
         window.addEventListener('resize', this);
         this.positionPanel();
+      }
+    };
+
+    JSZhuyinApp.prototype.showNativeIMEWarning = function() {
+      this.leaveDistractionFree();
+
+      var nativeIMEWarning = this._nativeIMEWarning =
+        this._nativeIMEWarning || new JSZhuyinAppNativeIMEWarning();
+
+      nativeIMEWarning.start();
+      this.inputareaEl.parentNode
+        .insertBefore(nativeIMEWarning.element, this.inputareaEl);
+      nativeIMEWarning.show();
+
+      // Discard the current compositions and candidates.
+      // XXX: Implement and move this to cancelComposition()
+      this.webIME.handleKey('Escape');
+    };
+
+    JSZhuyinApp.prototype.hideNativeIMEWarning = function() {
+      if (this._nativeIMEWarning) {
+        this._nativeIMEWarning.hide();
       }
     };
 
@@ -692,6 +727,27 @@
     window.onload = function() {
       window.onload = null;
       window.app.start();
+    };
+
+    function JSZhuyinAppNativeIMEWarning() {
+    }
+
+    JSZhuyinAppNativeIMEWarning.prototype.start = function() {
+      if (this.element) {
+        return;
+      }
+
+      var element = this.element = document.createElement('div');
+      element.className = 'alert alert-danger';
+      element.textContent = '關閉系統的輸入法以使用此網站上的注音輸入。';
+    };
+
+    JSZhuyinAppNativeIMEWarning.prototype.show = function() {
+      this.element.hidden = false;
+    };
+
+    JSZhuyinAppNativeIMEWarning.prototype.hide = function() {
+      this.element.hidden = true;
     };
   </script>
 </body>
