@@ -1,5 +1,7 @@
 'use strict';
 
+/* global JSZhuyinClient, JSZhuyinWebIME, JSZhuyinServerWorkerLoader */
+
 var T = {
   LOADING: '載入中...',
   LOADING_WITH_PROGRESS: '載入中（%PROGRESS%）...',
@@ -166,8 +168,8 @@ JSZhuyinApp.prototype._startUI = function() {
   this.statusEl = document.getElementById('status');
   this.statusEl.textContent = T.LOADING;
 
-  var panel = this.panelEl = document.getElementById('panel');
-  var inputarea = this.inputareaEl = document.getElementById('inputarea');
+  this.panelEl = document.getElementById('panel');
+  this.inputareaEl = document.getElementById('inputarea');
 
   this.compositionEl = document.getElementById('composition');
   this.candidatesListEl = document.getElementById('candidates');
@@ -312,7 +314,7 @@ JSZhuyinApp.prototype.positionPanel = function() {
 
   if (rect.width === 0 && rect.left === 0 && rect.right === 0) {
     // Still empty rect?! Let's use the safe fallback.
-    rect = inputareaEl.getBoundingClientRect();
+    rect = this.inputareaEl.getBoundingClientRect();
   }
 
   this.panelEl.style.top = (

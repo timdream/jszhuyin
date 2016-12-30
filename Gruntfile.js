@@ -42,7 +42,8 @@ module.exports = function(grunt) {
       all: ['Gruntfile.js',
         'lib/**/*.js',
         'test/**/*.js',
-        'build/**/*.js']
+        'build/**/*.js',
+        'assets/*.js']
     },
     karma: {
       test: {
