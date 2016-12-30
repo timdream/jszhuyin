@@ -6,9 +6,6 @@ CACHE:
 //netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css
 //netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css
 
-/appcacheui/appcacheui.css
-/appcacheui/appcacheui.min.js
-
 lib/bopomofo_encoder.js
 lib/client.js
 lib/worker.js
