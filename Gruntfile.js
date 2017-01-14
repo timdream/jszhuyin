@@ -40,9 +40,11 @@ module.exports = function(grunt) {
         jshintrc: true
       },
       all: ['Gruntfile.js',
+        'service-worker.js',
         'lib/**/*.js',
         'test/**/*.js',
-        'build/**/*.js']
+        'build/**/*.js',
+        'assets/*.js']
     },
     karma: {
       test: {
