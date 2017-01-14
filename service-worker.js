@@ -42,10 +42,6 @@ function Deferred() {
 var deferredCacheRefresh = new Deferred();
 var requestsToRecache = new Set();
 
-self.onactivate = evt => {
-  console.log(evt);
-};
-
 self.onfetch = evt => {
   evt.waitUntil(deferredCacheRefresh.promise);
   // We will be using cache-then-network strategy for better experience,
