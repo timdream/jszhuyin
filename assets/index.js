@@ -129,6 +129,100 @@ ConfigHandler.prototype.getConfigObject = function() {
   };
 };
 
+function JSZhuyinServiceWorkerConfig() {
+}
+JSZhuyinServiceWorkerConfig.prototype.CLASS = 'sw-status';
+JSZhuyinServiceWorkerConfig.prototype.ID_PREFIX = 'sw-status-';
+JSZhuyinServiceWorkerConfig.prototype.onuserinstall = null;
+JSZhuyinServiceWorkerConfig.prototype.onuserremove = null;
+JSZhuyinServiceWorkerConfig.prototype.start = function() {
+  this.installBtn = document.getElementById('sw-install');
+  this.removeBtn = document.getElementById('sw-remove');
+  this.installBtn.addEventListener('click', this);
+  this.removeBtn.addEventListener('click', this);
+};
+JSZhuyinServiceWorkerConfig.prototype.stop = function() {
+  this.installBtn.removeEventListener('click', this);
+  this.removeBtn.removeEventListener('click', this);
+  this.installBtn = this.removeBtn = null;
+};
+JSZhuyinServiceWorkerConfig.prototype.handleEvent = function(evt) {
+  switch (evt.target) {
+    case this.installBtn:
+      if (typeof this.onuserinstall === 'function') {
+        this.onuserinstall();
+      }
+      break;
+    case this.removeBtn:
+      if (typeof this.onuserremove === 'function') {
+        this.onuserremove();
+      }
+      break;
+  }
+};
+JSZhuyinServiceWorkerConfig.prototype.setState = function(state) {
+  var id = this.ID_PREFIX + state;
+  var els = document.getElementsByClassName(this.CLASS);
+  for (var i = 0; i < els.length; i++) {
+    els[i].hidden = (id !== els[i].id);
+  }
+};
+
+function JSZhuyinServiceWorkerController() {
+}
+JSZhuyinServiceWorkerController.prototype.start = function() {
+  this.config = new JSZhuyinServiceWorkerConfig();
+  this.config.start();
+  this.config.onuserinstall = this.install.bind(this);
+  this.config.onuserremove = this.remove.bind(this);
+
+  if (! ('serviceWorker' in navigator)) {
+    this.config.setState('notsupported');
+    return;
+  }
+
+  this.install();
+};
+JSZhuyinServiceWorkerController.prototype.install = function() {
+  this.config.setState('installing');
+
+  navigator.serviceWorker
+    .register('service-worker.js', {scope: './'})
+    .then(function(swReg) {
+      this.swReg = swReg;
+      if (swReg.active) {
+        this.config.setState('installed');
+        return;
+      }
+      var worker = swReg.installing;
+      worker.addEventListener('statechange', function() {
+        if (worker.state == 'redundant') {
+          this.config.setState('uninstalled');
+        }
+        if (worker.state == 'installed') {
+          this.config.setState('installed');
+        }
+      }.bind(this));
+    }.bind(this))
+    .catch(function(error) {
+      console.error(error);
+      this.config.setState('uninstalled');
+    }.bind(this));
+};
+
+JSZhuyinServiceWorkerController.prototype.remove = function() {
+  this.config.setState('removing');
+  this.swReg.unregister()
+    .then(function(unregistered) {
+      if (unregistered) {
+        this.config.setState('uninstalled');
+        this.swReg = null;
+      } else {
+        this.config.setState('installed');
+      }
+    }.bind(this));
+};
+
 function JSZhuyinApp() {
 }
 
@@ -136,6 +230,7 @@ JSZhuyinApp.prototype.start = function() {
   this._startNav();
   this._startUI();
   this._startEngine();
+  this._startServiceWorker();
 };
 
 JSZhuyinApp.prototype.handleEvent = function(evt) {
@@ -239,6 +334,11 @@ JSZhuyinApp.prototype._startEngine = function() {
   webIME.oncompositionend =
   webIME.oncompositionupdate =
   webIME.oncandidateschange = this.updatePanelStyle.bind(this);
+};
+
+JSZhuyinApp.prototype._startServiceWorker = function() {
+  this.swController = new JSZhuyinServiceWorkerController();
+  this.swController.start();
 };
 
 JSZhuyinApp.prototype.updatePanelStyle = function(data) {

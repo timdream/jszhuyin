@@ -362,6 +362,12 @@
 
             </div>
           </form>
+          <h4>離線使用</h4>
+          <p class="sw-status" hidden id="sw-status-installed">網站資料已下載，可供離線使用。<button id="sw-remove" class="btn btn-default">移除</button></p>
+          <p class="sw-status" hidden id="sw-status-uninstalled">下載資料供離線使用。<button id="sw-install" class="btn btn-default">下載</button></p>
+          <p class="sw-status" hidden id="sw-status-installing">安裝中⋯⋯</p>
+          <p class="sw-status" hidden id="sw-status-removing">移除中⋯⋯</p>
+          <p class="sw-status" id="sw-status-notsupported">瀏覽器目前的設定禁止網站儲存離線資料，或是不支援。</p>
         </div>
         <div class="modal-footer">
           <button type="button" id="config-dialog-close" class="btn btn-primary">關閉</button>
