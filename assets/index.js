@@ -26,7 +26,7 @@ ConfigDialog.prototype.start = function() {
   this.openEl.classList.remove('disabled');
 };
 ConfigDialog.prototype.handleEvent = function(evt) {
-  var target = evt.target;
+  var target = evt.currentTarget;
   switch (target) {
     case this.openEl:
       this.dialogEl.classList.add('show');
