@@ -420,3 +420,124 @@ test('replace(ㄏㄨˇ,ㄨㄛ,ㄡ)', function() {
     );
   equal(code, BopomofoEncoder.encode('ㄏㄨˇ')[0], 'Passed!');
 });
+
+test('getMatchedCompleteEncodedSounds(ˉ)', function() {
+  var codes = BopomofoEncoder
+    .getMatchedCompleteEncodedSounds(BopomofoEncoder.encode('ˉ')[0]);
+  equal(codes instanceof Uint16Array, true, 'returned an Uint16Array');
+
+  deepEqual(Array.from(codes), [
+    BopomofoEncoder.encode('ˉ')[0]
+  ]);
+});
+
+test('getMatchedCompleteEncodedSounds(ㄡ)', function() {
+  var codes = BopomofoEncoder
+    .getMatchedCompleteEncodedSounds(BopomofoEncoder.encode('ㄡ')[0]);
+  equal(codes instanceof Uint16Array, true, 'returned an Uint16Array');
+
+  deepEqual(Array.from(codes), [
+    BopomofoEncoder.encode('ㄡˉ')[0],
+    BopomofoEncoder.encode('ㄡˊ')[0],
+    BopomofoEncoder.encode('ㄡˇ')[0],
+    BopomofoEncoder.encode('ㄡˋ')[0],
+    BopomofoEncoder.encode('ㄡ˙')[0]
+  ]);
+});
+
+test('getMatchedCompleteEncodedSounds(ㄨㄡ)', function() {
+  var codes = BopomofoEncoder
+    .getMatchedCompleteEncodedSounds(BopomofoEncoder.encode('ㄨㄡ')[0]);
+  equal(codes instanceof Uint16Array, true, 'returned an Uint16Array');
+
+  deepEqual(Array.from(codes), [
+    BopomofoEncoder.encode('ㄨㄡˉ')[0],
+    BopomofoEncoder.encode('ㄨㄡˊ')[0],
+    BopomofoEncoder.encode('ㄨㄡˇ')[0],
+    BopomofoEncoder.encode('ㄨㄡˋ')[0],
+    BopomofoEncoder.encode('ㄨㄡ˙')[0]
+  ]);
+});
+
+test('getMatchedCompleteEncodedSounds(ㄨ)', function() {
+  var codes = BopomofoEncoder
+    .getMatchedCompleteEncodedSounds(BopomofoEncoder.encode('ㄨ')[0]);
+  equal(codes instanceof Uint16Array, true, 'returned an Uint16Array');
+
+  deepEqual(Array.from(codes), [
+    BopomofoEncoder.encode('ㄨˉ')[0],
+    BopomofoEncoder.encode('ㄨㄚˉ')[0],
+    BopomofoEncoder.encode('ㄨㄛˉ')[0],
+    BopomofoEncoder.encode('ㄨㄜˉ')[0],
+    BopomofoEncoder.encode('ㄨㄝˉ')[0],
+    BopomofoEncoder.encode('ㄨㄞˉ')[0],
+    BopomofoEncoder.encode('ㄨㄟˉ')[0],
+    BopomofoEncoder.encode('ㄨㄠˉ')[0],
+    BopomofoEncoder.encode('ㄨㄡˉ')[0],
+    BopomofoEncoder.encode('ㄨㄢˉ')[0],
+    BopomofoEncoder.encode('ㄨㄣˉ')[0],
+    BopomofoEncoder.encode('ㄨㄤˉ')[0],
+    BopomofoEncoder.encode('ㄨㄥˉ')[0],
+    BopomofoEncoder.encode('ㄨㄦˉ')[0],
+    BopomofoEncoder.encode('ㄨˊ')[0],
+    BopomofoEncoder.encode('ㄨㄚˊ')[0],
+    BopomofoEncoder.encode('ㄨㄛˊ')[0],
+    BopomofoEncoder.encode('ㄨㄜˊ')[0],
+    BopomofoEncoder.encode('ㄨㄝˊ')[0],
+    BopomofoEncoder.encode('ㄨㄞˊ')[0],
+    BopomofoEncoder.encode('ㄨㄟˊ')[0],
+    BopomofoEncoder.encode('ㄨㄠˊ')[0],
+    BopomofoEncoder.encode('ㄨㄡˊ')[0],
+    BopomofoEncoder.encode('ㄨㄢˊ')[0],
+    BopomofoEncoder.encode('ㄨㄣˊ')[0],
+    BopomofoEncoder.encode('ㄨㄤˊ')[0],
+    BopomofoEncoder.encode('ㄨㄥˊ')[0],
+    BopomofoEncoder.encode('ㄨㄦˊ')[0],
+    BopomofoEncoder.encode('ㄨˇ')[0],
+    BopomofoEncoder.encode('ㄨㄚˇ')[0],
+    BopomofoEncoder.encode('ㄨㄛˇ')[0],
+    BopomofoEncoder.encode('ㄨㄜˇ')[0],
+    BopomofoEncoder.encode('ㄨㄝˇ')[0],
+    BopomofoEncoder.encode('ㄨㄞˇ')[0],
+    BopomofoEncoder.encode('ㄨㄟˇ')[0],
+    BopomofoEncoder.encode('ㄨㄠˇ')[0],
+    BopomofoEncoder.encode('ㄨㄡˇ')[0],
+    BopomofoEncoder.encode('ㄨㄢˇ')[0],
+    BopomofoEncoder.encode('ㄨㄣˇ')[0],
+    BopomofoEncoder.encode('ㄨㄤˇ')[0],
+    BopomofoEncoder.encode('ㄨㄥˇ')[0],
+    BopomofoEncoder.encode('ㄨㄦˇ')[0],
+    BopomofoEncoder.encode('ㄨˋ')[0],
+    BopomofoEncoder.encode('ㄨㄚˋ')[0],
+    BopomofoEncoder.encode('ㄨㄛˋ')[0],
+    BopomofoEncoder.encode('ㄨㄜˋ')[0],
+    BopomofoEncoder.encode('ㄨㄝˋ')[0],
+    BopomofoEncoder.encode('ㄨㄞˋ')[0],
+    BopomofoEncoder.encode('ㄨㄟˋ')[0],
+    BopomofoEncoder.encode('ㄨㄠˋ')[0],
+    BopomofoEncoder.encode('ㄨㄡˋ')[0],
+    BopomofoEncoder.encode('ㄨㄢˋ')[0],
+    BopomofoEncoder.encode('ㄨㄣˋ')[0],
+    BopomofoEncoder.encode('ㄨㄤˋ')[0],
+    BopomofoEncoder.encode('ㄨㄥˋ')[0],
+    BopomofoEncoder.encode('ㄨㄦˋ')[0],
+    BopomofoEncoder.encode('ㄨ˙')[0],
+    BopomofoEncoder.encode('ㄨㄚ˙')[0],
+    BopomofoEncoder.encode('ㄨㄛ˙')[0],
+    BopomofoEncoder.encode('ㄨㄜ˙')[0],
+    BopomofoEncoder.encode('ㄨㄝ˙')[0],
+    BopomofoEncoder.encode('ㄨㄞ˙')[0],
+    BopomofoEncoder.encode('ㄨㄟ˙')[0],
+    BopomofoEncoder.encode('ㄨㄠ˙')[0],
+    BopomofoEncoder.encode('ㄨㄡ˙')[0],
+    BopomofoEncoder.encode('ㄨㄢ˙')[0],
+    BopomofoEncoder.encode('ㄨㄣ˙')[0],
+    BopomofoEncoder.encode('ㄨㄤ˙')[0],
+    BopomofoEncoder.encode('ㄨㄥ˙')[0],
+    BopomofoEncoder.encode('ㄨㄦ˙')[0]
+  ]);
+});
+
+// Skipping testing first group for getMatchedCompleteEncodedSounds()
+// because the array would be 800-ish long
+
