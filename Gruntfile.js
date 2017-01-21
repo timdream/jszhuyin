@@ -54,6 +54,8 @@ module.exports = function(grunt) {
       benchmark: {
         options: {
           browserNoActivityTimeout: 0,
+          browsers: [ 'Firefox', 'Chrome' ],
+          concurrency: 1,
           files: [ /* To set elsewhere */ ]
         }
       }
