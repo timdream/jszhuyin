@@ -1,5 +1,8 @@
 'use strict';
 
+/* global QUnit, test, ok, equal, stop, start, module,
+          JSZhuyinClient, JSZhuyinServerWorkerLoader */
+
 var BenchmarkTestsLoader = function() {
 };
 BenchmarkTestsLoader.prototype = {
@@ -45,9 +48,10 @@ BenchmarkTestsLoader.prototype = {
           test('Steps #' + i + ' test run #' + j, function() {
             stop();
             var jszhuyin = new JSZhuyinClient();
-            jszhuyin.load(new JSZhuyinServerWorkerLoader('/base/lib/worker.js'), {
-              dataURL: '/base/data/database.data'
-            });
+            jszhuyin.load(
+              new JSZhuyinServerWorkerLoader('/base/lib/worker.js'), {
+                dataURL: '/base/data/database.data'
+              });
             jszhuyin.onloadend = function() {
               ok(true, 'JSZhuyin loaded');
               var thisSteps = [].concat(this.allSteps[i]);

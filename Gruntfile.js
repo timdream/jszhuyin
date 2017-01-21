@@ -51,6 +51,7 @@ module.exports = function(grunt) {
         configFile: 'karma.conf.js',
         singleRun: true
       },
+      test: { },
       benchmark: {
         options: {
           browserNoActivityTimeout: 0,
@@ -84,7 +85,8 @@ module.exports = function(grunt) {
   grunt.registerTask('check-database', function() {
     const fs = require('fs');
     if (!fs.existsSync('./data/database.data')) {
-      throw new Error('Datafile does not exist. Run npm run grunt data to create the database.');
+      throw new Error('Datafile does not exist. ' +
+        'Run npm run grunt data to create the database.');
     }
   });
 
@@ -94,7 +96,8 @@ module.exports = function(grunt) {
     var jszhuyin = new JSZhuyin();
     jszhuyin.load();
 
-    var text = fs.readFileSync('./test/benchmark/corpus.txt', { encoding: 'utf-8' });
+    var text = fs.readFileSync(
+      './test/benchmark/corpus.txt', { encoding: 'utf-8' });
 
     const { TestStepsGenerator } =
       require('./test/benchmark/test_steps_generator.js');
