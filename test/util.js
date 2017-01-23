@@ -17,7 +17,8 @@ var arrayBufferToNumberArray = function arrayBufferToNumberArray(buf) {
   }
 
   if (buf.byteLength % 2) {
-    throw 'byteLength (' + buf.byteLength + ') is not dividable by 2.';
+    throw new Error(
+      'byteLength (' + buf.byteLength +') is not dividable by 2.');
   }
 
   var arr = [];

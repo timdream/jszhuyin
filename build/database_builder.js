@@ -109,7 +109,7 @@ DatabaseBuilder.prototype.getBlob = function bsb_getBlob() {
       ptrTable.forEach(function(table, i) {
         var ptr = appendTableToBlob(table);
         if (ptr > 0xffffffff) {
-          throw 'Table pointer address exceeds maximum.';
+          throw new Error('Table pointer address exceeds maximum.');
         }
 
         ptrView.setUint32(i << 2, ptr, true);
@@ -150,7 +150,7 @@ DatabaseBuilder.prototype.getBlob = function bsb_getBlob() {
 
     return buf;
   } else {
-    throw 'No binary constructor available on this platform.';
+    throw new Error('No binary constructor available on this platform.');
   }
 
 };
