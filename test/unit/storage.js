@@ -316,10 +316,29 @@ test('reverseGet(台北)', function() {
   deepEqual(value, BopomofoEncoder.encode('ㄊㄞˊㄅㄟˇ'), 'Passed!');
 });
 
+test('reverseGet(台北, 1, true)', function() {
+  var storage = new JSZhuyinDataPackStorage();
+  storage.load(testdataData);
+
+  var value = storage.reverseGet('台北', 1, true);
+  deepEqual(
+    value,
+    [BopomofoEncoder.encode('ㄊㄞˊ'),
+      BopomofoEncoder.encode('ㄅㄟˇ')], 'Passed!');
+});
+
+test('reverseGet(台北)', function() {
+  var storage = new JSZhuyinDataPackStorage();
+  storage.load(testdataData);
+
+  var value = storage.reverseGet('台北', 2, true);
+  deepEqual(value, [BopomofoEncoder.encode('ㄊㄞˊㄅㄟˇ')], 'Passed!');
+});
+
 test('reverseGet(高雄)', function() {
   var storage = new JSZhuyinDataPackStorage();
   storage.load(testdataData);
 
   var value = storage.reverseGet('高雄');
-  deepEqual(value, [], 'Passed!');
+  deepEqual(value, [0, 0], 'Passed!');
 });

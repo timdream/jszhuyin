@@ -1,3 +1,4 @@
 /local.mk
 /node_modules
 /McBopomofo
+/test/benchmark/steps.json

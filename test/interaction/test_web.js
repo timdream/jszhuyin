@@ -15,6 +15,7 @@ var WebTestsLoader = function() {
 
 WebTestsLoader.prototype = {
   isDone: false,
+  ondone: null,
 
   load: function() {
     this._getTestManifest();
