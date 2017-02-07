@@ -10,6 +10,7 @@ const backgroundUpdateCacheKey = Math.random().toString(36).substr(2, 8);
 const persistCacheKey = 'persist';
 
 // List of assets to cache converts to full URLs.
+// The fetch event for the last URL will invoke cache refresh.
 const backgroundUpdateFiles = [
   './lib/bopomofo_encoder.js',
   './lib/client.js',
@@ -77,7 +78,7 @@ self.onfetch = evt => {
       if (cachedResponse) {
         if (backgroundUpdateFiles.indexOf(evt.request.url) !== -1) {
           requestsToRecache.add(evt.request.url);
-          startCacheRefresh();
+          startCacheRefresh(evt.request.url);
         }
         return cachedResponse;
       }
@@ -88,10 +89,11 @@ self.onfetch = evt => {
   evt.respondWith(responsePromise);
 };
 
-function startCacheRefresh() {
+function startCacheRefresh(url) {
   // We will wait for the current cache to be used fully before the new caching
   // process.
-  if (requestsToRecache.size !== backgroundUpdateFiles.length) {
+  if (requestsToRecache.size !== backgroundUpdateFiles.length &&
+      url !== backgroundUpdateFiles[backgroundUpdateFiles.length - 1]) {
     return;
   }
 
