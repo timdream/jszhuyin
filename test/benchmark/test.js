@@ -93,11 +93,15 @@ BenchmarkTestsLoader.prototype = {
   _setupSummaryReport: function() {
     test('Report', function() {
       for (var i = 0; i < this.allSteps.length; i++) {
+        var avg = (this.results[i].reduce(function(v, r) {
+            return (v + r); }, 0) / this.results[i].length);
         var reportStr =
-          'Type #' + i + ':' +
-          ' Average: ' + (this.results[i].reduce(function(v, r) {
-            return (v + r); }, 0) / this.results[i].length).toFixed(4) + 'ms' +
-          ' Stddev: ' + this.stdev(this.results[i]).toFixed(4) + 'ms';
+          'Type #' + i + ' (' + this.allSteps[i].length + ' steps):' +
+          ' Average: ' + avg.toFixed(4) + 'ms (' +
+          (avg / this.allSteps[i].length).toFixed(4) + 'ms)' +
+          ' Stddev: ' + this.stdev(this.results[i]).toFixed(4) + 'ms (' +
+          (this.stdev(this.results[i]) /
+            this.allSteps[i].length).toFixed(4) + 'ms)';
         console.log(reportStr);
         ok(true, reportStr);
       }
