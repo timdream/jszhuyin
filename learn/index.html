@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Learning typing Chinese with Bopomofo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css">
+  <script type="text/javascript">
+    if (window.location.hostname === 'timdream.org') {
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-4623408-2']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    }
+
+  </script>
+  <style type="text/css">
+    .tutorial-step p, .tutorial-step ul {
+      font-size: 120%;
+    }
+
+    .tutorial-step img {
+      max-height: 200px;
+      margin: 0.5em auto;
+    }
+
+    @media screen and (min-width: 768px) {
+      body {
+        padding: 70px 0;
+      }
+
+      *[hidden] {
+        display: none;
+      }
+
+      #inputarea {
+        min-height: 1.5em;
+      }
+    }
+
+    @media (max-width: 767px) {
+      body > .container {
+        margin: 10px 5px 70px;
+      }
+    }
+
+    #inputarea {
+      margin-top: 60px;
+      font-size: 140%;
+      outline: none;
+    }
+
+    @media screen and (min-width: 768px) {
+      #panel {
+        position: absolute;
+        z-index: 2000;
+        max-width: 50%;
+        margin: 5px 10px 10px 0;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+      }
+
+      .col-md-4 {
+        position: static;
+      }
+    }
+
+    #panel .panel-heading {
+      margin-bottom: 0;
+    }
+
+    #panel .pagination {
+      margin: 2px 1px -2px 1px;
+    }
+
+    #composition {
+      font-family: '標楷體', 'UKai', 'Kai', serif;
+    }
+
+    #candidates {
+      counter-reset: candidates;
+      font-size: 120%;
+    }
+
+    #candidates li {
+      cursor: pointer;
+    }
+
+    #candidates::before,
+    #candidates::after,
+    #candidates li span::before {
+      display: block;
+      color: #fff;
+      border-radius: 0.5em;
+      background-color: rgb(66, 139, 202);
+      font-size: 80%;
+      line-height: 20px;
+      height: 20px;
+      text-align: center;
+    }
+
+    #candidates::before,
+    #candidates::after {
+      margin: 8px;
+      padding: 0 0.5em;
+    }
+
+    #candidates::before {
+      content: 'Shift +';
+      float: left;
+    }
+
+    #candidates::after {
+      float: right;
+    }
+
+    #candidates.can-go-left:not(.can-go-right)::after {
+      content: '←';
+    }
+
+    #candidates.can-go-right:not(.can-go-left)::after {
+      content: '→';
+      float: right;
+    }
+
+    #candidates.can-go-left.can-go-right::after {
+      content: '↔';
+      float: right;
+    }
+
+    #candidates li span::before {
+      content: counter(candidates);
+      counter-increment: candidates 1;
+      float: left;
+      margin-right: 0.5em;
+      margin-top: 3px;
+      width: 1.5em;
+    }
+
+    @media screen and (min-width: 768px) {
+      #candidates,
+      #candidates li {
+        display: block;
+        clear: both;
+      }
+
+      #panel {
+        padding-bottom: 8px;
+      }
+
+      #candidates::after {
+        margin-bottom: 0;
+      }
+
+      #candidates li {
+        padding-left: 2em;
+      }
+
+      #candidates li:hover {
+        background-color: #eee;
+      }
+
+      #candidates li span {
+        float: none;
+        border: none;
+        background: none;
+        padding-left: 0;
+      }
+
+      #candidates li span::before {
+        margin: 1px 8px 0 -2em;
+      }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <ol class="breadcrumb">
+      <li><a href="../">Bopomofo Input Online</a></li>
+      <li class="active">Learn typing Chinese</li>
+    </ol>
+    <div class="row">
+      <div class="col-md-8">
+        <div class="tutorial-step step0">
+          <p><span id="status">...</span></p>
+        </div>
+        <div class="tutorial-step step1" hidden>
+          <h2>Welcome to <strong>Learning typing Chinese with Bopomofo</strong></h2>
+          <p>Here, allow me to introduce how millions of East Asians types their languages every day, using Chinese Bopomofo as the example.</p>
+          <p>Click on the “Next” button below to continue.</p>
+        </div>
+        <div class="tutorial-step step2" hidden>
+          <h2>East Asian Input Methods</h2>
+          <p>An “input method”, or “IME” for short, is a piece of program which compose and select the right characters, out of thousands of characters in the target language, based on the combination of a limit set of symbols that fits into a keyboard.
+          Zhuyin, or Bopomofo, is the syllabary of choice for typing Chinese in Taiwan.</p>
+
+          <p>An IME can be as simple as a mapping table, or it can be smart and anticipate the desired output with a few simple keystrokes.</p>
+
+          <p>As you read this, a few of these characters are shown randomly here.</p>
+        </div>
+        <div class="tutorial-step step3" hidden>
+          <h2>Typing with an IME</h2>
+          <p>We will be demonstrating with <strong>JSZhuyin</strong>, a fully implemented IME that works right on this page.</p>
+          <p>You will be learning to type the sentence <code>您好，世界！</code>, which means “Hello, World!” in Chinese.</p>
+          <p>Before we start, take a look at the keyboard layout below.
+          This is the typical keyboard layout of Zhuyin, along side with Qwerty.</p>
+
+          <img src="../assets/Keyboard_layout_Zhuyin.svg" class="img-responsive" />
+
+          <p><small>Courtesy of <a href="https://commons.wikimedia.org/wiki/File:Keyboard_layout_Zhuyin.svg" target="_blank">Sakurambo on Wikimedia</a>.</small></p>
+        </div>
+        <div class="tutorial-step step4" hidden>
+          <h2>Say Hello</h2>
+          <p>To start typing the first phrase <code>您好</code> (Hello), you'll need to type the corresponding syllabograms that would compose the phonemes of the two characters in Mandarin Chinese, which is <code>ㄋㄧㄣˊㄏㄠˇ</code>.</p>
+          <p>Start typing by hitting the corresponding key on your keyboard when you found the syllabogram from the image below.</p>
+          <p>As you type, the syllabograms will be put into a holding area, instead of appearing right in the text box.
+          A list of possible phrases will show up too.</p>
+          <p>You can use the <code>Backspace</code> key to remove incorrect symbols and characters.</p>
+
+          <img src="../assets/Keyboard_layout_Zhuyin.svg" class="img-responsive" />
+        </div>
+        <div class="tutorial-step step5" hidden>
+          <h2>Confirming a phrase</h2>
+          <p>Excellent! It looks like JSZhyin has found your desired phrase, <code>您好</code> (Hello), for you. Click on it on the candidate list, or press <code>Shift</code> and <code>1</code> at the same time to confirm it.</p>
+        </div>
+        <div class="tutorial-step step6" hidden>
+          <h2>Typing punctuation</h2>
+          <p>Press <code>Shift</code> and <code>,</code> (comma) keys at the same time to type a full-width comma.</p>
+        </div>
+        <div class="tutorial-step step7" hidden>
+          <h2>Saving keystrokes</h2>
+          <p>We have now advanced to the next phrase, <code>世界</code> (World).</p>
+          <p>The corresponding syllabograms are <code>ㄕˋㄐㄧㄝˋ</code>, but I want to teach you a trick that would make typing faster, especially on touch screens: you could find the same phrase by typing as little as two keys, like <code>ㄕㄐ</code>.</p>
+          <p>Once you found the phrase in the candidate list, click on it or press <code>Shift</code> and the number key to confirm the selection.</p>
+
+          <img src="../assets/Keyboard_layout_Zhuyin.svg" class="img-responsive" />
+        </div>
+        <div class="tutorial-step step8" hidden>
+          <h2>Finishing up</h2>
+          <p>You are almost done saying hello to the world in Chinese!</p>
+          <p>Press <code>Shift</code> and <code>1</code> at the same time to type a full-width exclamation mark.</p>
+        </div>
+        <div class="tutorial-step step9" hidden>
+          <h2>您好，世界！</h2>
+          <p>We are done here and thank you for playing with the tutorial. You may continue typing here for fun or read some Wikipedia articles on related topics.</p>
+          <ul>
+            <li>Learn how <a href="https://en.wikipedia.org/wiki/Syllabary" target="_blank">syllabaries</a> are different from alphabets.</li>
+            <li>Learn <em><a href="https://en.wikipedia.org/wiki/Syllabary" target="_blank">Hanyu Pinyin</a></em>, which composes Mandarin Chinese phonemes in Latin alphabets. It‘s much easier to learn Pinyin than the legacy Zhuyin syllabary.</li>
+            <li>Know more about <em><a href="https://en.wikipedia.org/wiki/Bopomofo" target="_blank">Zhuyin</a></em> and find out how it ended up only being used in Taiwan, and not other places.</li>
+            <li>Check out <em><a href="https://en.wikipedia.org/wiki/Katakana" target="_blank">Katakana</a></em> and <em><a href="https://en.wikipedia.org/wiki/Hiragana" target="_blank">Hiragana</a></em>, the Japanese syllabaries that not only useful for typing with IMEs, but as part of the Japanese writing system itself.</li>
+            <li>The Korean IME works by following the same logic set in the writing system itself, from the 15th century. It combines Korean alphabets, <em>jamo</em>, into Korean syllables, <em><a href="https://en.wikipedia.org/wiki/Hangul" target="_blank">Hangul</a></em>. The legend claims that it’s a “writing you can learn within a morning”.</li>
+            <li>Chinese, Japanese, and Korean are collectively known as “<a href="https://en.wikipedia.org/wiki/CJK_characters" target="_blank">CJK</a>” in the realm of information processing research and engineering, where IMEs play a sizable role.</li>
+            <li>If you are still reading, you are probably a language or information processing geek like me. Tell me what you think <a href="https://twitter.com/intent/tweet?text=%40timdream" target="_blank">on Twitter</a>!</li>
+          </ul>
+          <h3>About</h3>
+          <p>Hi! My name is <strong>Timothy Chien</strong> and I made this tutorial.
+          Check out the JSZhuyin project on it’s <a href="https://github.com/timdream/jszhuyin">GitHub</a> to find out where this is come from and make a suggestion on where it should go.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <!-- We would need a <br> here to make sure we can get the client rect we could work with -->
+        <div id="inputarea" class="well well-sm" hidden><br/></div>
+        <div class="panel panel-primary" id="panel" hidden>
+          <div class="panel-heading"><span id="composition"></span></div>
+          <ul class="pagination" id="candidates"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="navbar navbar-default navbar-fixed-bottom" role="navigation">
+    <div class="container">
+      <p>
+        <button type="button" id="step-btn-prev" disabled class="btn btn-default">« Back</button><button type="button" disabled id="step-btn-next"class="btn btn-primary pull-right">Next »</button>
+      </p>
+    </div>
+  </div>
+  <script type="text/javascript" src="../lib/client.js"></script>
+  <script type="text/javascript" src="../lib/web.js"></script>
+  <script type="text/javascript" src="../assets/learn.js"></script>
+</body>
+</html>

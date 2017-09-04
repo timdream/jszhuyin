@@ -1,11 +1,17 @@
 'use strict';
 
-/* global caches */
+// Get a random cache key every time this script starts --
+// cached files under this key gets updated every time after the page loads,
+// and everytime service worker updates.
+const backgroundUpdateCacheKey = Math.random().toString(36).substr(2, 8);
 
-// Get a random cache key everytime this script starts
-const cacheKey = Math.random().toString(36).substr(2, 8);
+// Cached files saved under this key only gets re-installed everytime
+// service worker updates.
+const persistCacheKey = 'persist';
 
-const files = [
+// List of assets to cache converts to full URLs.
+// The fetch event for the last URL will invoke cache refresh.
+const backgroundUpdateFiles = [
   './lib/bopomofo_encoder.js',
   './lib/client.js',
   './lib/worker.js',
@@ -17,16 +23,31 @@ const files = [
   './lib/web.js',
   './assets/index.js',
   './',
-  './data/database.data',
+  './data/database.data'
+].map(relativeURL => (new URL(relativeURL, self.location)).href);
+
+// List of assets to persist in cache, converts to full URLs.
+const persistFiles = [
   '//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css',
   '//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css'
-];
+].map(relativeURL => (new URL(relativeURL, self.location)).href);
+
+const allFiles = [].concat(persistFiles, backgroundUpdateFiles);
 
 self.oninstall = evt => {
-  // Attempt to install an entire app atomically when the service worker is
+  // Attempt to install two caches atomically when the service worker is
   // being installed.
   // addAll() is atomic by design and we will rely on it.
-  evt.waitUntil(caches.open(cacheKey).then(cache => cache.addAll(files)));
+  // We however cannot make sure the two caches are in sync given there isn't
+  // an API for us to make sure of that.
+  evt.waitUntil(
+    self.caches.keys()
+      .then(keys => Promise.all(keys.map(key => self.caches.delete(key))))
+      .then(() => Promise.all([
+        self.caches.open(backgroundUpdateCacheKey)
+          .then(cache => cache.addAll(backgroundUpdateFiles)),
+        self.caches.open(persistCacheKey)
+          .then(cache => cache.addAll(persistFiles))])));
 };
 
 function Deferred() {
@@ -43,14 +64,22 @@ var deferredCacheRefresh = new Deferred();
 var requestsToRecache = new Set();
 
 self.onfetch = evt => {
+  if (allFiles.indexOf(evt.request.url) === -1) {
+    // A unlisted file is being requested.
+    return;
+  }
+
   evt.waitUntil(deferredCacheRefresh.promise);
+
   // We will be using cache-then-network strategy for better experience,
   // given the database takes time to download.
-  let responsePromise = caches.match(evt.request)
+  let responsePromise = self.caches.match(evt.request)
     .then((cachedResponse) => {
       if (cachedResponse) {
-        requestsToRecache.add(evt.request.url);
-        startCacheRefresh();
+        if (backgroundUpdateFiles.indexOf(evt.request.url) !== -1) {
+          requestsToRecache.add(evt.request.url);
+          startCacheRefresh(evt.request.url);
+        }
         return cachedResponse;
       }
 
@@ -60,10 +89,11 @@ self.onfetch = evt => {
   evt.respondWith(responsePromise);
 };
 
-function startCacheRefresh() {
+function startCacheRefresh(url) {
   // We will wait for the current cache to be used fully before the new caching
   // process.
-  if (requestsToRecache.size !== files.length) {
+  if (requestsToRecache.size !== backgroundUpdateFiles.length &&
+      url !== backgroundUpdateFiles[backgroundUpdateFiles.length - 1]) {
     return;
   }
 
@@ -75,12 +105,13 @@ function startCacheRefresh() {
   // the actual file changes here. Thus, we will never ask user to reload to
   // get the new version.
   Promise.resolve()
-    .then(() => caches.open(cacheKey))
-    .then(cache => cache.addAll(files))
-    .then(() => caches.keys())
-    .then(keys => {
-      return Promise.all(
-        keys.filter(key => key !== cacheKey).map(key => caches.delete(key)));
-    })
+    .then(() => self.caches.open(backgroundUpdateCacheKey))
+    .then(cache => cache.addAll(backgroundUpdateFiles))
+    .then(() => self.caches.keys())
+    .then(keys => Promise.all(
+        keys
+          .filter(key =>
+            (key !== backgroundUpdateCacheKey) && (key !== persistCacheKey))
+          .map(key => self.caches.delete(key))))
     .then(() => deferredCacheRefresh.resolve());
 }
