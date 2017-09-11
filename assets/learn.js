@@ -3,8 +3,8 @@
 /* global JSZhuyinClient, JSZhuyinWebIME, JSZhuyinServerWorkerLoader */
 
 var T = {
-  LOADING: 'Loading...',
-  LOADING_WITH_PROGRESS: 'Loading (%PROGRESS%)...',
+  LOADING: 'Loading program...',
+  LOADING_WITH_PROGRESS: 'Loading dictionary (%PROGRESS%)...',
   LOADED: 'Done.',
   LOAD_ERROR: 'Unable to load database. Reload to try again.',
   ERROR: 'Error (%ERROR%)'
@@ -186,7 +186,8 @@ JSZhuyinLearningApp.prototype.gotoTutorial = function(index) {
   document.querySelector('.step' + this.stepIndex).removeAttribute('hidden');
 
   this.prevBtn.disabled = (this.stepIndex <= 1);
-  this.nextBtn.disabled = (this.stepIndex === (this.steps.length - 1));
+  this.nextBtn.disabled = this.stepIndex < 1 ||
+    this.stepIndex === (this.steps.length - 1);
 };
 
 JSZhuyinLearningApp.prototype.handleEvent = function(evt) {
