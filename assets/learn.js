@@ -187,8 +187,6 @@ JSZhuyinLearningApp.prototype.gotoTutorial = function(index) {
 
   this.prevBtn.disabled = (this.stepIndex <= 1);
   this.nextBtn.disabled = (this.stepIndex === (this.steps.length - 1));
-
-  this.updatePanelStyle();
 };
 
 JSZhuyinLearningApp.prototype.handleEvent = function(evt) {
@@ -206,6 +204,12 @@ JSZhuyinLearningApp.prototype.handleEvent = function(evt) {
         case this.nextBtn:
           this.gotoTutorial(this.stepIndex + 1);
           break;
+
+        default:
+          if (evt.target.nodeName === 'IMG') {
+            alert('Oops! Please type on the actual keyboard, not the image.');
+            this.inputareaEl.focus();
+          }
       }
       break;
   }
@@ -221,10 +225,9 @@ JSZhuyinLearningApp.prototype._startUI = function() {
   this.compositionEl = document.getElementById('composition');
   this.candidatesListEl = document.getElementById('candidates');
 
+  document.addEventListener('click', this);
   this.prevBtn = document.getElementById('step-btn-prev');
-  this.prevBtn.addEventListener('click', this);
   this.nextBtn = document.getElementById('step-btn-next');
-  this.nextBtn.addEventListener('click', this);
 };
 
 JSZhuyinLearningApp.prototype._startEngine = function() {
