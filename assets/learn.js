@@ -81,6 +81,21 @@ RandomCharactersStep.prototype.stop = function() {
   this.app.inputareaEl.innerHTML = '<br>';
 };
 
+function LayoutIntroTutorialStep(app) {
+  this.app = app;
+}
+LayoutIntroTutorialStep.prototype.start = function() {
+  this.app.inputareaEl.setAttribute('contenteditable', true);
+  this.app.inputareaEl.addEventListener('focus', this);
+};
+LayoutIntroTutorialStep.prototype.handleEvent = function() {
+  this.app.gotoTutorial(this.app.stepIndex + 1);
+};
+LayoutIntroTutorialStep.prototype.stop = function() {
+  this.app.inputareaEl.setAttribute('contenteditable', false);
+  this.app.inputareaEl.removeEventListener('focus', this);
+};
+
 function TypingTutorialStep(app) {
   this.app = app;
 }
@@ -152,7 +167,7 @@ JSZhuyinLearningApp.prototype.steps = [
   BasicTutorialStep,
   IntroTutorialStep,
   RandomCharactersStep,
-  TypingTutorialStep,
+  LayoutIntroTutorialStep,
   HelloTypingTutorialStep,
   HelloConfirmTypingTutorialStep,
   CommaTypingTutorialStep,
