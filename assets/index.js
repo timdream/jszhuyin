@@ -331,7 +331,10 @@ JSZhuyinApp.prototype._startEngine = function() {
     element.appendChild(li);
   };
 
-  webIME.oncompositionend =
+  webIME.oncompositionend = (function(data) {
+    this.updatePanelStyle(data);
+    window._paq && window._paq.push(['trackEvent', 'WebIME', 'compositionend', '', 1]);
+  }).bind(this);
   webIME.oncompositionupdate =
   webIME.oncandidateschange = this.updatePanelStyle.bind(this);
 };
