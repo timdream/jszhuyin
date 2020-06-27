@@ -21,7 +21,7 @@ const backgroundUpdateFiles = [
   './lib/storage.js',
   './lib/data_loader.js',
   './lib/web.js',
-  './assets/index.js',
+  './assets/index.js?_=1',
   './',
   './data/database.data'
 ].map(relativeURL => (new URL(relativeURL, self.location)).href);
