@@ -1,6 +1,6 @@
 # JSZhuyin - JS 注音 [![Build Status](https://travis-ci.org/timdream/jszhuyin.svg?branch=master)](https://travis-ci.org/timdream/jszhuyin) [![npm version](https://badge.fury.io/js/jszhuyin.svg)](http://badge.fury.io/js/jszhuyin)
 
-"Smart" Chinese Zhuyin Input Method in Javascript. Javascript 自動選字注音輸入法。[示範網頁](http://timdream.org/jszhuyin/)。
+"Smart" Chinese Zhuyin Input Method in Javascript. Javascript 自動選字注音輸入法。[示範網頁](https://jszhuyin.timdream.org/)。
 
 已知的線上自動選字注音輸入法都是將輸入送至伺服器，這是已知的第一個完全使用前端技術完成的實作，故可支援離線使用。
 
@@ -45,8 +45,8 @@ console.log(candidates[0][0]); // '今天來寫注音輸入法'
 
 您可以直接連結 Github 上的檔案：
 
-    <script type="text/javascript" src="http://timdream.org/jszhuyin/lib/client.js"></script>
-    <script type="text/javascript" src="http://timdream.org/jszhuyin/lib/web.js"></script>
+    <script type="text/javascript" src="https://jszhuyin.timdream.org/lib/client.js"></script>
+    <script type="text/javascript" src="https://jszhuyin.timdream.org/lib/web.js"></script>
 
 準備基本的 HTML 元素（分別為待選字的注音，以及候選字詞），請自行加上適合的 CSS 樣式或是浮動視窗等等：
 
@@ -56,7 +56,7 @@ console.log(candidates[0][0]); // '今天來寫注音輸入法'
 使用以下程式碼啟動輸入法：
 
     JSZhuyinServerIframeLoader.prototype.IFRAME_URL =
-      'http://timdream.org/jszhuyin/lib/frame.html';
+      'https://jszhuyin.timdream.org/lib/frame.html';
     var webIME = new JSZhuyinWebIME({
       composition: document.getElementById('composition'),
       candidatesList: document.getElementById('candidates')
