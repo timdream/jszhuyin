@@ -24,12 +24,21 @@
     You can access this page hosted off-origin so people don't need to
     load the database multiple times.
   -->
-  <script defer src="bopomofo_encoder.js"></script>
-  <script defer src="jszhuyin_data_pack.js"></script>
-  <script defer src="storage.js"></script>
-  <script defer src="data_loader.js"></script>
-  <script defer src="jszhuyin.js"></script>
+  <script src="bopomofo_encoder.js"></script>
+  <script src="jszhuyin_data_pack.js"></script>
+  <script src="storage.js"></script>
+  <script src="data_loader.js"></script>
+  <script src="jszhuyin.js"></script>
 
-  <script defer src="jszhuyin_server.js"></script>
+  <script src="jszhuyin_server.js"></script>
+  <script>
+    var fn = JSZhuyinServer.sendMessage;
+    JSZhuyinServer.sendMessage = function(type, data, reqId) {
+      if (type === 'compositionend') {
+        window._paq && window._paq.push(['trackEvent', 'WebIME', 'compositionend', '', 1]);
+      }
+      return fn.call(JSZhuyinServer, type, data, reqId);
+    };
+  </script>
 </head>
 </html>
