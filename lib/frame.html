@@ -21,8 +21,10 @@
   <title>JSZhuyin frame</title>
   <!--
     This page is here to make JSZhuyin self-contain.
-    You can access this page hosted off-origin so people don't need to
-    load the database multiple times.
+    The original intention was to access this page hosted off-origin so people don't need to
+    load the database multiple times. However, browsers have since block presistent data
+    access from iframes by default, making this technique obsolete.
+    It is now recommended to load JSZhuyin into a worker instead.
   -->
   <script src="bopomofo_encoder.js"></script>
   <script src="jszhuyin_data_pack.js"></script>
