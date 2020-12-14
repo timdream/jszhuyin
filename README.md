@@ -55,8 +55,9 @@ console.log(candidates[0][0]); // '今天來寫注音輸入法'
 
 使用以下程式碼啟動輸入法：
 
-    JSZhuyinServerIframeLoader.prototype.IFRAME_URL =
-      'https://jszhuyin.timdream.org/lib/frame.html';
+    JSZhuyinServerWorkerLoader.prototype.WORKER_URL =
+      'https://jszhuyin.timdream.org/lib/worker.js';
+    JSZhuyinClient.prototype.DEFAULT_LOADER = JSZhuyinServerWorkerLoader;
     var webIME = new JSZhuyinWebIME({
       composition: document.getElementById('composition'),
       candidatesList: document.getElementById('candidates')
