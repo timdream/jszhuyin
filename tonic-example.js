@@ -1,5 +1,3 @@
-'use strict';
-
 const { JSZhuyin } = require('jszhuyin');
 var jszhuyin = new JSZhuyin();
 jszhuyin.load();

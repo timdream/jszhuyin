@@ -39,7 +39,7 @@ jszhuyin.handleKey('ㄐㄊㄌㄞˊㄒㄧㄝˇㄓㄨˋㄧㄣㄕㄖㄈ');
 console.log(candidates[0][0]); // '今天來寫注音輸入法'
 ```
 
-[在 Tonic 試用此範例](https://tonicdev.com/npm/jszhuyin)。
+[在 RunKit 試用此範例](https://npm.runkit.com/jszhuyin)。
 
 ## 安裝至網站
 
