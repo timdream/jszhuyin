@@ -136,14 +136,14 @@ DatabaseBuilder.prototype.getBlob = function bsb_getBlob() {
     return new Blob(blobParts,
       { type: 'application/octet-stream', ending: 'transparent' });
   } else if (typeof Buffer === 'function') {
-    var buf = new Buffer(blobLength);
+    var buf = Buffer.alloc(blobLength);
     var i = 0;
     for (var j = 0; j < blobParts.length; j++) {
       var view = new Uint8Array(
         (blobParts[j].constructor === ArrayBuffer) ?
         blobParts[j] : blobParts[j].buffer);
 
-      var bufPart = new Buffer(view);
+      var bufPart = Buffer.from(view);
       bufPart.copy(buf, i);
       i += bufPart.length;
     }
