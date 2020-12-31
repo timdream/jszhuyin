@@ -6,7 +6,7 @@
 * [`node`](http://nodejs.org/) (comes with [`npm`](http://npmjs.org/) built-in)
 * GNU Make
 * Python
-* Firefox –– 目前 Travis-CI 是設定為 48 版，如需更新請修改設定檔。
+* Firefox
 
 
 ## 本機使用
