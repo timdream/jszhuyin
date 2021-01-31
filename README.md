@@ -1,4 +1,4 @@
-# JSZhuyin - JS 注音 [![Build Status](https://travis-ci.org/timdream/jszhuyin.svg?branch=master)](https://travis-ci.org/timdream/jszhuyin) [![npm version](https://badge.fury.io/js/jszhuyin.svg)](http://badge.fury.io/js/jszhuyin)
+# JSZhuyin - JS 注音 [![npm version](https://badge.fury.io/js/jszhuyin.svg)](http://badge.fury.io/js/jszhuyin)
 
 "Smart" Chinese Zhuyin Input Method in Javascript. Javascript 自動選字注音輸入法。[示範網頁](https://jszhuyin.timdream.org/)。
 
@@ -39,7 +39,7 @@ jszhuyin.handleKey('ㄐㄊㄌㄞˊㄒㄧㄝˇㄓㄨˋㄧㄣㄕㄖㄈ');
 console.log(candidates[0][0]); // '今天來寫注音輸入法'
 ```
 
-[在 Tonic 試用此範例](https://tonicdev.com/npm/jszhuyin)。
+[在 RunKit 試用此範例](https://npm.runkit.com/jszhuyin)。
 
 ## 安裝至網站
 

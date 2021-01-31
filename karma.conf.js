@@ -1,5 +1,5 @@
 // Karma configuration
-// Generated on Sun Aug 21 2016 23:36:54 GMT+0800 (CST)
+// Generated on Fri Jan 01 2021 01:41:34 GMT-0800 (Pacific Standard Time)
 
 module.exports = function(config) {
   config.set({
@@ -42,7 +42,7 @@ module.exports = function(config) {
     ],
 
 
-    // list of files to exclude
+    // list of files / patterns to exclude
     exclude: [
     ],
 
@@ -78,9 +78,7 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: [
-      'Firefox'
-    ],
+    browsers: ['ChromeHeadless', 'Firefox'],
 
 
     // Continuous Integration mode

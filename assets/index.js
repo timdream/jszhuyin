@@ -333,7 +333,8 @@ JSZhuyinApp.prototype._startEngine = function() {
 
   webIME.oncompositionend = (function(data) {
     this.updatePanelStyle(data);
-    window._paq && window._paq.push(['trackEvent', 'WebIME', 'compositionend', '', 1]);
+    window._paq && window._paq.push(
+      ['trackEvent', 'WebIME', 'compositionend', '', 1]);
   }).bind(this);
   webIME.oncompositionupdate =
   webIME.oncandidateschange = this.updatePanelStyle.bind(this);

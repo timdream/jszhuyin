@@ -204,7 +204,8 @@ JSZhuyinLearningApp.prototype.gotoTutorial = function(index) {
   this.nextBtn.disabled = this.stepIndex < 1 ||
     this.stepIndex === (this.steps.length - 1);
 
-  window._paq && window._paq.push(['trackEvent', 'Learn', 'gotoTutorial', '', index]);
+  window._paq && window._paq.push(
+    ['trackEvent', 'Learn', 'gotoTutorial', '', index]);
 };
 
 JSZhuyinLearningApp.prototype.handleEvent = function(evt) {
