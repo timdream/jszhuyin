@@ -39,7 +39,7 @@
     "karma-firefox-launcher": "^2.1.0",
     "karma-qunit": "^1.2.0",
     "karma-spec-reporter": "0.0.32",
-    "mocha": "^8.2.1",
+    "mocha": "^10.1.0",
     "qunitjs": "^1.23.1"
   },
   "license": "MIT",
