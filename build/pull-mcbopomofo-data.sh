@@ -3,7 +3,7 @@
 [ -z $MAKE ] && MAKE=make
 [ -z $GIT ] && GIT=git
 [ -z $MC_BOPOMOFO_REPO ] &&\
-  MC_BOPOMOFO_REPO=git://github.com/OpenVanilla/McBopomofo.git
+  MC_BOPOMOFO_REPO=https://github.com/openvanilla/McBopomofo.git
 
 [ -z ${TMPDIR} ] && TMPDIR=./
 
